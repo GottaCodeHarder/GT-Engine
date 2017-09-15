@@ -1,5 +1,4 @@
 #include "Application.h"
-#include "ImGui\imgui.h"
 
 Application::Application()
 {

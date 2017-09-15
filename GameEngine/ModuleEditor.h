@@ -11,7 +11,7 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
-public:
+private:
 
 	bool show_test_window;
 	bool done;

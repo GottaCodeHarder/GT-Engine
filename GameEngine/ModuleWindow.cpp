@@ -72,6 +72,11 @@ bool ModuleWindow::Init()
 	return ret;
 }
 
+SDL_Window* ModuleWindow::GetWindow()
+{
+	return window;
+}
+
 // Called before quitting
 bool ModuleWindow::CleanUp()
 {

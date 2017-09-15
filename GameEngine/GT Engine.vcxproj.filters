@@ -22,6 +22,12 @@
     <Filter Include="Sources\ImGui">
       <UniqueIdentifier>{86cc83c9-f808-4036-8d88-8fab86ac77f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\gl3w">
+      <UniqueIdentifier>{358ab2cb-ee6e-41e1-9ec2-46b2bde6bad7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\SDL">
+      <UniqueIdentifier>{1bcf74ae-de70-4087-9b76-c8a6b6611d95}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Module.h">
@@ -108,6 +114,21 @@
     <ClInclude Include="ModuleEditor.h">
       <Filter>Sources\Modules</Filter>
     </ClInclude>
+    <ClInclude Include="ImGui\imgui_impl_sdl_gl3.h">
+      <Filter>Sources\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="gl3w\gl3w.h">
+      <Filter>Sources\gl3w</Filter>
+    </ClInclude>
+    <ClInclude Include="gl3w\glcorearb.h">
+      <Filter>Sources\gl3w</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL\include\SDL.h">
+      <Filter>Sources\SDL</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL\include\SDL_syswm.h">
+      <Filter>Sources\SDL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleAudio.cpp">
@@ -172,6 +193,12 @@
     </ClCompile>
     <ClCompile Include="ModuleEditor.cpp">
       <Filter>Sources\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_impl_sdl_gl3.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="gl3w\gl3w.c">
+      <Filter>Sources\gl3w</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

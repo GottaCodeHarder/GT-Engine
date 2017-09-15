@@ -7,9 +7,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "ImGui\imgui.h"
-#include "ImGui\examples\sdl_opengl3_example\imgui_impl_sdl_gl3.h"
-
 ModuleScene::ModuleScene(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 
