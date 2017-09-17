@@ -65,7 +65,7 @@ bool Application::Init()
 		ret = item->data->Start();
 		item = item->next;
 	}
-	
+
 	ms_timer.Start();
 	return ret;
 }

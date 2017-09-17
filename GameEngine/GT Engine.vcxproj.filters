@@ -28,6 +28,9 @@
     <Filter Include="Sources\SDL">
       <UniqueIdentifier>{1bcf74ae-de70-4087-9b76-c8a6b6611d95}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{98dc938d-c03f-4a70-b09e-043fa99da82e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Module.h">
@@ -129,6 +132,9 @@
     <ClInclude Include="SDL\include\SDL_syswm.h">
       <Filter>Sources\SDL</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleAudio.cpp">
@@ -200,5 +206,15 @@
     <ClCompile Include="gl3w\gl3w.c">
       <Filter>Sources\gl3w</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GT GameEngine.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Game\logo.ico">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
 </Project>

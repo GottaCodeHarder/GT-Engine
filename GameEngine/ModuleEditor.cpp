@@ -46,16 +46,39 @@ update_status ModuleEditor::Update(float dt)
 	ImGui_ImplSdlGL3_NewFrame(App->window->GetWindow());
 
 	{
-		ImGui::Begin("Window", &show_test_window, ImGuiWindowFlags_NoMove && ImGuiWindowFlags_NoResize);
+		if (ImGui::BeginMainMenuBar())
+		{
+			if (ImGui::BeginMenu("File"))
+			{
+				if (ImGui::MenuItem("Exit"))
+				{
+					// Stuff
+				}
+				ImGui::EndMenu();
+			}
 
-		float f = 0.1f;
-		ImGui::Text("Hello, world!");
-		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-		ImGui::ColorEdit3("clear color", (float*)&ImColor(114, 144, 154));
-		if (ImGui::Button("Test Window")) show_test_window ^= 1;
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		
+			if (ImGui::BeginMenu("Help"))
+			{
+				// Stuff
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMainMenuBar();
+		}
+
+		ImGui::SetNextWindowPos(ImVec2(0, 19));
+		ImGui::Begin("Menu", &show_test_window, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoResize);
+		{
+			float f = 0.1f;
+			ImGui::Text("Hello, world!");
+			ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+			ImGui::ColorEdit3("clear color", (float*)&ImColor(114, 144, 154));
+			if (ImGui::Button("Test Window"))
+				show_test_window ^= 1;
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		}
 		ImGui::End();
+
 	}
 
 	ImGui::Render();

@@ -104,6 +104,7 @@
     <ClInclude Include="PhysBody3D.h" />
     <ClInclude Include="PhysVehicle3D.h" />
     <ClInclude Include="Primitive.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="SDL\include\SDL.h" />
     <ClInclude Include="SDL\include\SDL_syswm.h" />
     <ClInclude Include="Timer.h" />
@@ -132,6 +133,12 @@
     <ClCompile Include="PhysVehicle3D.cpp" />
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="Timer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GT GameEngine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Game\logo.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
