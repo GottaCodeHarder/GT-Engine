@@ -14,5 +14,6 @@ public:
 private:
 
 	bool show_test_window;
+	bool our_test_window;
 	bool done;
 };
