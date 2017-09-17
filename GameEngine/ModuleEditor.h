@@ -13,7 +13,7 @@ public:
 
 private:
 
+	bool show_example_window;
 	bool show_test_window;
-	bool our_test_window;
 	bool done;
 };

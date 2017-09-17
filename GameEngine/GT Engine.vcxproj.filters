@@ -206,6 +206,9 @@
     <ClCompile Include="gl3w\gl3w.c">
       <Filter>Sources\gl3w</Filter>
     </ClCompile>
+    <ClCompile Include="ImGui\imgui_demo.cpp">
+      <Filter>Sources\ImGui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GT GameEngine.rc">

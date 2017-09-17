@@ -20,8 +20,8 @@ bool ModuleEditor::Start()
 	LOG("Loading Editor");
 	bool ret = true;
 
-	show_test_window = true;
-	our_test_window = false;
+	show_example_window = false;
+	show_test_window = false;
 	done = false;
 
 	gl3wInit();
@@ -62,8 +62,7 @@ update_status ModuleEditor::Update(float dt)
 			{
 				if (ImGui::MenuItem("Test Window"))
 				{
-					our_test_window =! our_test_window;
-					ImGui::Text("Hello, world!");
+					show_test_window =! show_test_window;
 				}
 				ImGui::EndMenu();
 			}
@@ -71,7 +70,7 @@ update_status ModuleEditor::Update(float dt)
 			ImGui::EndMainMenuBar();
 		}
 
-		if (our_test_window) {
+		if (show_test_window) {
 
 				ImGui::SetNextWindowPos(ImVec2(0, 19));
 				ImGui::Begin("Menu", &show_test_window, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoResize);
@@ -80,11 +79,19 @@ update_status ModuleEditor::Update(float dt)
 					ImGui::Text("Hello, world!");
 					ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
 					ImGui::ColorEdit3("clear color", (float*)&ImColor(114, 144, 154));
-					if (ImGui::Button("Test Window"))
-						show_test_window ^= 1;
+					if (ImGui::Button("Example Window"))
+					{
+						show_example_window = !show_example_window;
+					}
+						
 					ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 				}
 				ImGui::End();
+		}
+		if (show_example_window)
+		{
+			ImGui::SetNextWindowPos(ImVec2(500, 19));
+			ImGui::ShowTestWindow();
 		}
 
 	}

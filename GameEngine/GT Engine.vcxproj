@@ -115,6 +115,7 @@
     <ClCompile Include="gl3w\gl3w.c" />
     <ClCompile Include="glmath.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
+    <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
     <ClCompile Include="ImGui\imgui_impl_sdl_gl3.cpp" />
     <ClCompile Include="Light.cpp" />
