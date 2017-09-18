@@ -47,7 +47,7 @@ update_status ModuleEditor::Update(float dt)
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
-			
+			// FILE
 			if (ImGui::BeginMenu("File"))
 			{
 				
@@ -57,7 +57,18 @@ update_status ModuleEditor::Update(float dt)
 				}
 				ImGui::EndMenu();
 			}
-			
+
+			// TOOLS
+			if (ImGui::BeginMenu("Tools"))
+			{
+				if (ImGui::MenuItem("Timer"))
+				{
+
+				}
+				ImGui::EndMenu();
+			}
+
+			// VIEW
 			if (ImGui::BeginMenu("View"))
 			{
 				ImGui::Checkbox("", &bShowExample);
@@ -65,9 +76,30 @@ update_status ModuleEditor::Update(float dt)
 
 				if (ImGui::MenuItem("Example Window"))
 				{
-					bShowExample =!bShowExample;
+					bShowExample = !bShowExample;
 				}
-				
+
+				ImGui::EndMenu();
+			}
+
+			// ABOUT
+			if (ImGui::BeginMenu("Help"))
+			{
+				if (ImGui::MenuItem("Repository"))
+				{
+					ShellExecute(NULL, "open", "https://github.com/GottaCodeHarder/GT-Engine", NULL, NULL, SW_SHOWNORMAL);
+				}
+
+				if (ImGui::MenuItem("Readme"))
+				{
+					ShellExecute(NULL, "open", "https://github.com/GottaCodeHarder/GT-Engine/blob/master/README.md",NULL, NULL, SW_SHOWNORMAL);
+				}
+
+				if (ImGui::MenuItem("About"))
+				{
+					
+				}
+
 				ImGui::EndMenu();
 			}
 

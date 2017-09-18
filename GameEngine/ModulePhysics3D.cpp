@@ -2,7 +2,6 @@
 #include "Application.h"
 #include "ModulePhysics3D.h"
 #include "PhysBody3D.h"
-#include "PhysVehicle3D.h"
 #include "Primitive.h"
 
 #ifdef _DEBUG
@@ -120,12 +119,12 @@ update_status ModulePhysics3D::Update(float dt)
 		world->debugDrawWorld();
 
 		// Render vehicles
-		p2List_item<PhysVehicle3D*>* item = vehicles.getFirst();
+		/*p2List_item<PhysVehicle3D*>* item = vehicles.getFirst();
 		while(item)
 		{
 			item->data->Render();
 			item = item->next;
-		}
+		}*/
 	}
 
 	return UPDATE_CONTINUE;
@@ -171,12 +170,7 @@ bool ModulePhysics3D::CleanUp()
 		delete item->data;
 
 	bodies.clear();
-
-	for(p2List_item<PhysVehicle3D*>* item = vehicles.getFirst(); item; item = item->next)
-		delete item->data;
-
-	vehicles.clear();
-
+	
 	delete vehicle_raycaster;
 	delete world;
 
@@ -263,312 +257,6 @@ PhysBody3D* ModulePhysics3D::AddBody(const pbCylinder& cylinder, float mass)
 	bodies.add(pbody);
 
 	return pbody;
-}
-
-// ---------------------------------------------------------
-PhysVehicle3D* ModulePhysics3D::AddVehicle(const VehicleInfo& info)
-{
-	float large = info.chassis_size.z;
-	float ample = info.chassis_size.x;
-	float gros = info.chassis_size.y;
-	float PI = 3.141592;
-
-	btCompoundShape* comShape = new btCompoundShape();
-	shapes.add(comShape);
-
-	btTransform trans;
-	trans.setIdentity();
-
-	btCollisionShape* base = new btBoxShape(btVector3(ample, gros, large));
-	shapes.add(base);
-
-	btCollisionShape* front = new btBoxShape(btVector3(ample, large/6, gros));
-	shapes.add(front);
-
-	btCollisionShape* cyl_base_lad = new btCylinderShape(btVector3(gros, large, 0));
-	shapes.add(cyl_base_lad);
-
-	btCollisionShape* cyl_arr_lad = new btCylinderShape(btVector3(gros, large*0.17, 0));
-	shapes.add(cyl_arr_lad);
-
-	btCollisionShape* cyl_del = new btCylinderShape(btVector3(gros, large/6, 0));
-	shapes.add(cyl_del);
-
-	btCollisionShape* cyl_tras = new btCylinderShape(btVector3(gros, 0.625*large, 0));
-	shapes.add(cyl_tras);
-
-	btCollisionShape* cyl_tras_rue = new btCylinderShape(btVector3(gros, large/7, 0));
-	shapes.add(cyl_tras_rue);
-
-	btCollisionShape* cyl_cab_tras = new btCylinderShape(btVector3(gros, 0.6*large, 0));
-	shapes.add(cyl_cab_tras);
-
-	btCollisionShape* bar_lat = new btCylinderShape(btVector3(gros, 0.35*large, 0));
-	shapes.add(bar_lat);
-
-	btCollisionShape* cyl_base_del = new btCylinderShape(btVector3(gros, ample, 0));
-	shapes.add(cyl_base_del);
-
-	btCollisionShape* cyl_base_tra = new btCylinderShape(btVector3(gros, ample*0.35, 0));
-	shapes.add(cyl_base_tra);
-
-	btCollisionShape* cyl_sup_base_tra = new btCylinderShape(btVector3(gros, ample*0.3, 0));
-	shapes.add(cyl_sup_base_tra);
-
-	btCollisionShape* lateral = new btCylinderShape(btVector3(gros, large, 0));
-	shapes.add(lateral);
-
-	btCollisionShape* barra_techo = new btCylinderShape(btVector3(gros, 2 * large / 3, 0));
-	shapes.add(barra_techo);
-
-	btCollisionShape* barra = new btCylinderShape(btVector3(gros, large/3, 0));
-	shapes.add(barra);
-
-	btCollisionShape* esquina = new btSphereShape(gros);
-	shapes.add(esquina);
-
-	btCollisionShape* barra_del = new btCylinderShape(btVector3(gros, large - 0.08, 0));
-	shapes.add(barra_del);
-
-	//---------------------------------------------------CUBOS-----------------------------------------------------------------------------------------------
-
-	trans.setOrigin(btVector3(0, large / 6 + info.chassis_offset.y , large));
-	comShape->addChildShape(trans, front);
-
-	trans.setRotation(btQuaternion(btVector3(1, 0, 0), 5 * PI / 180));
-
-	trans.setOrigin(btVector3(0, 2 * large / 4.75 + info.chassis_offset.y, 0));
-	comShape->addChildShape(trans, base);
-
-	//---------------------------------------------------elevators-----------------------------------------------------------------------------------------------
-	trans.setRotation(btQuaternion(btVector3(1, 0, 0), PI / 2));
-
-	btCollisionShape* cuerno = new btBoxShape(btVector3(ample*0.2f, gros / 4, large + 1.0f));
-	shapes.add(cuerno);
-	btCollisionShape* lim = new btBoxShape(btVector3(ample*0.2f, gros*2, gros));
-	shapes.add(lim);
-
-	trans.setOrigin(btVector3(ample - 0.2f, info.chassis_offset.y*3 + large, large*2 -1.8f));
-	comShape->addChildShape(trans, cuerno);
-
-	trans.setOrigin(btVector3(ample - 0.2f, -info.chassis_offset.y*6, large * 2 - 1.8f));
-	comShape->addChildShape(trans, lim);
-
-	trans.setOrigin(btVector3(ample - 0.2f, 2*large, large * 2 - 1.8));
-	comShape->addChildShape(trans, lim);
-
-
-	trans.setOrigin(btVector3(-ample + 0.2f, info.chassis_offset.y * 3 + large, large*2 -1.8f));
-	comShape->addChildShape(trans, cuerno);
-
-	trans.setOrigin(btVector3(-ample + 0.2f, -info.chassis_offset.y*6, large * 2 - 1.8f));
-	comShape->addChildShape(trans, lim);
-
-	trans.setOrigin(btVector3(-ample + 0.2f, 2*large, large * 2 - 1.8f));
-	comShape->addChildShape(trans, lim);
-	
-	//---------------------------------------------------CILINDROS Z-------------------------------------------------------------------------------------------
-	trans.setRotation(btQuaternion(btVector3(1, 0, 0), PI / 2));
-
-	trans.setOrigin(btVector3(ample, 0 + info.chassis_offset.y, 0));
-	comShape->addChildShape(trans, cyl_base_lad);
-
-	trans.setOrigin(btVector3(-ample, 0 + info.chassis_offset.y, 0));
-	comShape->addChildShape(trans, cyl_base_lad);
-	
-	trans.setOrigin(btVector3(ample, 2 * 0.625f*large + info.chassis_offset.y, -large + large*0.17f));
-	comShape->addChildShape(trans, cyl_arr_lad);
-	
-	trans.setOrigin(btVector3(-ample, 2 * 0.625f*large + info.chassis_offset.y, -large + large*0.17f));
-	comShape->addChildShape(trans, cyl_arr_lad);
-
-//---------------------------------------------------CILINDROS Y-------------------------------------------------------------------------------------------
-	trans.setRotation(btQuaternion(btVector3(0, 1, 0), PI/2));
-
-	trans.setOrigin(btVector3(ample, large / 6 + info.chassis_offset.y, large));
-	comShape->addChildShape(trans, cyl_del);
-
-	trans.setOrigin(btVector3(-ample, large / 6 + info.chassis_offset.y, large));
-	comShape->addChildShape(trans, cyl_del);
-
-	trans.setOrigin(btVector3(ample, 0.625f*large + info.chassis_offset.y, -large));
-	comShape->addChildShape(trans, cyl_tras);
-
-	trans.setOrigin(btVector3(-ample, 0.625f*large + info.chassis_offset.y, -large));
-	comShape->addChildShape(trans, cyl_tras);
-
-	trans.setOrigin(btVector3(ample * 0.3f, large / 7 + info.chassis_offset.y, -large));
-	comShape->addChildShape(trans, cyl_tras_rue);
-
-	trans.setOrigin(btVector3(-ample * 0.3f, large / 7 + info.chassis_offset.y, -large));
-	comShape->addChildShape(trans, cyl_tras_rue);
-
-	trans.setOrigin(btVector3(ample, 1.8f * large + info.chassis_offset.y, -large + 2 * large*0.17f));
-	comShape->addChildShape(trans, cyl_cab_tras);
-
-	trans.setOrigin(btVector3(-ample, 1.8f * large + info.chassis_offset.y, -large + 2 * large*0.17f));
-	comShape->addChildShape(trans, cyl_cab_tras);
-
-	trans.setOrigin(btVector3(ample, 2 * large / 2.55f + info.chassis_offset.y, 0));
-	comShape->addChildShape(trans, bar_lat);
-
-	trans.setOrigin(btVector3(-ample, 2 * large / 2.55f + info.chassis_offset.y, 0));
-	comShape->addChildShape(trans, bar_lat);
-
-	//---------------------------------------------------CILINDROS X-------------------------------------------------------------------------------------------
-	trans.setRotation(btQuaternion(btVector3(0, 0, 1), PI / 2));
-
-	trans.setOrigin(btVector3(0, 0 + info.chassis_offset.y, large));
-	comShape->addChildShape(trans, cyl_base_del);
-
-	trans.setOrigin(btVector3(0, 2 * 0.625f*large + info.chassis_offset.y, -large));
-	comShape->addChildShape(trans, cyl_base_del);
-
-	trans.setOrigin(btVector3(0, 2 * 0.625f*large + info.chassis_offset.y, -large + 2 * large*0.17f));
-	comShape->addChildShape(trans, cyl_base_del);
-
-	trans.setOrigin(btVector3(0, 2.4f * large + info.chassis_offset.y, -large + 2 * large*0.17f));
-	comShape->addChildShape(trans, cyl_base_del);
-
-	trans.setOrigin(btVector3(ample - ample*0.35f, 0 + info.chassis_offset.y, -large));
-	comShape->addChildShape(trans, cyl_base_tra);
-
-	trans.setOrigin(btVector3(-ample + ample*0.35f, 0 + info.chassis_offset.y, -large));
-	comShape->addChildShape(trans, cyl_base_tra);
-
-	trans.setOrigin(btVector3(0, 2 * large / 7 + info.chassis_offset.y, -large));
-	comShape->addChildShape(trans, cyl_sup_base_tra);
-
-	trans.setOrigin(btVector3(0, 2 * large / 6 + info.chassis_offset.y, large));
-	comShape->addChildShape(trans, cyl_base_del);
-
-	trans.setOrigin(btVector3(0, 2 * large / 0.877f + info.chassis_offset.y, large - large / 3));
-	comShape->addChildShape(trans, cyl_base_del);
-
-	//---------------------------------------------------CILINDROS ROTADOS-------------------------------------------------------------------------------------------
-	trans.setRotation(btQuaternion(btVector3(1, 0, 0), -85*PI/180));
-
-	trans.setOrigin(btVector3(ample, 2 * large / 4.75f + info.chassis_offset.y, 0));
-	comShape->addChildShape(trans, lateral);
-
-	trans.setOrigin(btVector3(-ample, 2 * large / 4.75f + info.chassis_offset.y, 0));
-	comShape->addChildShape(trans, lateral);
-
-	trans.setOrigin(btVector3(ample, 2 * large / 0.855f + info.chassis_offset.y, 0));
-	comShape->addChildShape(trans, barra_techo);
-
-	trans.setOrigin(btVector3(-ample, 2 * large / 0.855f + info.chassis_offset.y, 0));
-	comShape->addChildShape(trans, barra_techo);
-
-	trans.setRotation(btQuaternion(btVector3(1, 0, 0), -80 * PI / 180));
-
-	trans.setOrigin(btVector3(ample, 2 * large / 1.68f + info.chassis_offset.y, -large / 3));
-	comShape->addChildShape(trans, barra);
-
-	trans.setOrigin(btVector3(-ample, 2 * large / 1.68f + info.chassis_offset.y, -large / 3));
-	comShape->addChildShape(trans, barra);
-
-	trans.setRotation(btQuaternion(btVector3(1, 0, 0), -9.8 * PI / 180));
-
-	trans.setOrigin(btVector3(ample, 2 * large / 1.52f + info.chassis_offset.y, large - large / 6));
-	comShape->addChildShape(trans, barra_del);
-	
-	trans.setOrigin(btVector3(-ample, 2 * large / 1.52f + info.chassis_offset.y, large - large / 6));
-	comShape->addChildShape(trans, barra_del);
-	
-	//---------------------------------------------------ESQUINAS-------------------------------------------------------------------------------------------
-	trans.setRotation(btQuaternion(btVector3(1, 0, 0),PI));
-
-	trans.setOrigin(btVector3(ample, 0 + info.chassis_offset.y, large));
-	comShape->addChildShape(trans, esquina);
-
-	trans.setOrigin(btVector3(-ample, 0 + info.chassis_offset.y, large));
-	comShape->addChildShape(trans, esquina);
-
-	trans.setOrigin(btVector3(ample, 0 + info.chassis_offset.y, -large));
-	comShape->addChildShape(trans, esquina);
-
-	trans.setOrigin(btVector3(-ample, 0 + info.chassis_offset.y, -large));
-	comShape->addChildShape(trans, esquina);
-
-	trans.setOrigin(btVector3(-ample * 0.3, 0 + info.chassis_offset.y, -large));
-	comShape->addChildShape(trans, esquina);
-
-	trans.setOrigin(btVector3(ample * 0.3, 0 + info.chassis_offset.y, -large));
-	comShape->addChildShape(trans, esquina);
-
-	trans.setOrigin(btVector3(ample, 2 * large / 6 + info.chassis_offset.y, large));
-	comShape->addChildShape(trans, esquina);
-
-	trans.setOrigin(btVector3(-ample, 2 * large / 6 + info.chassis_offset.y, large));
-	comShape->addChildShape(trans, esquina);
-
-	trans.setOrigin(btVector3(ample, 2 * 0.625f*large + info.chassis_offset.y, -large));
-	comShape->addChildShape(trans, esquina);
-
-	trans.setOrigin(btVector3(-ample, 2 * 0.625f*large + info.chassis_offset.y, -large));
-	comShape->addChildShape(trans, esquina);
-
-	trans.setOrigin(btVector3(ample, 2.4*large + info.chassis_offset.y, -large + 2 * large*0.17f));
-	comShape->addChildShape(trans, esquina);
-
-	trans.setOrigin(btVector3(-ample, 2.4*large + info.chassis_offset.y, -large + 2 * large*0.17f));
-	comShape->addChildShape(trans, esquina);
-
-	trans.setOrigin(btVector3(ample, 2 * large / 1.765f + info.chassis_offset.y, 0));
-	comShape->addChildShape(trans, esquina);
-
-	trans.setOrigin(btVector3(-ample, 2 * large / 1.765f + info.chassis_offset.y, 0));
-	comShape->addChildShape(trans, esquina);
-
-	trans.setOrigin(btVector3(ample, 2 * large / 0.877f + info.chassis_offset.y, large - large / 3));
-	comShape->addChildShape(trans, esquina);
-
-	trans.setOrigin(btVector3(-ample, 2 * large / 0.877f + info.chassis_offset.y, large - large / 3));
-	comShape->addChildShape(trans, esquina);
-
-	btTransform startTransform;
-	startTransform.setIdentity();
-
-	btVector3 localInertia(0, 0, 0);
-	comShape->calculateLocalInertia(info.mass, localInertia);
-
-	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(info.mass, myMotionState, comShape, localInertia);
-
-	btRigidBody* body = new btRigidBody(rbInfo);
-	body->setContactProcessingThreshold(BT_LARGE_FLOAT);
-	body->setActivationState(DISABLE_DEACTIVATION);
-
-	world->addRigidBody(body);
-
-	btRaycastVehicle::btVehicleTuning tuning;
-	tuning.m_frictionSlip = info.frictionSlip;
-	tuning.m_maxSuspensionForce = info.maxSuspensionForce;
-	tuning.m_maxSuspensionTravelCm = info.maxSuspensionTravelCm;
-	tuning.m_suspensionCompression = info.suspensionCompression;
-	tuning.m_suspensionDamping = info.suspensionDamping;
-	tuning.m_suspensionStiffness = info.suspensionStiffness;
-
-	btRaycastVehicle* vehicle = new btRaycastVehicle(tuning, body, vehicle_raycaster);
-
-	vehicle->setCoordinateSystem(0, 1, 2);
-
-	for(int i = 0; i < info.num_wheels; ++i)
-	{
-		btVector3 conn(info.wheels[i].connection.x, info.wheels[i].connection.y, info.wheels[i].connection.z);
-		btVector3 dir(info.wheels[i].direction.x, info.wheels[i].direction.y, info.wheels[i].direction.z);
-		btVector3 axis(info.wheels[i].axis.x, info.wheels[i].axis.y, info.wheels[i].axis.z);
-
-		vehicle->addWheel(conn, dir, axis, info.wheels[i].suspensionRestLength, info.wheels[i].radius, tuning, info.wheels[i].front);
-	}
-	// ---------------------
-
-	PhysVehicle3D* pvehicle = new PhysVehicle3D(body, vehicle, info);
-	world->addVehicle(vehicle);
-	vehicles.add(pvehicle);
-
-	return pvehicle;
 }
 
 // ---------------------------------------------------------

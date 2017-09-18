@@ -52,6 +52,9 @@
     <Filter Include="Sources\MathGeoLib\Tests">
       <UniqueIdentifier>{551ae779-ac8e-46f7-8d17-2d30dc4fd619}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\MathGeoLib\emscripten">
+      <UniqueIdentifier>{7ecf1090-ff26-400b-80b4-c7a0d1fb5c5a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Module.h">
@@ -106,9 +109,6 @@
       <Filter>Sources\Modules</Filter>
     </ClInclude>
     <ClInclude Include="PhysBody3D.h">
-      <Filter>Sources\Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysVehicle3D.h">
       <Filter>Sources\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="ModulePlayer.h">
@@ -336,9 +336,6 @@
     <ClInclude Include="MathGeoLib\Time\Clock.h">
       <Filter>Sources\MathGeoLib\Time</Filter>
     </ClInclude>
-    <ClInclude Include="MathGeoLib\emscripten\library_system.h">
-      <Filter>Sources\MathGeoLib</Filter>
-    </ClInclude>
     <ClInclude Include="MathGeoLib\MathBuildConfig.h">
       <Filter>Sources\MathGeoLib</Filter>
     </ClInclude>
@@ -350,6 +347,9 @@
     </ClInclude>
     <ClInclude Include="MathGeoLib\tests\SystemInfo.h">
       <Filter>Sources\MathGeoLib\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="MathGeoLib\emscripten\library_system.h">
+      <Filter>Sources\MathGeoLib\emscripten</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -396,9 +396,6 @@
       <Filter>Sources\Modules</Filter>
     </ClCompile>
     <ClCompile Include="PhysBody3D.cpp">
-      <Filter>Sources\Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysVehicle3D.cpp">
       <Filter>Sources\Helpers</Filter>
     </ClCompile>
     <ClCompile Include="ModulePlayer.cpp">
@@ -573,7 +570,7 @@
       <Filter>Sources\MathGeoLib\Tests</Filter>
     </None>
     <None Include="MathGeoLib\emscripten\library_system.js">
-      <Filter>Sources\MathGeoLib</Filter>
+      <Filter>Sources\MathGeoLib\emscripten</Filter>
     </None>
   </ItemGroup>
 </Project>
