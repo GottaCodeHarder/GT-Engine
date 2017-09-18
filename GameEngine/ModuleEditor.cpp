@@ -17,7 +17,7 @@ ModuleEditor::~ModuleEditor()
 // Load assets
 bool ModuleEditor::Start()
 {
-	LOG("Loading Editor");
+	MYLOG("Loading Editor");
 	bool ret = true;
 
 	bShowExample = false;
@@ -32,7 +32,7 @@ bool ModuleEditor::Start()
 // Load assets
 bool ModuleEditor::CleanUp()
 {
-	LOG("Unloading Editor stuff");
+	MYLOG("Unloading Editor stuff");
 
 	ImGui_ImplSdlGL3_Shutdown();
 

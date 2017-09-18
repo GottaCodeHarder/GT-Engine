@@ -20,7 +20,7 @@ ModuleScene::~ModuleScene()
 // Load assets
 bool ModuleScene::Start()
 {
-	LOG("Loading Intro assets");
+	MYLOG("Loading Intro assets");
 	bool ret = true;
 
 	return ret;
@@ -30,7 +30,7 @@ bool ModuleScene::Start()
 // Load assets
 bool ModuleScene::CleanUp()
 {
-	LOG("Unloading Intro scene");
+	MYLOG("Unloading Intro scene");
 
 	return true;
 }

@@ -29,7 +29,7 @@ void PhysVehicle3D::Render()
 	float gros = info.chassis_size.y * 2;
 	float PI = 3.141592;
 
-	Cylinder wheel;
+	pbCylinder wheel;
 
 	wheel.color = Black;
 

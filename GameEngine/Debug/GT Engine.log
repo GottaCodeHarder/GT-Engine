@@ -1,4 +1,9 @@
-﻿  ModuleEditor.cpp
-c:\program files (x86)\microsoft visual studio 14.0\vc\include\exception(359): warning C4577: si se usa 'noexcept' sin ningún modo de control de excepciones especificado, la finalización de la excepción no está garantizada. Especifique /EHsc
-  GT Engine.vcxproj -> C:\Users\PcCom\Documents\UPC\GT-Engine\GameEngine\Debug\GT GameEngine.exe
-  GT Engine.vcxproj -> C:\Users\PcCom\Documents\UPC\GT-Engine\GameEngine\Debug\GT GameEngine.pdb (Full PDB)
+﻿  Clock.cpp
+c:\program files (x86)\microsoft visual studio 14.0\vc\include\xlocale(341): warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc
+c:\users\usuari\documents\github\gt-engine\gameengine\mathgeolib\time\clock.cpp(109): warning C4244: '=': conversion from 'time_t' to 'long', possible loss of data
+c:\users\usuari\documents\github\gt-engine\gameengine\mathgeolib\time\clock.cpp(110): error C3861: 'nanosleep': identifier not found
+c:\users\usuari\documents\github\gt-engine\gameengine\mathgeolib\time\clock.cpp(112): warning C4996: 'strerror': This function or variable may be unsafe. Consider using strerror_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(178): note: see declaration of 'strerror'
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  imgui_demo.cpp
