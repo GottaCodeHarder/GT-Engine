@@ -536,9 +536,6 @@
     <ClCompile Include="MathGeoLib\tests\SystemInfo.cpp">
       <Filter>Sources\MathGeoLib\Tests</Filter>
     </ClCompile>
-    <ClCompile Include="MathGeoLib\tests\SystemInfoTests.cpp">
-      <Filter>Sources\MathGeoLib\Tests</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GT GameEngine.rc">

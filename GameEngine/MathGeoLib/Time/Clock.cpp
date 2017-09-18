@@ -108,9 +108,9 @@ void Clock::Sleep(int milliseconds)
 	timespec ts;
 	ts.tv_sec = milliseconds / 1000;
 	ts.tv_nsec = (milliseconds - ts.tv_sec * 1000) * 1000 * 1000;
-	int ret = nanosleep(&ts, NULL);
-	if (ret == -1)
-		LOGI("nanosleep returned -1! Reason: %s(%d).", strerror(errno), (int)errno);
+	//int ret = nanosleep(&ts, NULL);
+	//if (ret == -1)
+	//	LOGI("nanosleep returned -1! Reason: %s(%d).", strerror(errno), (int)errno); //TANTU
 #else
 #warning Clock::Sleep has not been implemented!
 #endif
