@@ -12,7 +12,6 @@
 
 class DebugDrawer;
 struct PhysBody3D;
-struct PhysVehicle3D;
 struct VehicleInfo;
 
 class ModulePhysics3D : public Module

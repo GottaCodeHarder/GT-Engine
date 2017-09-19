@@ -168,6 +168,7 @@
     <ClInclude Include="p2Point.h" />
     <ClInclude Include="PhysBody3D.h" />
     <ClInclude Include="Primitive.h" />
+    <ClInclude Include="Random.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SDL\include\SDL.h" />
     <ClInclude Include="SDL\include\SDL_syswm.h" />
@@ -233,6 +234,7 @@
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="PhysBody3D.cpp" />
     <ClCompile Include="Primitive.cpp" />
+    <ClCompile Include="Random.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>

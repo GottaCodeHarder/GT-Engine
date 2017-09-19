@@ -15,12 +15,17 @@ public:
 private:
 	
 	bool bShowExample;
-	bool showIntersections;
-	bool showFigures;
+	bool bShowRandom;
+	bool bShowGeometry;
+	bool bGeometryFigures;
 	std::list<AABB> box_list;
-	void Intersections();
 
-	bool MenuFile();
+	void Intersections();
+	void ToolRandom();
+
+	bool bExit;
+
+	void MenuFile();
 	void MenuView();
 	void MenuTools();
 	void MenuAbout();

@@ -3,6 +3,7 @@
 #include "ImGui\imgui.h"
 #include "ImGui\imgui_impl_sdl_gl3.h"
 #include "gl3w\gl3w.h"
+#include "Random.h"
 
 ModuleEditor::ModuleEditor(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -21,8 +22,11 @@ bool ModuleEditor::Start()
 	bool ret = true;
 
 	bShowExample = false;
-	showIntersections = false;
-	showFigures = false;
+	bShowRandom = false;
+	bShowGeometry = false;
+	bGeometryFigures = false;
+
+	bExit = false;
 
 	gl3wInit();
 	ImGui_ImplSdlGL3_Init(App->window->GetWindow());
@@ -44,17 +48,15 @@ bool ModuleEditor::CleanUp()
 // Update
 update_status ModuleEditor::Update(float dt)
 {
+
 	ImGui_ImplSdlGL3_NewFrame(App->window->GetWindow());
 
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
 			// FILE
-			if(MenuFile())
-			{
-				return UPDATE_STOP;
-			}
-
+			MenuFile();
+			
 			// TOOLS
 			MenuTools();
 
@@ -67,18 +69,26 @@ update_status ModuleEditor::Update(float dt)
 			ImGui::EndMainMenuBar();
 		}
 
-		if (bShowExample)
-		{
-			ImGui::SetNextWindowPos(ImVec2(0, 19));
-			ImGui::ShowTestWindow();
-		}
+		if (bExit) return UPDATE_STOP;
+	}
 
-		if (showIntersections)
-		{
-			ImGui::SetNextWindowPos(ImVec2(560, 19));
-			Intersections();
-		}
+	// Show
+	if (bShowGeometry)
+	{
+		ImGui::SetNextWindowPos(ImVec2(560, 19));
+		Intersections();
+	}
 
+	if (bShowExample)
+	{
+		ImGui::SetNextWindowPos(ImVec2(0, 19));
+		ImGui::ShowTestWindow();
+	}
+
+	if (bShowRandom)
+	{
+		ImGui::SetNextWindowPos(ImVec2(0, 19));
+		ToolRandom();
 	}
 
 	ImGui::Render();
@@ -86,37 +96,55 @@ update_status ModuleEditor::Update(float dt)
 	return UPDATE_CONTINUE;
 }
 
-bool ModuleEditor::MenuFile()
+// ---------------------------------------------< FILE
+void ModuleEditor::MenuFile()
 {
 	if (ImGui::BeginMenu("File"))
 	{
 
 		if (ImGui::MenuItem("Exit", "		Esc"))
 		{
-			return true;
+			bExit = true;
 		}
 		ImGui::EndMenu();
 	}
-	return false;
 }
 
+// ---------------------------------------------< TOOLS
 void ModuleEditor::MenuTools()
 {
 	if (ImGui::BeginMenu("Tools"))
 	{
-		if (ImGui::MenuItem("Timer"))
-		{
+		ImGui::Checkbox("##0", &bShowRandom);
+		ImGui::SameLine();
 
+		if (ImGui::MenuItem("Random"))
+		{
+			bShowRandom = !bShowRandom;
 		}
+
 		ImGui::EndMenu();
 	}
 }
 
+// ---------------------------------------------< VIEW
 void ModuleEditor::MenuView()
 {
 	if (ImGui::BeginMenu("View"))
 	{
-		ImGui::Checkbox("", &bShowExample);
+		ImGui::Checkbox("##0", &bShowGeometry);
+		ImGui::SameLine();
+
+		if (ImGui::MenuItem("Geometry"))
+		{
+			bShowGeometry = !bShowGeometry;
+		}
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		ImGui::Checkbox("##1", &bShowExample);
 		ImGui::SameLine();
 
 		if (ImGui::MenuItem("Example Window"))
@@ -124,15 +152,11 @@ void ModuleEditor::MenuView()
 			bShowExample = !bShowExample;
 		}
 
-		if (ImGui::MenuItem("Intersections"))
-		{
-			showIntersections = !showIntersections;
-		}
-
 		ImGui::EndMenu();
 	}
 }
 
+// ---------------------------------------------< ABOUT
 void ModuleEditor::MenuAbout()
 {
 	if (ImGui::BeginMenu("Help"))
@@ -156,10 +180,76 @@ void ModuleEditor::MenuAbout()
 	}
 }
 
+void ModuleEditor::ToolRandom()
+{
+	if (ImGui::Begin("Random Generator"), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse)
+	{
+		static float fRandomMin = 0.0f;
+		static float fRandomMax = 0.0f;
+		static float fResult = 0.0f;
+		static int iSelectedRand = 0;
+
+		const char* RandType[] = { "Float", "Float (0~1)", "Int" };
+
+		if (ImGui::Button("Select.."))
+			ImGui::OpenPopup("select");
+		ImGui::SameLine();
+		ImGui::Text("%s Selected", RandType[iSelectedRand]);
+		if (ImGui::BeginPopup("select"))
+		{
+			for (int i = 0; i < (int)(sizeof(RandType) / sizeof(*RandType)); i++)
+				if (ImGui::Selectable(RandType[i]))
+					iSelectedRand = i;
+			ImGui::EndPopup();
+		}
+
+		switch (iSelectedRand)
+		{
+		case 0:
+		{
+			ImGui::DragFloat("Maximum", &fRandomMax, 0.1f);
+			ImGui::DragFloat("Minimum", &fRandomMin, 0.1f);
+
+			if (ImGui::Button("Generate"))
+			{
+				Random A = Random();
+				fResult = A.RndFloat(fRandomMin, fRandomMax);
+			}
+			ImGui::SameLine();
+			ImGui::Text("Result: %.2f", fResult); break;
+		}
+		case 1:
+		{
+			if (ImGui::Button("Generate"))
+			{
+				Random A = Random();
+				fResult = A.RndFloat();
+			}
+			ImGui::SameLine();
+			ImGui::Text("Result: %.2f", fResult); break;
+		}
+		case 2:
+		{
+			ImGui::DragFloat("Maximum", &fRandomMax, 1.0f);
+			ImGui::DragFloat("Minimum", &fRandomMin, 1.0f);
+
+			if (ImGui::Button("Generate"))
+			{
+				Random A = Random();
+				fResult = A.RndInt(int(fRandomMin), int(fRandomMax));
+			}
+			ImGui::SameLine();
+			ImGui::Text("Result: %i", int(fResult)); break;
+		}
+		}
+	}
+	ImGui::End();
+}
+
 void ModuleEditor::Intersections()
 {
 
-	if (ImGui::Begin("Intersections##Window"),NULL,ImGuiWindowFlags_AlwaysAutoResize)
+	if (ImGui::Begin("Geometry##Window"), NULL, ImGuiWindowFlags_AlwaysAutoResize)
 	{
 		math::Sphere sphere;
 		math::Capsule capsule;
@@ -167,14 +257,42 @@ void ModuleEditor::Intersections()
 		math::Frustum frustum;
 		math::Plane plane;
 	
+		/*static bool bCreate = false;
 
+		ImGui::PushID(1);
+		ImGui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1 / 7.0f, 0.6f, 0.6f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(1 / 7.0f, 0.7f, 0.7f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(1 / 7.0f, 0.8f, 0.8f));
+		if (ImGui::Button("CREATE"))
+		{
+			bCreate = true;
+		}
+		ImGui::PopStyleColor(3);
+		ImGui::PopID();
+
+		ImGui::SameLine();
+
+		static int selected_figure = -1;
+		const char* figures[] = { "Sphere", "Capsule", "OBB", "Frustum", "Plane" };
+
+		if (ImGui::Button("Select.."))
+			ImGui::OpenPopup("select");
+		ImGui::SameLine();
+		ImGui::Text(selected_figure == -1 ? "<None>" : figures[selected_figure]);
+		if (ImGui::BeginPopup("select"))
+		{
+			for (int i = 0; i < (int)(sizeof(figures)/sizeof(*figures)); i++)
+				if (ImGui::Selectable(figures[i]))
+					selected_figure = i;
+			ImGui::EndPopup();
+		}*/
 
 		if (ImGui::Button("Add figures"))
 		{
-			showFigures = true;
+			bGeometryFigures = true;
 		}
 
-		if (showFigures)
+		if (bGeometryFigures)
 		{
 			sphere.pos = vec(1, 1, 1);
 			sphere.r = 3.0f;
@@ -200,37 +318,29 @@ void ModuleEditor::Intersections()
 			plane.normal = vec(1, 1, 1);
 			plane.Translate(vec(1, 1, 1));
 
-			ImGui::Text("Sphere pos= 1,1,1 and radius=3");
+			ImGui::Text("Sphere at 1,1,1 with radius 3");
 			ImGui::Text("Capsule at 1,1,1");
 			ImGui::Text("OBB at 10,10,10");
-			ImGui::Text("Frustum don't know how to create it");
+			ImGui::Text("Frustum none");
 			ImGui::Text("Plane at 1,1,1");
 			
 		}
 	
 		ImGui::Separator();
-		ImGui::Text("Create a box to intersect");
+		ImGui::Text("AABB Dimensions");
 		char minPointName[50];
 		int n = 0;
 		float* minPoint = 0;
 		sprintf(minPointName,"minPoint##%d", n);
-		float a = 0.0f, b = 0.0f, c = 0.0f;
-		static float vec3a[3] = { a,b,c };
-		ImGui::InputFloat3(minPointName, vec3a);
 
-		if (ImGui::Button("Add AABB at point 0,0,0"))
+		static float vec3a[3] = { 0.0f, 0.0f, 0.0f };
+		ImGui::DragFloat3(minPointName, vec3a, 0.1f);
+
+		if (ImGui::Button("Create an AABB"))
 		{
 			math::AABB aabb;
 			aabb.minPoint = vec(vec3a);
 			aabb.maxPoint = vec(vec3a[0]+1 , vec3a[1] + 1, vec3a[2] + 1);
-			box_list.push_back(aabb);
-			n++;
-		}
-		if (ImGui::Button("Add AABB at point 10,10,10"))
-		{
-			math::AABB aabb;
-			aabb.minPoint = vec(vec3a[0] + 10, vec3a[1] + 10, vec3a[2] + 10);
-			aabb.maxPoint = vec(vec3a[0] + 11, vec3a[1] + 11, vec3a[2] + 11);
 			box_list.push_back(aabb);
 			n++;
 		}
