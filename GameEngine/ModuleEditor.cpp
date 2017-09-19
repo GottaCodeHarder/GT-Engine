@@ -50,6 +50,14 @@ update_status ModuleEditor::Update(float dt)
 {
 
 	ImGui_ImplSdlGL3_NewFrame(App->window->GetWindow());
+	
+	SDL_Event sdlEvent;
+	SDL_PollEvent(&sdlEvent);
+	if (sdlEvent.type == SDL_KEYDOWN)
+	{
+		ImGui_ImplSdlGL3_ProcessEvent(&sdlEvent);
+		
+	}
 
 	{
 		if (ImGui::BeginMainMenuBar())
@@ -220,6 +228,7 @@ void ModuleEditor::ToolRandom()
 		}
 		case 1:
 		{
+			ImGui::Spacing();
 			if (ImGui::Button("Generate"))
 			{
 				Random A = Random();
@@ -256,38 +265,8 @@ void ModuleEditor::Intersections()
 		math::OBB obb;
 		math::Frustum frustum;
 		math::Plane plane;
-	
-		/*static bool bCreate = false;
 
-		ImGui::PushID(1);
-		ImGui::PushStyleColor(ImGuiCol_Button, ImColor::HSV(1 / 7.0f, 0.6f, 0.6f));
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor::HSV(1 / 7.0f, 0.7f, 0.7f));
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImColor::HSV(1 / 7.0f, 0.8f, 0.8f));
-		if (ImGui::Button("CREATE"))
-		{
-			bCreate = true;
-		}
-		ImGui::PopStyleColor(3);
-		ImGui::PopID();
-
-		ImGui::SameLine();
-
-		static int selected_figure = -1;
-		const char* figures[] = { "Sphere", "Capsule", "OBB", "Frustum", "Plane" };
-
-		if (ImGui::Button("Select.."))
-			ImGui::OpenPopup("select");
-		ImGui::SameLine();
-		ImGui::Text(selected_figure == -1 ? "<None>" : figures[selected_figure]);
-		if (ImGui::BeginPopup("select"))
-		{
-			for (int i = 0; i < (int)(sizeof(figures)/sizeof(*figures)); i++)
-				if (ImGui::Selectable(figures[i]))
-					selected_figure = i;
-			ImGui::EndPopup();
-		}*/
-
-		if (ImGui::Button("Add figures"))
+		if (ImGui::Button("Add Figures"))
 		{
 			bGeometryFigures = true;
 		}
@@ -305,58 +284,69 @@ void ModuleEditor::Intersections()
 
 			obb.pos = vec(10, 10, 10);
 			obb.axis[0] = vec(10, 10, 10);
-			obb.axis[1] = vec(10,10,10);
-			obb.axis[2] = vec(10,10,10);
+			obb.axis[1] = vec(10, 10, 10);
+			obb.axis[2] = vec(10, 10, 10);
 			obb.r = vec(1, 1, 1);
 
 			frustum.SetPos(vec(20, 20, 20));
 			frustum.SetFront(vec(20, 20, 20));
 			frustum.SetUp(vec(20, 20, 20));
 			frustum.SetOrthographic(10, 10);
-		
+
 			plane.d = 4.0f;
 			plane.normal = vec(1, 1, 1);
 			plane.Translate(vec(1, 1, 1));
 
-			ImGui::Text("Sphere at 1,1,1 with radius 3");
-			ImGui::Text("Capsule at 1,1,1");
-			ImGui::Text("OBB at 10,10,10");
+			ImGui::Text("Sphere at %.0f,%.0f,%.0f with radius 3", sphere.pos[0], sphere.pos[1], sphere.pos[2]);
+			ImGui::Text("Capsule at %.0f,%.0f,%.0f", capsuleSegment.CenterPoint()[0], capsuleSegment.CenterPoint()[1], capsuleSegment.CenterPoint()[2]);
+			ImGui::Text("OBB at %.0f,%.0f,%.0f", obb.pos[0], obb.pos[1], obb.pos[2]);
+			ImGui::Text("Plane at %.0f,%.0f,%.0f", plane.normal[0], plane.normal[1], plane.normal[2]);
 			ImGui::Text("Frustum none");
-			ImGui::Text("Plane at 1,1,1");
-			
 		}
-	
-		ImGui::Separator();
+
+		ImGui::Separator();	ImGui::Spacing();
 		ImGui::Text("AABB Dimensions");
 		char minPointName[50];
+		char maxPointName[50];
 		int n = 0;
 		float* minPoint = 0;
-		sprintf(minPointName,"minPoint##%d", n);
+		float* maxPoint = 0;
+		sprintf(minPointName, "minPoint##%d", n);
+		sprintf(maxPointName, "maxPoint##%d", n);
 
 		static float vec3a[3] = { 0.0f, 0.0f, 0.0f };
+		static float vec3b[3] = { 0.0f, 0.0f, 0.0f };
 		ImGui::DragFloat3(minPointName, vec3a, 0.1f);
+		ImGui::DragFloat3(maxPointName, vec3b, 0.1f);
 
 		if (ImGui::Button("Create an AABB"))
 		{
 			math::AABB aabb;
 			aabb.minPoint = vec(vec3a);
-			aabb.maxPoint = vec(vec3a[0]+1 , vec3a[1] + 1, vec3a[2] + 1);
+			aabb.maxPoint = vec(vec3a[0] + 1, vec3a[1] + 1, vec3a[2] + 1);
 			box_list.push_back(aabb);
 			n++;
 		}
-		
+		ImGui::SameLine();
+		if (ImGui::Button("Reset"))
+		{
+			vec3a[0] = 0.0f; vec3b[0] = 0.0f;
+			vec3a[1] = 0.0f; vec3b[1] = 0.0f;
+			vec3a[2] = 0.0f; vec3b[2] = 0.0f;
+		}
+
 		std::list<AABB>::iterator it = box_list.begin();
 
 		for (; it != box_list.end(); it++)
 		{
-			ImGui::Text("This is a box");
+			ImGui::Text("New AABB created that:");
 			if (it->Intersects(sphere))
 			{
 				ImGui::Text("Intersects with the Sphere");
 			}
 			else
 			{
-				ImGui::Text("Doesn't intersects with the Sphere");
+				ImGui::Text("Doesn't intersect with the Sphere");
 			}
 
 			if (it->Intersects(capsule))
@@ -365,7 +355,7 @@ void ModuleEditor::Intersections()
 			}
 			else
 			{
-				ImGui::Text("Doesn't intersects with the Capsule");
+				ImGui::Text("Doesn't intersect with the Capsule");
 			}
 			if (it->Intersects(obb))
 			{
@@ -373,23 +363,15 @@ void ModuleEditor::Intersections()
 			}
 			else
 			{
-				ImGui::Text("Doesn't intersects with the OBB");
+				ImGui::Text("Doesn't intersect with the OBB");
 			}
-//			if (it->Intersects(frustum))
-//			{
-//				ImGui::Text("Intersects with the Frustum");
-//			}
-//			else
-//			{
-//				ImGui::Text("Doesn't intersects with the Frustum");
-//			}
 			if (it->Intersects(plane))
 			{
 				ImGui::Text("Intersects with the Plane");
 			}
 			else
 			{
-				ImGui::Text("Doesn't intersects with the Plane");
+				ImGui::Text("Doesn't intersect with the Plane");
 			}
 			ImGui::Separator();
 		}

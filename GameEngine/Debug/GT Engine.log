@@ -2,8 +2,10 @@
 c:\program files (x86)\microsoft visual studio 14.0\vc\include\xlocale(341): warning C4530: Se ha utilizado el controlador de excepciones de C++, pero la semántica de desenredo no está habilitada. Especifique /EHsc
 c:\users\pccom\documents\upc\gt-engine\gameengine\mathgeolib\geometry\aabb2d.h(132): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: vea la declaración de 'sprintf'
-c:\users\pccom\documents\upc\gt-engine\gameengine\moduleeditor.cpp(239): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-c:\users\pccom\documents\upc\gt-engine\gameengine\moduleeditor.cpp(334): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\pccom\documents\upc\gt-engine\gameengine\moduleeditor.cpp(248): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+c:\users\pccom\documents\upc\gt-engine\gameengine\moduleeditor.cpp(314): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: vea la declaración de 'sprintf'
+c:\users\pccom\documents\upc\gt-engine\gameengine\moduleeditor.cpp(315): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: vea la declaración de 'sprintf'
 c:\program files (x86)\microsoft visual studio 14.0\vc\include\limits(210): warning C4577: si se usa 'noexcept' sin ningún modo de control de excepciones especificado, la finalización de la excepción no está garantizada. Especifique /EHsc
   GT Engine.vcxproj -> C:\Users\PcCom\Documents\UPC\GT-Engine\GameEngine\Debug\GT GameEngine.exe
