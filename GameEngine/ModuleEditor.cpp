@@ -48,60 +48,19 @@ update_status ModuleEditor::Update(float dt)
 		if (ImGui::BeginMainMenuBar())
 		{
 			// FILE
-			if (ImGui::BeginMenu("File"))
+			if(MenuFile())
 			{
-				
-				if (ImGui::MenuItem("Exit", "		Esc"))
-				{
-					return UPDATE_STOP;
-				}
-				ImGui::EndMenu();
+				return UPDATE_STOP;
 			}
 
 			// TOOLS
-			if (ImGui::BeginMenu("Tools"))
-			{
-				if (ImGui::MenuItem("Timer"))
-				{
-
-				}
-				ImGui::EndMenu();
-			}
+			MenuTools();
 
 			// VIEW
-			if (ImGui::BeginMenu("View"))
-			{
-				ImGui::Checkbox("", &bShowExample);
-				ImGui::SameLine();
-
-				if (ImGui::MenuItem("Example Window"))
-				{
-					bShowExample = !bShowExample;
-				}
-
-				ImGui::EndMenu();
-			}
+			MenuView();
 
 			// ABOUT
-			if (ImGui::BeginMenu("Help"))
-			{
-				if (ImGui::MenuItem("Repository"))
-				{
-					ShellExecute(NULL, "open", "https://github.com/GottaCodeHarder/GT-Engine", NULL, NULL, SW_SHOWNORMAL);
-				}
-
-				if (ImGui::MenuItem("Readme"))
-				{
-					ShellExecute(NULL, "open", "https://github.com/GottaCodeHarder/GT-Engine/blob/master/README.md",NULL, NULL, SW_SHOWNORMAL);
-				}
-
-				if (ImGui::MenuItem("About"))
-				{
-					
-				}
-
-				ImGui::EndMenu();
-			}
+			MenuAbout();
 
 			ImGui::EndMainMenuBar();
 		}
@@ -117,4 +76,79 @@ update_status ModuleEditor::Update(float dt)
 	ImGui::Render();
 
 	return UPDATE_CONTINUE;
+}
+
+bool ModuleEditor::MenuFile()
+{
+	if (ImGui::BeginMenu("File"))
+	{
+
+		if (ImGui::MenuItem("Exit", "		Esc"))
+		{
+			return true;
+		}
+		ImGui::EndMenu();
+	}
+	return false;
+}
+
+void ModuleEditor::MenuTools()
+{
+	if (ImGui::BeginMenu("Tools"))
+	{
+		if (ImGui::MenuItem("Timer"))
+		{
+
+		}
+		ImGui::EndMenu();
+	}
+}
+
+void ModuleEditor::MenuView()
+{
+	if (ImGui::BeginMenu("View"))
+	{
+		ImGui::Checkbox("", &bShowExample);
+		ImGui::SameLine();
+
+		if (ImGui::MenuItem("Example Window"))
+		{
+			bShowExample = !bShowExample;
+		}
+
+		if (ImGui::MenuItem("Intersections"))
+		{
+			Intersections();
+		}
+
+		ImGui::EndMenu();
+	}
+}
+
+void ModuleEditor::MenuAbout()
+{
+	if (ImGui::BeginMenu("Help"))
+	{
+		if (ImGui::MenuItem("Repository"))
+		{
+			ShellExecute(NULL, "open", "https://github.com/GottaCodeHarder/GT-Engine", NULL, NULL, SW_SHOWNORMAL);
+		}
+
+		if (ImGui::MenuItem("Readme"))
+		{
+			ShellExecute(NULL, "open", "https://github.com/GottaCodeHarder/GT-Engine/blob/master/README.md", NULL, NULL, SW_SHOWNORMAL);
+		}
+
+		if (ImGui::MenuItem("About"))
+		{
+
+		}
+
+		ImGui::EndMenu();
+	}
+}
+
+void ModuleEditor::Intersections()
+{
+
 }

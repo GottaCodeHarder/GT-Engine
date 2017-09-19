@@ -1,6 +1,8 @@
 #pragma once
 #include <windows.h>
 #include <stdio.h>
+#include <list>
+#include <string>
 
 #define MYLOG(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
 
