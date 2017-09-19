@@ -21,6 +21,8 @@ bool ModuleEditor::Start()
 	bool ret = true;
 
 	bShowExample = false;
+	showIntersections = false;
+	showFigures = false;
 
 	gl3wInit();
 	ImGui_ImplSdlGL3_Init(App->window->GetWindow());
@@ -71,6 +73,12 @@ update_status ModuleEditor::Update(float dt)
 			ImGui::ShowTestWindow();
 		}
 
+		if (showIntersections)
+		{
+			ImGui::SetNextWindowPos(ImVec2(560, 19));
+			Intersections();
+		}
+
 	}
 
 	ImGui::Render();
@@ -118,7 +126,7 @@ void ModuleEditor::MenuView()
 
 		if (ImGui::MenuItem("Intersections"))
 		{
-			Intersections();
+			showIntersections = !showIntersections;
 		}
 
 		ImGui::EndMenu();
@@ -151,4 +159,133 @@ void ModuleEditor::MenuAbout()
 void ModuleEditor::Intersections()
 {
 
+	if (ImGui::Begin("Intersections##Window"),NULL,ImGuiWindowFlags_AlwaysAutoResize)
+	{
+		math::Sphere sphere;
+		math::Capsule capsule;
+		math::OBB obb;
+		math::Frustum frustum;
+		math::Plane plane;
+	
+
+
+		if (ImGui::Button("Add figures"))
+		{
+			showFigures = true;
+		}
+
+		if (showFigures)
+		{
+			sphere.pos = vec(1, 1, 1);
+			sphere.r = 3.0f;
+
+			LineSegment capsuleSegment;
+			capsuleSegment.a = vec(1, 1, 1);
+			capsuleSegment.b = vec(1, 1, 1);
+			capsule.l = capsuleSegment;
+			capsule.r = 3.0f;
+
+			obb.pos = vec(10, 10, 10);
+			obb.axis[0] = vec(10, 10, 10);
+			obb.axis[1] = vec(10,10,10);
+			obb.axis[2] = vec(10,10,10);
+			obb.r = vec(1, 1, 1);
+
+			frustum.SetPos(vec(20, 20, 20));
+			frustum.SetFront(vec(20, 20, 20));
+			frustum.SetUp(vec(20, 20, 20));
+			frustum.SetOrthographic(10, 10);
+		
+			plane.d = 4.0f;
+			plane.normal = vec(1, 1, 1);
+			plane.Translate(vec(1, 1, 1));
+
+			ImGui::Text("Sphere pos= 1,1,1 and radius=3");
+			ImGui::Text("Capsule at 1,1,1");
+			ImGui::Text("OBB at 10,10,10");
+			ImGui::Text("Frustum don't know how to create it");
+			ImGui::Text("Plane at 1,1,1");
+			
+		}
+	
+		ImGui::Separator();
+		ImGui::Text("Create a box to intersect");
+		char minPointName[50];
+		int n = 0;
+		float* minPoint = 0;
+		sprintf(minPointName,"minPoint##%d", n);
+		float a = 0.0f, b = 0.0f, c = 0.0f;
+		static float vec3a[3] = { a,b,c };
+		ImGui::InputFloat3(minPointName, vec3a);
+
+		if (ImGui::Button("Add AABB at point 0,0,0"))
+		{
+			math::AABB aabb;
+			aabb.minPoint = vec(vec3a);
+			aabb.maxPoint = vec(vec3a[0]+1 , vec3a[1] + 1, vec3a[2] + 1);
+			box_list.push_back(aabb);
+			n++;
+		}
+		if (ImGui::Button("Add AABB at point 10,10,10"))
+		{
+			math::AABB aabb;
+			aabb.minPoint = vec(vec3a[0] + 10, vec3a[1] + 10, vec3a[2] + 10);
+			aabb.maxPoint = vec(vec3a[0] + 11, vec3a[1] + 11, vec3a[2] + 11);
+			box_list.push_back(aabb);
+			n++;
+		}
+		
+		std::list<AABB>::iterator it = box_list.begin();
+
+		for (; it != box_list.end(); it++)
+		{
+			ImGui::Text("This is a box");
+			if (it->Intersects(sphere))
+			{
+				ImGui::Text("Intersects with the Sphere");
+			}
+			else
+			{
+				ImGui::Text("Doesn't intersects with the Sphere");
+			}
+
+			if (it->Intersects(capsule))
+			{
+				ImGui::Text("Intersects with the Capsule");
+			}
+			else
+			{
+				ImGui::Text("Doesn't intersects with the Capsule");
+			}
+			if (it->Intersects(obb))
+			{
+				ImGui::Text("Intersects with the OBB");
+			}
+			else
+			{
+				ImGui::Text("Doesn't intersects with the OBB");
+			}
+//			if (it->Intersects(frustum))
+//			{
+//				ImGui::Text("Intersects with the Frustum");
+//			}
+//			else
+//			{
+//				ImGui::Text("Doesn't intersects with the Frustum");
+//			}
+			if (it->Intersects(plane))
+			{
+				ImGui::Text("Intersects with the Plane");
+			}
+			else
+			{
+				ImGui::Text("Doesn't intersects with the Plane");
+			}
+			ImGui::Separator();
+		}
+	}
+
+
+
+	ImGui::End();
 }

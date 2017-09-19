@@ -2,18 +2,8 @@
 c:\program files (x86)\microsoft visual studio 14.0\vc\include\xlocale(341): warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc
 c:\users\usuari\documents\github\gt-engine\gameengine\mathgeolib\geometry\aabb2d.h(132): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: see declaration of 'sprintf'
+c:\users\usuari\documents\github\gt-engine\gameengine\moduleeditor.cpp(216): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(1769): note: see declaration of 'sprintf'
 c:\program files (x86)\microsoft visual studio 14.0\vc\include\limits(210): warning C4577: 'noexcept' used with no exception handling mode specified; termination on exception is not guaranteed. Specify /EHsc
-  Generating Code...
-  Skipping... (no relevant changes detected)
-  ModuleWindow.cpp
-  ModuleScene.cpp
-  ModuleRenderer3D.cpp
-  ModulePlayer.cpp
-  ModulePhysics3D.cpp
-  ModuleInput.cpp
-  ModuleCamera3D.cpp
-  ModuleAudio.cpp
-  Main.cpp
-  Application.cpp
   GT Engine.vcxproj -> C:\Users\Usuari\Documents\GitHub\GT-Engine\GameEngine\Debug\GT GameEngine.exe
   GT Engine.vcxproj -> C:\Users\Usuari\Documents\GitHub\GT-Engine\GameEngine\Debug\GT GameEngine.pdb (Full PDB)

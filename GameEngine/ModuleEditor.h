@@ -13,9 +13,12 @@ public:
 	bool CleanUp();
 
 private:
-	void Intersections();
+	
 	bool bShowExample;
+	bool showIntersections;
+	bool showFigures;
 	std::list<AABB> box_list;
+	void Intersections();
 
 	bool MenuFile();
 	void MenuView();
