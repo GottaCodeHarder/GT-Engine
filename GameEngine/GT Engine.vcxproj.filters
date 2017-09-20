@@ -78,9 +78,6 @@
     <ClInclude Include="p2List.h">
       <Filter>Sources\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="p2Point.h">
-      <Filter>Sources\Containers</Filter>
-    </ClInclude>
     <ClInclude Include="glmath.h">
       <Filter>Sources\Containers</Filter>
     </ClInclude>
