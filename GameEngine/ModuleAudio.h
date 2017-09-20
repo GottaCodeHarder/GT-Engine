@@ -29,8 +29,8 @@ private:
 
 	Timer soundtime;
 
-	Mix_Music*			music;
-	p2List<Mix_Chunk*>	fx;
+	Mix_Music*				music;
+	std::list<Mix_Chunk*>	fx;
 };
 
 #endif // __ModuleAudio_H__
