@@ -1,9 +1,9 @@
 #include "Globals.h"
 #include "Application.h"
-#include "ImGui\imgui.h"
 #include "ImGui\imgui_impl_sdl_gl3.h"
 #include "gl3w\gl3w.h"
 #include "Random.h"
+#include "MathGeoLib\MathGeoLib.h"
 
 ModuleEditor::ModuleEditor(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -25,8 +25,11 @@ bool ModuleEditor::Start()
 	bShowRandom = false;
 	bShowGeometry = false;
 	bGeometryFigures = false;
+	bConsole = false;
 
 	bExit = false;
+
+	active_menu.insert(std::pair<std::string, bool>("Console", false));
 
 	gl3wInit();
 	ImGui_ImplSdlGL3_Init(App->window->GetWindow());
@@ -98,6 +101,11 @@ update_status ModuleEditor::Update(float dt)
 		ImGui::SetNextWindowPos(ImVec2(0, 19));
 		ToolRandom();
 	}
+	if (active_menu["Console"])
+	{
+		ImGui::SetNextWindowPos(ImVec2(0, 19));
+		Console();
+	}
 
 	ImGui::Render();
 
@@ -160,6 +168,33 @@ void ModuleEditor::MenuView()
 			bShowExample = !bShowExample;
 		}
 
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+		std::map<std::string, bool>::iterator it = active_menu.begin();
+		int n = 0;
+		char check_box_n[50];
+		
+		for (; it != active_menu.end(); it++)
+		{
+			sprintf(check_box_n, "##%d", n);
+			ImGui::Checkbox(check_box_n, &it->second);
+			ImGui::SameLine();
+
+			if (ImGui::MenuItem(it->first.c_str()))
+			{
+				it->second = !it->second;
+			}
+			n++;
+		}
+
+		
+
+		
+
+		
+
 		ImGui::EndMenu();
 	}
 }
@@ -185,6 +220,17 @@ void ModuleEditor::MenuAbout()
 		}
 
 		ImGui::EndMenu();
+	}
+}
+
+void ModuleEditor::Console()
+{
+	if (ImGui::Begin("Console"))
+	{
+
+		ImGui::Text(console_buffer.c_str());
+
+		ImGui::End();
 	}
 }
 
@@ -380,4 +426,9 @@ void ModuleEditor::Intersections()
 
 
 	ImGui::End();
+}
+
+void ModuleEditor::AddTextConsole(char* text)
+{
+	console_buffer.append(text);
 }

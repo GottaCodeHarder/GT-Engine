@@ -103,9 +103,12 @@ update_status Application::Update()
 bool Application::CleanUp()
 {
 	bool ret = true;
+	editor = NULL;
 	for (std::vector<Module*>::reverse_iterator it = modulesList.rbegin(); ret == true && it != modulesList.rend(); it++)
 	{
 		ret = (*it)->CleanUp();
+		delete (*it);
+		*it = NULL;
 	}
 
 	return ret;

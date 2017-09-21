@@ -1,6 +1,6 @@
 #pragma once
 #include "Module.h"
-#include "MathGeoLib\MathGeoLib.h"
+#include <map>
 
 class ModuleEditor : public Module
 {
@@ -12,13 +12,18 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
+	void AddTextConsole(char* text);
+
 private:
-	
+	ImGuiTextBuffer console_buffer;
+
 	bool bShowExample;
 	bool bShowRandom;
 	bool bShowGeometry;
 	bool bGeometryFigures;
+	bool bConsole;
 	std::list<AABB> box_list;
+	std::map<std::string, bool> active_menu;
 
 	void Intersections();
 	void ToolRandom();
@@ -29,4 +34,5 @@ private:
 	void MenuView();
 	void MenuTools();
 	void MenuAbout();
+	void Console();
 };

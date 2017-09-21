@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <list>
 #include <string>
+#include "ImGui\imgui.h"
+#include "MathGeoLib\MathGeoLibFwd.h"
+
 
 #define MYLOG(format, ...) log(__FILE__, __LINE__, format, __VA_ARGS__);
 
