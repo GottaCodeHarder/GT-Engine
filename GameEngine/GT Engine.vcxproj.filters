@@ -55,6 +55,9 @@
     <Filter Include="Sources\MathGeoLib\emscripten">
       <UniqueIdentifier>{7ecf1090-ff26-400b-80b4-c7a0d1fb5c5a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\PhysFS">
+      <UniqueIdentifier>{f265790a-45c2-4985-a941-490b6ad048b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Module.h">
@@ -345,6 +348,12 @@
     <ClInclude Include="Random.h">
       <Filter>Sources\Tools</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleFileSystem.h">
+      <Filter>Sources\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysFS\include\physfs.h">
+      <Filter>Sources\PhysFS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleAudio.cpp">
@@ -529,6 +538,9 @@
     </ClCompile>
     <ClCompile Include="Random.cpp">
       <Filter>Sources\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleFileSystem.cpp">
+      <Filter>Sources\Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

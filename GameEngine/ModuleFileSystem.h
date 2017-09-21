@@ -1,4 +1,4 @@
-/*#ifndef __j1FILESYSTEM_H__
+#ifndef __j1FILESYSTEM_H__
 #define __j1FILESYSTEM_H__
 
 #include "Module.h"
@@ -41,4 +41,4 @@ private:
 
 };
 
-#endif // __j1FILESYSTEM_H__*/
+#endif // __j1FILESYSTEM_H__

@@ -1,7 +1,7 @@
-/*#include "Globals.h"
+#include "Globals.h"
 #include "Application.h"
 #include "ModuleFileSystem.h"
-//#include "PhysFS/include/physfs.h"
+#include "PhysFS/include/physfs.h"
 #include "SDL/include/SDL.h"
 
 #pragma comment( lib, "PhysFS/libx86/physfs.lib" )
@@ -28,10 +28,11 @@ ModuleFileSystem::~ModuleFileSystem()
 // Called before render is available
 bool ModuleFileSystem::Init()
 {
-	LOG("Loading File System");
+	MYLOG("Loading File System");
 	bool ret = true;
 
 	// Add all paths in configuration in order
+	/* TEMPORARY DISABLING PHYSFS
 	for (pugi::xml_node path = config.child("path"); path; path = path.next_sibling("path"))
 	{
 		AddPath(path.child_value());
@@ -41,16 +42,18 @@ bool ModuleFileSystem::Init()
 	char* write_path = SDL_GetPrefPath(App->GetOrganization(), App->GetTitle());
 
 	if (PHYSFS_setWriteDir(write_path) == 0)
-		LOG("File System error while creating write dir: %s\n", PHYSFS_getLastError());
+	{
+		MYLOG("File System error while creating write dir: %s\n", PHYSFS_getLastError());
+	}
 	else
 	{
 		// We add the writing directory as a reading directory too with speacial mount point
-		LOG("Writing directory is %s\n", write_path);
+		MYLOG("Writing directory is %s\n", write_path);
 		AddPath(write_path, GetSaveDirectory());
 	}
 
 	SDL_free(write_path);
-
+	*/
 	return ret;
 }
 
@@ -67,7 +70,9 @@ bool ModuleFileSystem::AddPath(const char* path_or_zip, const char* mount_point)
 	bool ret = false;
 
 	if (PHYSFS_mount(path_or_zip, mount_point, 1) == 0)
-		LOG("File System error while adding a path or zip(%s): %s\n", path_or_zip, PHYSFS_getLastError());
+	{
+		MYLOG("File System error while adding a path or zip(%s): %s\n", path_or_zip, PHYSFS_getLastError());
+	}
 	else
 		ret = true;
 
@@ -103,18 +108,18 @@ unsigned int ModuleFileSystem::Load(const char* file, char** buffer) const
 			PHYSFS_sint64 readed = PHYSFS_read(fs_file, *buffer, 1, (PHYSFS_sint32)size);
 			if (readed != size)
 			{
-				LOG("File System error while reading from file %s: %s\n", file, PHYSFS_getLastError());
-				RELEASE(buffer);
+				MYLOG("File System error while reading from file %s: %s\n", file, PHYSFS_getLastError());
+				delete (buffer);
 			}
 			else
 				ret = (uint)readed;
 		}
 
 		if (PHYSFS_close(fs_file) == 0)
-			LOG("File System error while closing file %s: %s\n", file, PHYSFS_getLastError());
+			MYLOG("File System error while closing file %s: %s\n", file, PHYSFS_getLastError());
 	}
 	else
-		LOG("File System error while opening file %s: %s\n", file, PHYSFS_getLastError());
+		MYLOG("File System error while opening file %s: %s\n", file, PHYSFS_getLastError());
 
 	return ret;
 }
@@ -139,7 +144,7 @@ SDL_RWops* ModuleFileSystem::Load(const char* file) const
 
 int close_sdl_rwops(SDL_RWops *rw)
 {
-	RELEASE(rw->hidden.mem.base);
+	delete (rw->hidden.mem.base);
 	SDL_FreeRW(rw);
 	return 0;
 }
@@ -155,15 +160,17 @@ unsigned int ModuleFileSystem::Save(const char* file, const char* buffer, unsign
 	{
 		PHYSFS_sint64 written = PHYSFS_write(fs_file, (const void*)buffer, 1, size);
 		if (written != size)
-			LOG("File System error while writing to file %s: %s\n", file, PHYSFS_getLastError());
+		{
+			MYLOG("File System error while writing to file %s: %s\n", file, PHYSFS_getLastError());
+		}
 		else
 			ret = (uint)written;
 
 		if (PHYSFS_close(fs_file) == 0)
-			LOG("File System error while closing file %s: %s\n", file, PHYSFS_getLastError());
+			MYLOG("File System error while closing file %s: %s\n", file, PHYSFS_getLastError());
 	}
 	else
-		LOG("File System error while opening file %s: %s\n", file, PHYSFS_getLastError());
+		MYLOG("File System error while opening file %s: %s\n", file, PHYSFS_getLastError());
 
 	return ret;
-}*/
+}
