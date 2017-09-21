@@ -1,4 +1,4 @@
-#ifndef __j1FILESYSTEM_H__
+/*#ifndef __j1FILESYSTEM_H__
 #define __j1FILESYSTEM_H__
 
 #include "Module.h"
@@ -11,7 +11,7 @@ class ModuleFileSystem : public Module
 {
 public:
 
-	ModuleFileSystem();
+	ModuleFileSystem(Application* app, bool start_enabled = true);
 
 	// Destructor
 	virtual ~ModuleFileSystem();
@@ -41,4 +41,4 @@ private:
 
 };
 
-#endif // __j1FILESYSTEM_H__
+#endif // __j1FILESYSTEM_H__*/

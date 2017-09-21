@@ -1,14 +1,13 @@
-#include "Globals.h"
+/*#include "Globals.h"
 #include "Application.h"
 #include "ModuleFileSystem.h"
-#include "PhysFS/include/physfs.h"
+//#include "PhysFS/include/physfs.h"
 #include "SDL/include/SDL.h"
 
 #pragma comment( lib, "PhysFS/libx86/physfs.lib" )
 
-ModuleFileSystem::ModuleFileSystem() : Module()
+ModuleFileSystem::ModuleFileSystem(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	name.assign("file_system");
 
 	// need to be created before Awake so other modules can use it
 	char* base_path = SDL_GetBasePath();
@@ -167,4 +166,4 @@ unsigned int ModuleFileSystem::Save(const char* file, const char* buffer, unsign
 		LOG("File System error while opening file %s: %s\n", file, PHYSFS_getLastError());
 
 	return ret;
-}
+}*/
