@@ -17,7 +17,9 @@ public:
 	bool SoundsTimer(); 
 
 	Uint32 Chronometer(bool set, int pos); // Sets/Returns started match time. Set = Is Set? Pos = Min/Sec/Milisec
-	Uint32 Read();
+	Uint32 Read() const;
+
+	float readSec() const;
 
 private:
 

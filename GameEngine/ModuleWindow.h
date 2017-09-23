@@ -28,6 +28,11 @@ public:
 
 	//The surface contained by the window
 	SDL_Surface* screen_surface;
+
+private:
+	int width = SCREEN_WIDTH;
+	int	height = SCREEN_HEIGHT;
+	bool fullscreen = WIN_FULLSCREEN;
 };
 
 #endif // __ModuleWindow_H__

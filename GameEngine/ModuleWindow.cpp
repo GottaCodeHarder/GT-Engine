@@ -27,8 +27,8 @@ bool ModuleWindow::Init()
 	else
 	{
 		//Create window
-		int width = SCREEN_WIDTH * SCREEN_SIZE;
-		int height = SCREEN_HEIGHT * SCREEN_SIZE;
+		//int width = SCREEN_WIDTH * SCREEN_SIZE;
+		//int height = SCREEN_HEIGHT * SCREEN_SIZE;
 		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 
 		//Use OpenGL 2.1
@@ -77,6 +77,20 @@ void ModuleWindow::AddImGui()
 	if (ImGui::CollapsingHeader("Window"))
 	{
 
+		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
+
+		ImGui::SliderInt("Width", &width, 0, 1600);
+		ImGui::SliderInt("Height", &height, 0, 1600);
+		SDL_SetWindowSize(window, width, height);
+		
+		if (ImGui::Checkbox("FullScreen", &fullscreen))
+		{
+		//	fullscreen = !fullscreen;
+			SDL_SetWindowFullscreen(window, flags);
+		}
+		if (fullscreen)
+		{
+		}
 	}
 }
 

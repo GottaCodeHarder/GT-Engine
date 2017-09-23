@@ -73,8 +73,18 @@ void Application::AddImGui()
 		
 		if (ImGui::CollapsingHeader("Application"))
 		{
+			
+			ImGui::Text("App Name: GT Engine");
+			ImGui::Text("Organization: UPC CITM");
+
+			static float f1 = 0.0f;
+			ImGui::SliderFloat("Max FPS", &f1, 0.0f, 60.0f, "%.1f");
+
+			float avgFps = float(frameCount) / startUp.readSec();
+			
 			char title[25];
-			//sprintf_s(title, "Framerate &.1f", fps_log[fps_log.size() - 1]);
+			sprintf_s(title, "Framerate &.1f", avgFps);
+			//ImGui::PlotHistogram("##framerate", avgFps,);
 
 		}
 		for (it = modulesList.begin(); it != modulesList.end(); it++)

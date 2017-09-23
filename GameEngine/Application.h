@@ -49,6 +49,9 @@ private:
 	void AddModule(Module* mod);
 	void PrepareUpdate();
 	void FinishUpdate();
+
+	uint					frameCount = 0;
+	Timer					startUp;
 };
 
 extern Application* App;
