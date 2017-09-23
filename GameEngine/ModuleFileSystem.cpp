@@ -3,6 +3,7 @@
 #include "ModuleFileSystem.h"
 #include "PhysFS/include/physfs.h"
 #include "SDL/include/SDL.h"
+#include "JSON/parson.h"
 
 #pragma comment( lib, "PhysFS/libx86/physfs.lib" )
 

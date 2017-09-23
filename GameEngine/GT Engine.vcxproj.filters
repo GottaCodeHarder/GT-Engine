@@ -58,6 +58,9 @@
     <Filter Include="Sources\PhysFS">
       <UniqueIdentifier>{f265790a-45c2-4985-a941-490b6ad048b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\JSON">
+      <UniqueIdentifier>{3187658a-bb1f-461a-a198-53f223acc31f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Module.h">
@@ -354,6 +357,9 @@
     <ClInclude Include="PhysFS\include\physfs.h">
       <Filter>Sources\PhysFS</Filter>
     </ClInclude>
+    <ClInclude Include="JSON\parson.h">
+      <Filter>Sources\JSON</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleAudio.cpp">
@@ -541,6 +547,9 @@
     </ClCompile>
     <ClCompile Include="ModuleFileSystem.cpp">
       <Filter>Sources\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="JSON\parson.c">
+      <Filter>Sources\JSON</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
