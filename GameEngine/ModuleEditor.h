@@ -17,11 +17,8 @@ public:
 private:
 	ImGuiTextBuffer console_buffer;
 
-	bool bShowExample;
 	bool bShowRandom;
-	bool bShowGeometry;
 	bool bGeometryFigures;
-	bool bConsole;
 	std::list<AABB> box_list;
 	std::map<std::string, bool> active_menu;
 
@@ -35,4 +32,5 @@ private:
 	void MenuTools();
 	void MenuAbout();
 	void Console();
+	void Configuration();
 };

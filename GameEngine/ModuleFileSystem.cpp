@@ -58,6 +58,14 @@ bool ModuleFileSystem::Init()
 	return ret;
 }
 
+void ModuleFileSystem::AddImGui()
+{
+	if (ImGui::CollapsingHeader("File System"))
+	{
+
+	}
+}
+
 // Called before quitting
 bool ModuleFileSystem::CleanUp()
 {

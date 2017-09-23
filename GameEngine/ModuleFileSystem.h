@@ -19,6 +19,8 @@ public:
 	// Called before render is available
 	bool Init();
 
+	void AddImGui();
+
 	// Called before quitting
 	bool CleanUp();
 

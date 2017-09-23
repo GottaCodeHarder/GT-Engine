@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "ImGui\imgui_impl_sdl_gl3.h"
 
 Application::Application()
 {
@@ -11,6 +12,7 @@ Application::Application()
 	physics = new ModulePhysics3D(this);
 	player = new ModulePlayer(this);
 	editor = new ModuleEditor(this);
+	file_system = new ModuleFileSystem(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -22,6 +24,7 @@ Application::Application()
 	AddModule(input);
 	AddModule(audio);
 	AddModule(physics);
+	AddModule(file_system);
 	AddModule(editor);
 
 	// Scenes
@@ -61,6 +64,36 @@ bool Application::Init()
 	return ret;
 }
 
+void Application::AddImGui()
+{
+	std::vector<Module*>::iterator it = modulesList.begin();
+
+	if (ImGui::Begin("Configuration"))
+	{
+		
+		if (ImGui::CollapsingHeader("Application"))
+		{
+			char title[25];
+			//sprintf_s(title, "Framerate &.1f", fps_log[fps_log.size() - 1]);
+
+		}
+		for (it = modulesList.begin(); it != modulesList.end(); it++)
+			{
+			(*it)->AddImGui();
+			}
+		ImGui::End();
+	}
+
+	if (ImGui::CollapsingHeader("Hardware"))
+	{
+
+	}
+
+	
+
+
+}
+
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
@@ -95,7 +128,8 @@ update_status Application::Update()
 	{
 		ret = (*it)->PostUpdate(dt);
 	}
-	
+
+
 	FinishUpdate();
 	return ret;
 }

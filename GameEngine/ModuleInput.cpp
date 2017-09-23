@@ -120,6 +120,14 @@ update_status ModuleInput::PreUpdate(float dt)
 	return UPDATE_CONTINUE;
 }
 
+void ModuleInput::AddImGui()
+{
+	if (ImGui::CollapsingHeader("Input"))
+	{
+
+	}
+}
+
 // Called before quitting
 bool ModuleInput::CleanUp()
 {

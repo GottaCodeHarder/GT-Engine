@@ -12,6 +12,7 @@
 #include "ModuleCamera3D.h"
 #include "ModulePhysics3D.h"
 #include "ModulePlayer.h"
+#include "ModuleFileSystem.h"
 
 class Application
 {
@@ -25,6 +26,7 @@ public:
 	ModulePhysics3D* physics;
 	ModulePlayer* player;
 	ModuleEditor* editor;
+	ModuleFileSystem* file_system;
 
 private:
 
@@ -38,6 +40,7 @@ public:
 	~Application();
 
 	bool Init();
+	void AddImGui();
 	update_status Update();
 	bool CleanUp();
 

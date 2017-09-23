@@ -72,6 +72,14 @@ bool ModuleWindow::Init()
 	return ret;
 }
 
+void ModuleWindow::AddImGui()
+{
+	if (ImGui::CollapsingHeader("Window"))
+	{
+
+	}
+}
+
 SDL_Window* ModuleWindow::GetWindow()
 {
 	return window;

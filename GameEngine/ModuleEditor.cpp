@@ -21,15 +21,16 @@ bool ModuleEditor::Start()
 	MYLOG("Loading Editor");
 	bool ret = true;
 
-	bShowExample = false;
 	bShowRandom = false;
-	bShowGeometry = false;
 	bGeometryFigures = false;
-	bConsole = false;
 
 	bExit = false;
 
-	active_menu.insert(std::pair<std::string, bool>("Console", false));
+	active_menu.insert(std::pair<std::string, bool>("1.Geometry", false));
+	active_menu.insert(std::pair<std::string, bool>("2.Example Window", false));
+	active_menu.insert(std::pair<std::string, bool>("3.Configuration", false));
+	active_menu.insert(std::pair<std::string, bool>("4.Console", false));
+	
 
 	gl3wInit();
 	ImGui_ImplSdlGL3_Init(App->window->GetWindow());
@@ -84,13 +85,13 @@ update_status ModuleEditor::Update(float dt)
 	}
 
 	// Show
-	if (bShowGeometry)
+	if (active_menu["1.Geometry"])
 	{
 		ImGui::SetNextWindowPos(ImVec2(560, 19));
 		Intersections();
 	}
 
-	if (bShowExample)
+	if (active_menu["2.Example Window"])
 	{
 		ImGui::SetNextWindowPos(ImVec2(0, 19));
 		ImGui::ShowTestWindow();
@@ -101,7 +102,12 @@ update_status ModuleEditor::Update(float dt)
 		ImGui::SetNextWindowPos(ImVec2(0, 19));
 		ToolRandom();
 	}
-	if (active_menu["Console"])
+	if (active_menu["3.Configuration"])
+	{
+		ImGui::SetNextWindowPos(ImVec2(560, 19));
+		Configuration();
+	}
+	if (active_menu["4.Console"])
 	{
 		ImGui::SetNextWindowPos(ImVec2(0, 19));
 		Console();
@@ -148,36 +154,13 @@ void ModuleEditor::MenuView()
 {
 	if (ImGui::BeginMenu("View"))
 	{
-		ImGui::Checkbox("##0", &bShowGeometry);
-		ImGui::SameLine();
-
-		if (ImGui::MenuItem("Geometry"))
-		{
-			bShowGeometry = !bShowGeometry;
-		}
-
-		ImGui::Spacing();
-		ImGui::Separator();
-		ImGui::Spacing();
-
-		ImGui::Checkbox("##1", &bShowExample);
-		ImGui::SameLine();
-
-		if (ImGui::MenuItem("Example Window"))
-		{
-			bShowExample = !bShowExample;
-		}
-
-		ImGui::Spacing();
-		ImGui::Separator();
-		ImGui::Spacing();
-
 		std::map<std::string, bool>::iterator it = active_menu.begin();
 		int n = 0;
 		char check_box_n[50];
 		
 		for (; it != active_menu.end(); it++)
 		{
+
 			sprintf(check_box_n, "##%d", n);
 			ImGui::Checkbox(check_box_n, &it->second);
 			ImGui::SameLine();
@@ -187,13 +170,11 @@ void ModuleEditor::MenuView()
 				it->second = !it->second;
 			}
 			n++;
+			
+			ImGui::Spacing();
+			ImGui::Separator();
+			ImGui::Spacing();	
 		}
-
-		
-
-		
-
-		
 
 		ImGui::EndMenu();
 	}
@@ -229,6 +210,17 @@ void ModuleEditor::Console()
 	{
 
 		ImGui::Text(console_buffer.c_str());
+
+		ImGui::End();
+	}
+}
+
+void ModuleEditor::Configuration()
+{
+	if (ImGui::Begin("Configuration"))
+	{
+
+		App->AddImGui();
 
 		ImGui::End();
 	}
