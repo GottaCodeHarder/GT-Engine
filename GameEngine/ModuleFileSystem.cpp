@@ -14,10 +14,15 @@ ModuleFileSystem::ModuleFileSystem(Application* app, bool start_enabled) : Modul
 	char* base_path = SDL_GetBasePath();
 	PHYSFS_init(base_path);
 	SDL_free(base_path);
+	
+	// If there's not Configuration json, it creates one
+	if (json_parse_file("Configuration.json") == NULL)
+	{
+		JSON_Value *root_value = json_value_init_object();
+		JSON_Object *config = json_value_get_object(root_value);
+	}
 
-	// By default we include executable's own directory
-	// without this we won't be able to find config.xml :-(
-	AddPath(".");
+
 }
 
 // Destructor
@@ -32,29 +37,6 @@ bool ModuleFileSystem::Init()
 	MYLOG("Loading File System");
 	bool ret = true;
 
-	// Add all paths in configuration in order
-	/* TEMPORARY DISABLING PHYSFS
-	for (pugi::xml_node path = config.child("path"); path; path = path.next_sibling("path"))
-	{
-		AddPath(path.child_value());
-	}
-
-	// Ask SDL for a write dir
-	char* write_path = SDL_GetPrefPath(App->GetOrganization(), App->GetTitle());
-
-	if (PHYSFS_setWriteDir(write_path) == 0)
-	{
-		MYLOG("File System error while creating write dir: %s\n", PHYSFS_getLastError());
-	}
-	else
-	{
-		// We add the writing directory as a reading directory too with speacial mount point
-		MYLOG("Writing directory is %s\n", write_path);
-		AddPath(write_path, GetSaveDirectory());
-	}
-
-	SDL_free(write_path);
-	*/
 	return ret;
 }
 
