@@ -38,7 +38,7 @@ public:
 	SDL_RWops* Load(const char* file) const;
 
 	unsigned int Save(const char* file, const char* buffer, unsigned int size) const;
-
+	
 private:
 
 };

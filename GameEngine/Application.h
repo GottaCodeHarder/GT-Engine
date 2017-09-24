@@ -52,6 +52,12 @@ private:
 
 	uint					frameCount = 0;
 	Timer					startUp;
+
+	std::string name;
+	std::string organization;
+
+	void LoadConfiguration();
+	void SaveConfiguration();
 };
 
 extern Application* App;

@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "ImGui\imgui_impl_sdl_gl3.h"
+#include "JSON\parson.h"
 
 Application::Application()
 {
@@ -53,13 +54,16 @@ bool Application::Init()
 		(*it)->Init();
 	}
 
+	// We load Configuration.json
+	LoadConfiguration();
+
 	// After all Init calls we call Start() in all modules
 	MYLOG("Application Start --------------");
 	for (std::vector<Module*>::iterator it = modulesList.begin(); ret == true && it != modulesList.end(); it++)
 	{
 		(*it)->Start();
 	}
-	
+
 	ms_timer.Start();
 	return ret;
 }
@@ -74,8 +78,8 @@ void Application::AddImGui()
 		if (ImGui::CollapsingHeader("Application"))
 		{
 			
-			ImGui::Text("App Name: GT Engine");
-			ImGui::Text("Organization: UPC CITM");
+			ImGui::Text("App Name: %s", name.c_str());
+			ImGui::Text("Organization: %s", organization.c_str());
 
 			static float f1 = 0.0f;
 			ImGui::SliderFloat("Max FPS", &f1, 0.0f, 60.0f, "%.1f");
@@ -98,10 +102,6 @@ void Application::AddImGui()
 	{
 
 	}
-
-	
-
-
 }
 
 // ---------------------------------------------
@@ -147,6 +147,9 @@ update_status Application::Update()
 bool Application::CleanUp()
 {
 	bool ret = true;
+
+	SaveConfiguration();
+
 	editor = NULL;
 	for (std::vector<Module*>::reverse_iterator it = modulesList.rbegin(); ret == true && it != modulesList.rend(); it++)
 	{
@@ -161,4 +164,42 @@ bool Application::CleanUp()
 void Application::AddModule(Module* mod)
 {
 	modulesList.push_back(mod);
+}
+void Application::LoadConfiguration()
+{
+	JSON_Value *config;
+
+	// If there's not Configuration json, it creates one
+	if ((config = json_parse_file("Configuration.json")) == NULL)
+	{
+		MYLOG("Failed to find Configuration File!");
+		return;
+	}
+
+	JSON_Object * appInfo = json_object_dotget_object(json_object(config), "App");
+
+	name = json_object_dotget_string(appInfo, "Name");
+	organization = json_object_dotget_string(appInfo, "Organization");
+
+	// Modules
+}
+
+void Application::SaveConfiguration()
+{
+	JSON_Value *config;
+
+	// If there's not Configuration json, it creates one
+	if ((config = json_parse_file("Configuration.json")) == NULL)
+	{
+		config = json_value_init_object();
+	}
+
+	JSON_Object* appInfo = json_object_dotget_object(json_object(config), "App");
+
+	json_object_dotset_string(appInfo, "Name", name.c_str());
+	json_object_dotset_string(appInfo, "Organization", organization.c_str());
+
+	// Modules
+
+	json_serialize_to_file(config, "Configuration.json");
 }

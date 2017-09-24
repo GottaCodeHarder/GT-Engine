@@ -14,15 +14,6 @@ ModuleFileSystem::ModuleFileSystem(Application* app, bool start_enabled) : Modul
 	char* base_path = SDL_GetBasePath();
 	PHYSFS_init(base_path);
 	SDL_free(base_path);
-	
-	// If there's not Configuration json, it creates one
-	if (json_parse_file("Configuration.json") == NULL)
-	{
-		JSON_Value *root_value = json_value_init_object();
-		JSON_Object *config = json_value_get_object(root_value);
-	}
-
-
 }
 
 // Destructor
