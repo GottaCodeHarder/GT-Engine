@@ -33,4 +33,12 @@ private:
 	void MenuAbout();
 	void Console();
 	void Configuration();
+
+private:
+
+	// Random Temporal
+	float fRandomMin = 0.0f;
+	float fRandomMax = 0.0f;
+	float fResult = 0.0f;
+	int iSelectedRand = 0;
 };

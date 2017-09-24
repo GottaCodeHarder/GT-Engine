@@ -230,11 +230,6 @@ void ModuleEditor::ToolRandom()
 {
 	if (ImGui::Begin("Random Generator"), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse)
 	{
-		static float fRandomMin = 0.0f;
-		static float fRandomMax = 0.0f;
-		static float fResult = 0.0f;
-		static int iSelectedRand = 0;
-
 		const char* RandType[] = { "Float", "Float (0~1)", "Int" };
 
 		if (ImGui::Button("Select.."))
@@ -253,13 +248,14 @@ void ModuleEditor::ToolRandom()
 		{
 		case 0:
 		{
-			ImGui::DragFloat("Maximum", &fRandomMax, 0.1f);
-			ImGui::DragFloat("Minimum", &fRandomMin, 0.1f);
+			ImGui::DragFloat("Maximum", &fRandomMax, 0.1f, fRandomMin);
+			ImGui::DragFloat("Minimum", &fRandomMin, 0.1f, NULL, fRandomMax);
 
 			if (ImGui::Button("Generate"))
 			{
 				Random A = Random();
-				fResult = A.RndFloat(fRandomMin, fRandomMax);
+				if (fRandomMin <= fRandomMax)
+					fResult = A.RndFloat(fRandomMin, fRandomMax);
 			}
 			ImGui::SameLine();
 			ImGui::Text("Result: %.2f", fResult); break;
@@ -277,13 +273,14 @@ void ModuleEditor::ToolRandom()
 		}
 		case 2:
 		{
-			ImGui::DragFloat("Maximum", &fRandomMax, 1.0f);
-			ImGui::DragFloat("Minimum", &fRandomMin, 1.0f);
+			ImGui::DragFloat("Maximum", &fRandomMax, 1.0f, fRandomMin, NULL, "%.0f");
+			ImGui::DragFloat("Minimum", &fRandomMin, 1.0f, NULL, fRandomMax, "%.0f");
 
 			if (ImGui::Button("Generate"))
 			{
 				Random A = Random();
-				fResult = A.RndInt(int(fRandomMin), int(fRandomMax));
+				if (fRandomMin <= fRandomMax)
+					fResult = A.RndInt(int(fRandomMin), int(fRandomMax));
 			}
 			ImGui::SameLine();
 			ImGui::Text("Result: %i", int(fResult)); break;
