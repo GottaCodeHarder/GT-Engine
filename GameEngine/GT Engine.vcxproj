@@ -158,6 +158,7 @@
     <ClInclude Include="ModuleCamera3D.h" />
     <ClInclude Include="ModuleEditor.h" />
     <ClInclude Include="ModuleFileSystem.h" />
+    <ClInclude Include="ModuleHardware.h" />
     <ClInclude Include="ModulePhysics3D.h" />
     <ClInclude Include="ModulePlayer.h" />
     <ClInclude Include="ModuleRenderer3D.h" />
@@ -229,6 +230,7 @@
     <ClCompile Include="ModuleCamera3D.cpp" />
     <ClCompile Include="ModuleEditor.cpp" />
     <ClCompile Include="ModuleFileSystem.cpp" />
+    <ClCompile Include="ModuleHardware.cpp" />
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModulePhysics3D.cpp" />
     <ClCompile Include="ModulePlayer.cpp" />

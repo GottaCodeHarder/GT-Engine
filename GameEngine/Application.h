@@ -13,6 +13,7 @@
 #include "ModulePhysics3D.h"
 #include "ModulePlayer.h"
 #include "ModuleFileSystem.h"
+#include "ModuleHardware.h"
 
 class Application
 {
@@ -27,6 +28,7 @@ public:
 	ModulePlayer* player;
 	ModuleEditor* editor;
 	ModuleFileSystem* file_system;
+	ModuleHardware* hardware;
 
 private:
 

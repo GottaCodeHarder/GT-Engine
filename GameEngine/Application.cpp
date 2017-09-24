@@ -14,6 +14,7 @@ Application::Application()
 	player = new ModulePlayer(this);
 	editor = new ModuleEditor(this);
 	file_system = new ModuleFileSystem(this);
+	hardware = new ModuleHardware(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -26,6 +27,7 @@ Application::Application()
 	AddModule(audio);
 	AddModule(physics);
 	AddModule(file_system);
+	AddModule(hardware);
 	AddModule(editor);
 
 	// Scenes
@@ -84,9 +86,9 @@ void Application::AddImGui()
 			static float f1 = 0.0f;
 			ImGui::SliderFloat("Max FPS", &f1, 0.0f, 144.0f, "%.1f");
 
-			float avgFps = float(frameCount) / startUp.Read();
+			//float avgFps = float(frameCount) / startUp.Read();
 			
-			char title[25];
+			//char title[25];
 
 			if (second <= (startUp.readSec() - 1.f))
 			{
@@ -98,28 +100,20 @@ void Application::AddImGui()
 				for (int i = 0; i <= 49; i++)
 				{
 					if (i < 49)
-					{
 						arr[i] = arr[i + 1];
-					}
 					if (i == 49)
-					{
 						arr[i] = ImGui::GetIO().Framerate;
-					}
 				}
 			}
-			sprintf_s(title, "Framerate &.1f", avgFps);
+			//sprintf_s(title, "Framerate &.1f", avgFps);
 			ImGui::PlotHistogram("Framerate##framerate", arr, ((int)(sizeof(arr) / sizeof(*arr))), 0, "", 0.0f, 150.0f, ImVec2(0, 80));
 		}
+
 		for (it = modulesList.begin(); it != modulesList.end(); it++)
-			{
+		{
 			(*it)->AddImGui();
-			}
+		}
 		ImGui::End();
-	}
-
-	if (ImGui::CollapsingHeader("Hardware"))
-	{
-
 	}
 }
 
