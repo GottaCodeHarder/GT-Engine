@@ -96,26 +96,26 @@ void Application::AddImGui()
 
 				for (int i = 0; i <= 49; i++)
 				{
-					if (i < 49)
-						fpsArr[i] = fpsArr[i + 1];
 					if (i == 49)
 						fpsArr[i] = ImGui::GetIO().Framerate;
+					else
+						fpsArr[i] = fpsArr[i + 1];
 				}
 			}
 
-			for (int i = 0; i <= 49; i++)
+			for (int i = 0; i <= 99; i++)
 			{
-				if (i < 49)
-					msArr[i] = msArr[i + 1];
-				if (i == 49)
+				if (i == 99)
 					msArr[i] = (startUp.Read() - millisec);
+				else
+					msArr[i] = msArr[i + 1];
 			}
 			millisec = startUp.Read();
 
 			char title[25];
 			sprintf_s(title, 25, "Framerate %.1f", fpsArr[49]);
 			ImGui::PlotHistogram("##framerate", fpsArr, ((int)(sizeof(fpsArr) / sizeof(*fpsArr))), 0, title, 0.0f, 150.0f, ImVec2(310, 100));
-			sprintf_s(title, 25, "Milliseconds %.1f", msArr[49]);
+			sprintf_s(title, 25, "Milliseconds %.1f", msArr[99]);
 			ImGui::PlotHistogram("##milliseconds", msArr, ((int)(sizeof(msArr) / sizeof(*msArr))), 0, title, 0.0f, 40.0f, ImVec2(310, 100));
 		}
 

@@ -59,7 +59,7 @@ private:
 	float second = 0.0f;
 	float millisec = 0.0f;
 	float fpsArr[50] = {};
-	float msArr[50] = {};
+	float msArr[100] = {};
 
 	std::string name;
 	std::string organization;
