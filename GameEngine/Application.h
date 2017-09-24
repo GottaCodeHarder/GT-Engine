@@ -44,6 +44,8 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+	void RequestBrowser(std::string link);
+
 private:
 
 	void AddModule(Module* mod);

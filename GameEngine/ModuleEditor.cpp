@@ -22,14 +22,14 @@ bool ModuleEditor::Start()
 	bool ret = true;
 
 	bShowRandom = false;
+	bShowExample = false;
 	bGeometryFigures = false;
 
 	bExit = false;
 
-	active_menu.insert(std::pair<std::string, bool>("1.Geometry", false));
-	active_menu.insert(std::pair<std::string, bool>("2.Example Window", false));
-	active_menu.insert(std::pair<std::string, bool>("3.Configuration", false));
-	active_menu.insert(std::pair<std::string, bool>("4.Console", false));
+	active_menu.insert(std::pair<std::string, bool>("Geometry", false));
+	active_menu.insert(std::pair<std::string, bool>("Configuration", false));
+	active_menu.insert(std::pair<std::string, bool>("Console", false));
 	
 
 	gl3wInit();
@@ -85,15 +85,14 @@ update_status ModuleEditor::Update(float dt)
 	}
 
 	// Show
-	if (active_menu["1.Geometry"])
+	if (active_menu["Geometry"])
 	{
 		ImGui::SetNextWindowPos(ImVec2(560, 19));
 		Intersections();
 	}
 
-	if (active_menu["2.Example Window"])
+	if (bShowExample)
 	{
-		ImGui::SetNextWindowPos(ImVec2(0, 19));
 		ImGui::ShowTestWindow();
 	}
 
@@ -102,12 +101,12 @@ update_status ModuleEditor::Update(float dt)
 		ImGui::SetNextWindowPos(ImVec2(0, 19));
 		ToolRandom();
 	}
-	if (active_menu["3.Configuration"])
+	if (active_menu["Configuration"])
 	{
 		ImGui::SetNextWindowPos(ImVec2(560, 19));
 		Configuration();
 	}
-	if (active_menu["4.Console"])
+	if (active_menu["Console"])
 	{
 		ImGui::SetNextWindowPos(ImVec2(0, 19));
 		Console();
@@ -137,7 +136,10 @@ void ModuleEditor::MenuTools()
 {
 	if (ImGui::BeginMenu("Tools"))
 	{
-		ImGui::Checkbox("##0", &bShowRandom);
+		if (ImGui::SmallButton(" ##Random"))
+		{
+			bShowRandom = !bShowRandom;
+		}
 		ImGui::SameLine();
 
 		if (ImGui::MenuItem("Random"))
@@ -160,9 +162,18 @@ void ModuleEditor::MenuView()
 		
 		for (; it != active_menu.end(); it++)
 		{
+			if (it != active_menu.begin())
+			{
+				ImGui::Spacing();
+				ImGui::Separator();
+				ImGui::Spacing();
+			}
 
-			sprintf(check_box_n, "##%d", n);
-			ImGui::Checkbox(check_box_n, &it->second);
+			sprintf(check_box_n, " ##%d", n);
+			if (ImGui::SmallButton(check_box_n))
+			{
+				it->second = !it->second;
+			}
 			ImGui::SameLine();
 
 			if (ImGui::MenuItem(it->first.c_str()))
@@ -170,10 +181,6 @@ void ModuleEditor::MenuView()
 				it->second = !it->second;
 			}
 			n++;
-			
-			ImGui::Spacing();
-			ImGui::Separator();
-			ImGui::Spacing();	
 		}
 
 		ImGui::EndMenu();
@@ -185,15 +192,31 @@ void ModuleEditor::MenuAbout()
 {
 	if (ImGui::BeginMenu("Help"))
 	{
-		if (ImGui::MenuItem("Repository"))
+		if (ImGui::SmallButton(" ##Example"))
 		{
-			ShellExecute(NULL, "open", "https://github.com/GottaCodeHarder/GT-Engine", NULL, NULL, SW_SHOWNORMAL);
+			bShowExample = !bShowExample;
 		}
+		ImGui::SameLine();
 
-		if (ImGui::MenuItem("Readme"))
-		{
-			ShellExecute(NULL, "open", "https://github.com/GottaCodeHarder/GT-Engine/blob/master/README.md", NULL, NULL, SW_SHOWNORMAL);
-		}
+		if (ImGui::MenuItem("Example Window"))
+			bShowExample = true;
+
+		ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
+
+		if (ImGui::MenuItem("Documentation"))
+			App->RequestBrowser("https://github.com/GottaCodeHarder/GT-Engine/wiki");
+
+		ImGui::Spacing();
+
+		if (ImGui::MenuItem("Download latest"))
+			App->RequestBrowser("https://github.com/GottaCodeHarder/GT-Engine/releases");
+
+		ImGui::Spacing();
+
+		if (ImGui::MenuItem("Report a bug"))
+			App->RequestBrowser("https://github.com/GottaCodeHarder/GT-Engine/issues");
+
+		ImGui::Spacing();
 
 		if (ImGui::MenuItem("About"))
 		{
