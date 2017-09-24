@@ -52,6 +52,8 @@ private:
 
 	uint					frameCount = 0;
 	Timer					startUp;
+	float					second = 0.0f;
+	float					arr[50] = {};
 
 	std::string name;
 	std::string organization;

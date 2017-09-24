@@ -82,14 +82,33 @@ void Application::AddImGui()
 			ImGui::Text("Organization: %s", organization.c_str());
 
 			static float f1 = 0.0f;
-			ImGui::SliderFloat("Max FPS", &f1, 0.0f, 60.0f, "%.1f");
+			ImGui::SliderFloat("Max FPS", &f1, 0.0f, 144.0f, "%.1f");
 
-			float avgFps = float(frameCount) / startUp.readSec();
+			float avgFps = float(frameCount) / startUp.Read();
 			
 			char title[25];
-			sprintf_s(title, "Framerate &.1f", avgFps);
-			//ImGui::PlotHistogram("##framerate", avgFps,);
 
+			if (second <= (startUp.readSec() - 1.f))
+			{
+				if (second == 0.0f)
+					second = startUp.readSec();
+				else
+					second += 1.0f;
+
+				for (int i = 0; i <= 49; i++)
+				{
+					if (i < 49)
+					{
+						arr[i] = arr[i + 1];
+					}
+					if (i == 49)
+					{
+						arr[i] = ImGui::GetIO().Framerate;
+					}
+				}
+			}
+			sprintf_s(title, "Framerate &.1f", avgFps);
+			ImGui::PlotHistogram("Framerate##framerate", arr, ((int)(sizeof(arr) / sizeof(*arr))), 0, "", 0.0f, 150.0f, ImVec2(0, 80));
 		}
 		for (it = modulesList.begin(); it != modulesList.end(); it++)
 			{
