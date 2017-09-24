@@ -12,11 +12,14 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
+	void AddImGui();
+
 	void AddTextConsole(char* text);
 
 private:
 	ImGuiTextBuffer console_buffer;
 
+	bool bSetStyle;
 	bool bShowRandom;
 	bool bShowExample;
 	bool bShowAbout;
@@ -36,6 +39,8 @@ private:
 	void MenuAbout();
 	void Console();
 	void Configuration();
+
+	void SetStyle(bool set);
 
 private:
 
