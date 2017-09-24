@@ -122,10 +122,7 @@ update_status ModuleInput::PreUpdate(float dt)
 
 void ModuleInput::AddImGui()
 {
-	if (ImGui::CollapsingHeader("Input"))
-	{
 
-	}
 }
 
 // Called before quitting

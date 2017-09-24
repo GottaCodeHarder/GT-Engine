@@ -23,6 +23,7 @@ bool ModuleEditor::Start()
 
 	bShowRandom = false;
 	bShowExample = false;
+	bShowAbout = false;
 	bGeometryFigures = false;
 
 	bExit = false;
@@ -88,18 +89,20 @@ update_status ModuleEditor::Update(float dt)
 	if (active_menu["Geometry"])
 	{
 		ImGui::SetNextWindowPos(ImVec2(560, 19));
-		Intersections();
+		ViewGeometry();
 	}
-
 	if (bShowExample)
 	{
 		ImGui::ShowTestWindow();
 	}
-
 	if (bShowRandom)
 	{
 		ImGui::SetNextWindowPos(ImVec2(0, 19));
 		ToolRandom();
+	}
+	if (bShowAbout)
+	{
+		HelpAbout();
 	}
 	if (active_menu["Configuration"])
 	{
@@ -108,7 +111,6 @@ update_status ModuleEditor::Update(float dt)
 	}
 	if (active_menu["Console"])
 	{
-		ImGui::SetNextWindowPos(ImVec2(0, 19));
 		Console();
 	}
 
@@ -220,7 +222,7 @@ void ModuleEditor::MenuAbout()
 
 		if (ImGui::MenuItem("About"))
 		{
-
+			bShowAbout = !bShowAbout;
 		}
 
 		ImGui::EndMenu();
@@ -313,7 +315,7 @@ void ModuleEditor::ToolRandom()
 	ImGui::End();
 }
 
-void ModuleEditor::Intersections()
+void ModuleEditor::ViewGeometry()
 {
 
 	if (ImGui::Begin("Geometry##Window"), NULL, ImGuiWindowFlags_AlwaysAutoResize)
@@ -435,7 +437,21 @@ void ModuleEditor::Intersections()
 		}
 	}
 
+	ImGui::End();
+}
 
+void ModuleEditor::HelpAbout()
+{
+	if (ImGui::Begin("About GT GameEngine"), nullptr, ImGuiWindowFlags_NoScrollbar)
+	{
+		ImGui::Text("GT ENGINE");
+		ImGui::Spacing(); ImGui::Spacing();
+		ImGui::Text("GT Engine is a Game Engine for educational purposes. Made by Pau Serra Colomer and Samuel Navarro Sato.");
+		ImGui::Spacing();
+		ImGui::Text("Using SDL (2.0.3), ImGui (1.50), PhysFS, Bullet (2.84), MathGeoLib (1.5), gl3w, glut (3.7) and parson (latest 2017)");
+		ImGui::Spacing();
+		ImGui::Text("MIT License. Copyright (c) 2017");
+	}
 
 	ImGui::End();
 }

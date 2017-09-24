@@ -19,12 +19,14 @@ private:
 
 	bool bShowRandom;
 	bool bShowExample;
+	bool bShowAbout;
 	bool bGeometryFigures;
 	std::list<AABB> box_list;
 	std::map<std::string, bool> active_menu;
 
-	void Intersections();
 	void ToolRandom();
+	void ViewGeometry();
+	void HelpAbout();
 
 	bool bExit;
 

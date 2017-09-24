@@ -33,10 +33,7 @@ bool ModuleFileSystem::Init()
 
 void ModuleFileSystem::AddImGui()
 {
-	if (ImGui::CollapsingHeader("File System"))
-	{
 
-	}
 }
 
 // Called before quitting
