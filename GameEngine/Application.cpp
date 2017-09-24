@@ -84,12 +84,9 @@ void Application::AddImGui()
 			ImGui::Text("Organization: %s", organization.c_str());
 
 			static float f1 = 0.0f;
+			ImGui::PushItemWidth(250);
 			ImGui::SliderFloat("Max FPS", &f1, 0.0f, 144.0f, "%.1f");
-
-			//float avgFps = float(frameCount) / startUp.Read();
 			
-			//char title[25];
-
 			if (second <= (startUp.readSec() - 1.f))
 			{
 				if (second == 0.0f)
@@ -100,13 +97,26 @@ void Application::AddImGui()
 				for (int i = 0; i <= 49; i++)
 				{
 					if (i < 49)
-						arr[i] = arr[i + 1];
+						fpsArr[i] = fpsArr[i + 1];
 					if (i == 49)
-						arr[i] = ImGui::GetIO().Framerate;
+						fpsArr[i] = ImGui::GetIO().Framerate;
 				}
 			}
-			//sprintf_s(title, "Framerate &.1f", avgFps);
-			ImGui::PlotHistogram("Framerate##framerate", arr, ((int)(sizeof(arr) / sizeof(*arr))), 0, "", 0.0f, 150.0f, ImVec2(0, 80));
+
+			for (int i = 0; i <= 49; i++)
+			{
+				if (i < 49)
+					msArr[i] = msArr[i + 1];
+				if (i == 49)
+					msArr[i] = (startUp.Read() - millisec);
+			}
+			millisec = startUp.Read();
+
+			char title[25];
+			sprintf_s(title, 25, "Framerate %.1f", fpsArr[49]);
+			ImGui::PlotHistogram("##framerate", fpsArr, ((int)(sizeof(fpsArr) / sizeof(*fpsArr))), 0, title, 0.0f, 150.0f, ImVec2(310, 100));
+			sprintf_s(title, 25, "Milliseconds %.1f", msArr[49]);
+			ImGui::PlotHistogram("##milliseconds", msArr, ((int)(sizeof(msArr) / sizeof(*msArr))), 0, title, 0.0f, 40.0f, ImVec2(310, 100));
 		}
 
 		for (it = modulesList.begin(); it != modulesList.end(); it++)
