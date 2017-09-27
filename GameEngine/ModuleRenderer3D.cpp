@@ -149,6 +149,11 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
+	if (bEnableWireframe)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	else
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 	/*App->level->Draw();
 	if (debug_draw == true)
 	{
@@ -158,6 +163,83 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	}
 	App->editor->Draw();
 	*/
+
+	glLineWidth(5.0f);
+	glBegin(GL_LINES);
+		glVertex3f(0.f, 0.f, 0.f);
+		glVertex3f(0.f, 10.f, 0.f);
+	glEnd();
+
+	glLineWidth(2.0f);
+	glBegin(GL_TRIANGLES);
+
+	glVertex3f(0.f, 0.f, 0.f);
+	glVertex3f(0.f, 1.f, 0.f);
+	glVertex3f(1.f, 0.f, 0.f);
+
+	glVertex3f(0.f, 1.f, 0.f);
+	glVertex3f(1.f, 1.f, 0.f);
+	glVertex3f(1.f, 0.f, 0.f);
+
+	glVertex3f(0.f, 0.f, 1.f);
+	glVertex3f(1.f, 0.f, 1.f);
+	glVertex3f(0.f, 1.f, 1.f);
+
+	glVertex3f(1.f, 0.f, 1.f);
+	glVertex3f(1.f, 1.f, 1.f);
+	glVertex3f(0.f, 1.f, 1.f);
+
+	glVertex3f(1.f, 1.f, 0.f);
+	glVertex3f(1.f, 1.f, 1.f);
+	glVertex3f(1.f, 0.f, 1.f);
+
+	glVertex3f(1.f, 0.f, 1.f);
+	glVertex3f(1.f, 0.f, 0.f);
+	glVertex3f(1.f, 1.f, 0.f);
+
+	glVertex3f(0.f, 0.f, 0.f);
+	glVertex3f(0.f, 0.f, 1.f);
+	glVertex3f(0.f, 1.f, 0.f);
+
+	glVertex3f(0.f, 1.f, 1.f);
+	glVertex3f(0.f, 1.f, 0.f);
+	glVertex3f(0.f, 0.f, 1.f);
+
+	glVertex3f(0.f, 1.f, 1.f);
+	glVertex3f(1.f, 1.f, 1.f);
+	glVertex3f(1.f, 1.f, 0.f);
+
+	glVertex3f(0.f, 1.f, 1.f);
+	glVertex3f(1.f, 1.f, 0.f);
+	glVertex3f(0.f, 1.f, 0.f);
+
+	glVertex3f(0.f, 0.f, 1.f);
+	glVertex3f(1.f, 0.f, 0.f);
+	glVertex3f(1.f, 0.f, 1.f);
+
+	glVertex3f(0.f, 0.f, 1.f);
+	glVertex3f(0.f, 0.f, 0.f);
+	glVertex3f(1.f, 0.f, 0.f);
+
+	glEnd();
+
+	float vertices[8] = {};
+	vertices[0] = (0.f, 0.f, 0.f);
+	vertices[1] = (1.f, 0.f, 0.f);
+	vertices[2] = (0.f, 1.f, 0.f);
+	vertices[3] = (1.f, 1.f, 0.f);
+
+	vertices[4] = (0.f, 0.f, 1.f);
+	vertices[5] = (1.f, 0.f, 1.f);
+	vertices[6] = (0.f, 1.f, 1.f);
+	vertices[7] = (1.f, 1.f, 1.f);
+
+	uint my_id = 0;
+	glGenBuffers(1, (GLuint*) &(my_id));
+	glBindBuffer(GL_ARRAY_BUFFER, my_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float)* sizeof(vertices) * 3, vertices, GL_STATIC_DRAW);
+	
+
 	SDL_GL_SwapWindow(App->window->window);
 	return UPDATE_CONTINUE;
 }
@@ -213,10 +295,7 @@ void ModuleRenderer3D::AddImGui()
 		}
 		if (ImGui::Checkbox("Wireframe Mode", &bEnableWireframe))
 		{
-			if (bEnableWireframe)
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			else
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			
 		}
 	}
 }
