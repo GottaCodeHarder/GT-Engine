@@ -119,6 +119,7 @@ bool ModuleRenderer3D::Init()
 		glEnable(GL_LIGHTING);
 		glEnable(GL_COLOR_MATERIAL);
 		glEnable(GL_TEXTURE_2D);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
 	// Projection matrix for
@@ -177,48 +178,45 @@ void ModuleRenderer3D::AddImGui()
 	{
 		if (ImGui::Checkbox("GL Depth Test", &bEnableDepthTest))
 		{
-			bEnableDepthTest != bEnableDepthTest;
-
 			if (bEnableDepthTest)
 				glEnable(GL_DEPTH_TEST);
-			if (!bEnableDepthTest)
+			else
 				glDisable(GL_DEPTH_TEST);
 		}
 		if (ImGui::Checkbox("GL Cull Face", &bEnableCullFace))
 		{
-			bEnableCullFace != bEnableCullFace;
-
 			if (bEnableCullFace)
 				glEnable(GL_CULL_FACE);
-			if (!bEnableCullFace)
+			else
 				glDisable(GL_CULL_FACE);
 		}
 		if (ImGui::Checkbox("GL Lighting", &bEnableLighting))
 		{
-			bEnableLighting != bEnableLighting;
-
 			if (bEnableLighting)
 				glEnable(GL_LIGHTING);
-			if (!bEnableLighting)
+			else
 				glDisable(GL_LIGHTING);
 		}
 		if (ImGui::Checkbox("GL Color Material", &bEnableColorMaterial))
 		{
-			bEnableColorMaterial != bEnableColorMaterial;
-
 			if (bEnableColorMaterial)
 				glEnable(GL_COLOR_MATERIAL);
-			if (!bEnableColorMaterial)
+			else
 				glDisable(GL_COLOR_MATERIAL);
 		}
 		if (ImGui::Checkbox("GL Texture 2D", &bEnableGLTexture))
 		{
-			bEnableGLTexture != bEnableGLTexture;
-
 			if (bEnableGLTexture)
 				glEnable(GL_TEXTURE_2D);
-			if (!bEnableGLTexture)
+			else
 				glDisable(GL_TEXTURE_2D);
+		}
+		if (ImGui::Checkbox("Wireframe Mode", &bEnableWireframe))
+		{
+			if (bEnableWireframe)
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			else
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 	}
 }

@@ -34,5 +34,5 @@ private:
 	bool bEnableLighting = true;
 	bool bEnableColorMaterial = true;
 	bool bEnableGLTexture = true;
-
+	bool bEnableWireframe = false;
 };

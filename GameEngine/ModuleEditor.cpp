@@ -119,14 +119,10 @@ void ModuleEditor::AddImGui()
 {
 	if (ImGui::CollapsingHeader("Editor"))
 	{
-		if (ImGui::SmallButton(" "))
+		if (ImGui::Checkbox("Set Blue Style (not reversible)", &bSetStyle))
 		{
-			// Needs some work
-			bSetStyle = !bSetStyle;
 			SetStyle(bSetStyle);
 		}
-		ImGui::SameLine();
-		ImGui::Text("Set Blue Style (not reversible)");
 	}
 }
 
