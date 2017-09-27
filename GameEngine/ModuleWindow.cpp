@@ -79,17 +79,59 @@ void ModuleWindow::AddImGui()
 
 		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 
-		ImGui::SliderInt("Width", &width, 0, 1600);
-		ImGui::SliderInt("Height", &height, 0, 1600);
-		SDL_SetWindowSize(window, width, height);
+		ImGui::SliderInt("Width", &width, 600, 2000);
+		ImGui::SliderInt("Height", &height, 600, 1600);
+		if (!resizable) 
+		{
+			SDL_SetWindowSize(window, width, height);
+		}
 		
+
 		if (ImGui::Checkbox("FullScreen", &fullscreen))
 		{
-		//	fullscreen = !fullscreen;
-			SDL_SetWindowFullscreen(window, flags);
-		}
-		if (fullscreen)
+			if (fullscreen) {
+				flags |= SDL_WINDOW_FULLSCREEN;
+				SDL_SetWindowFullscreen(window, flags);
+			}
+			else
+			{
+				flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
+				SDL_SetWindowFullscreen(window, flags);
+
+			}
+						}
+		ImGui::SameLine();
+		if (ImGui::Checkbox("Resizable", &resizable))
 		{
+			if (resizable) {
+				//flags |= SDL_WINDOW_RESIZABLE;
+				//SDL_Resizable(window, flags);
+			}
+			else
+				SDL_RestoreWindow(window);
+		}
+
+		if (ImGui::Checkbox("Borderless", &borderless))
+		{
+			if (borderless) {
+				flags |= SDL_WINDOW_BORDERLESS;
+				SDL_SetWindowBordered(window, SDL_TRUE);
+			}
+			else
+				SDL_RestoreWindow(window);
+		}
+		ImGui::SameLine();
+		if (ImGui::Checkbox("FullScreen Desktop", &fullscreen_desktop))
+		{
+			if (fullscreen_desktop) {
+				flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+				SDL_SetWindowFullscreen(window, flags);
+			}
+			else
+			{
+				flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
+				SDL_SetWindowFullscreen(window, flags);
+			}
 		}
 	}
 }

@@ -84,11 +84,12 @@ update_status ModuleEditor::Update(float dt)
 	// Show
 	if (active_menu["Geometry"])
 	{
-		ImGui::SetNextWindowPos(ImVec2(560, 19));
+		ImGui::SetNextWindowPos(ImVec2(0, 19));
 		ViewGeometry();
 	}
 	if (bShowExample)
 	{
+		ImGui::SetNextWindowPos(ImVec2(1040, 19));
 		ImGui::ShowTestWindow();
 	}
 	if (bShowRandom)
@@ -102,11 +103,12 @@ update_status ModuleEditor::Update(float dt)
 	}
 	if (active_menu["Configuration"])
 	{
-		ImGui::SetNextWindowPos(ImVec2(560, 19));
+		ImGui::SetNextWindowPos(ImVec2(1040, 19));
 		Configuration();
 	}
 	if (active_menu["Console"])
 	{
+		ImGui::SetNextWindowPos(ImVec2(0, 680));
 		Console();
 	}
 
