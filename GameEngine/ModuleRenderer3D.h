@@ -17,6 +17,8 @@ public:
 	update_status PostUpdate(float dt);
 	bool CleanUp();
 
+	void AddImGui();
+
 	void OnResize(int width, int height);
 
 public:
@@ -25,4 +27,12 @@ public:
 	SDL_GLContext context;
 	mat3x3 NormalMatrix;
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
+
+private:
+	bool bEnableDepthTest = true;
+	bool bEnableCullFace = true;
+	bool bEnableLighting = true;
+	bool bEnableColorMaterial = true;
+	bool bEnableGLTexture = true;
+
 };

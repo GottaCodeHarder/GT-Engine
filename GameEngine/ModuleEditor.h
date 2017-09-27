@@ -19,19 +19,19 @@ public:
 private:
 	ImGuiTextBuffer console_buffer;
 
-	bool bSetStyle;
-	bool bShowRandom;
-	bool bShowExample;
-	bool bShowAbout;
-	bool bGeometryFigures;
+	bool bSetStyle = false;
+	bool bShowRandom = false;
+	bool bShowExample = false;
+	bool bShowAbout = false;
+	bool bGeometryFigures = false;
+	bool bExit = false;
+
 	std::list<AABB> box_list;
 	std::map<std::string, bool> active_menu;
 
 	void ToolRandom();
 	void ViewGeometry();
 	void HelpAbout();
-
-	bool bExit;
 
 	void MenuFile();
 	void MenuView();

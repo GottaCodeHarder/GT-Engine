@@ -1,9 +1,14 @@
 #include "Globals.h"
 #include "Application.h"
-#include "ImGui\imgui_impl_sdl_gl3.h"
-#include "gl3w\gl3w.h"
+
+#include "ImGui/imgui_impl_sdl_gl3.h"
+#include "glew/include/glew.h"
+#include "SDL/include/SDL_opengl.h"
+#include <gl/GL.h>
+#include <gl/GLU.h>
+
 #include "Random.h"
-#include "MathGeoLib\MathGeoLib.h"
+#include "MathGeoLib/MathGeoLib.h"
 
 ModuleEditor::ModuleEditor(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -21,19 +26,10 @@ bool ModuleEditor::Start()
 	MYLOG("Loading Editor");
 	bool ret = true;
 
-	bSetStyle = false;
-	bShowRandom = false;
-	bShowExample = false;
-	bShowAbout = false;
-	bGeometryFigures = false;
-
-	bExit = false;
-
 	active_menu.insert(std::pair<std::string, bool>("Geometry", false));
 	active_menu.insert(std::pair<std::string, bool>("Configuration", false));
 	active_menu.insert(std::pair<std::string, bool>("Console", false));
 
-	gl3wInit();
 	ImGui_ImplSdlGL3_Init(App->window->GetWindow());
 	
 	return ret;

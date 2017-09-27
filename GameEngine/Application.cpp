@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "ImGui\imgui_impl_sdl_gl3.h"
+#include "glew\include\glew.h"
 #include "JSON\parson.h"
 
 Application::Application()
