@@ -163,82 +163,20 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	}
 	App->editor->Draw();
 	*/
-
-	glLineWidth(5.0f);
-	glBegin(GL_LINES);
-		glVertex3f(0.f, 0.f, 0.f);
-		glVertex3f(0.f, 10.f, 0.f);
-	glEnd();
-
-	glLineWidth(2.0f);
-	glBegin(GL_TRIANGLES);
-
-	glVertex3f(0.f, 0.f, 0.f);
-	glVertex3f(0.f, 1.f, 0.f);
-	glVertex3f(1.f, 0.f, 0.f);
-
-	glVertex3f(0.f, 1.f, 0.f);
-	glVertex3f(1.f, 1.f, 0.f);
-	glVertex3f(1.f, 0.f, 0.f);
-
-	glVertex3f(0.f, 0.f, 1.f);
-	glVertex3f(1.f, 0.f, 1.f);
-	glVertex3f(0.f, 1.f, 1.f);
-
-	glVertex3f(1.f, 0.f, 1.f);
-	glVertex3f(1.f, 1.f, 1.f);
-	glVertex3f(0.f, 1.f, 1.f);
-
-	glVertex3f(1.f, 1.f, 0.f);
-	glVertex3f(1.f, 1.f, 1.f);
-	glVertex3f(1.f, 0.f, 1.f);
-
-	glVertex3f(1.f, 0.f, 1.f);
-	glVertex3f(1.f, 0.f, 0.f);
-	glVertex3f(1.f, 1.f, 0.f);
-
-	glVertex3f(0.f, 0.f, 0.f);
-	glVertex3f(0.f, 0.f, 1.f);
-	glVertex3f(0.f, 1.f, 0.f);
-
-	glVertex3f(0.f, 1.f, 1.f);
-	glVertex3f(0.f, 1.f, 0.f);
-	glVertex3f(0.f, 0.f, 1.f);
-
-	glVertex3f(0.f, 1.f, 1.f);
-	glVertex3f(1.f, 1.f, 1.f);
-	glVertex3f(1.f, 1.f, 0.f);
-
-	glVertex3f(0.f, 1.f, 1.f);
-	glVertex3f(1.f, 1.f, 0.f);
-	glVertex3f(0.f, 1.f, 0.f);
-
-	glVertex3f(0.f, 0.f, 1.f);
-	glVertex3f(1.f, 0.f, 0.f);
-	glVertex3f(1.f, 0.f, 1.f);
-
-	glVertex3f(0.f, 0.f, 1.f);
-	glVertex3f(0.f, 0.f, 0.f);
-	glVertex3f(1.f, 0.f, 0.f);
-
-	glEnd();
-
-	float vertices[8] = {};
-	vertices[0] = (0.f, 0.f, 0.f);
-	vertices[1] = (1.f, 0.f, 0.f);
-	vertices[2] = (0.f, 1.f, 0.f);
-	vertices[3] = (1.f, 1.f, 0.f);
-
-	vertices[4] = (0.f, 0.f, 1.f);
-	vertices[5] = (1.f, 0.f, 1.f);
-	vertices[6] = (0.f, 1.f, 1.f);
-	vertices[7] = (1.f, 1.f, 1.f);
+	
+	FillVertex();
 
 	uint my_id = 0;
 	glGenBuffers(1, (GLuint*) &(my_id));
 	glBindBuffer(GL_ARRAY_BUFFER, my_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float)* sizeof(vertices) * 3, vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, vertices, GL_STATIC_DRAW);
 	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glBindBuffer(GL_ARRAY_BUFFER, my_id);
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	
+	glDrawArrays(GL_TRIANGLES, 0, 36*3);
+	glDisableClientState(GL_VERTEX_ARRAY);
 
 	SDL_GL_SwapWindow(App->window->window);
 	return UPDATE_CONTINUE;
@@ -311,4 +249,155 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+}
+
+void ModuleRenderer3D::FillVertex()
+{
+	//QUAD1
+	vertices[0] = 0.f;
+	vertices[1] = 1.f;
+	vertices[2] = 0.f;
+
+	vertices[3] = 0.f;
+	vertices[4] = 0.f;
+	vertices[5] = 0.f;
+
+	vertices[6] = 1.f;
+	vertices[7] = 0.f;
+	vertices[8] = 0.f;
+
+	vertices[9] = 0.f;
+	vertices[10] = 1.f;
+	vertices[11] = 0.f;
+
+	vertices[12] = 1.f;
+	vertices[13] = 0.f;
+	vertices[14] = 0.f;
+
+	vertices[15] = 1.f;
+	vertices[16] = 1.f;
+	vertices[17] = 0.f;
+	//QUAD2
+	vertices[18] = 1.f;
+	vertices[19] = 1.f;
+	vertices[20] = 0.f;
+
+	vertices[21] = 1.f;
+	vertices[22] = 0.f;
+	vertices[23] = 0.f;
+
+	vertices[24] = 1.f;
+	vertices[25] = 0.f;
+	vertices[26] = -1.f;
+
+	vertices[27] = 1.f;
+	vertices[28] = 1.f;
+	vertices[29] = 0.f;
+
+	vertices[30] = 1.f;
+	vertices[31] = 0.f;
+	vertices[32] = -1.f;
+
+	vertices[33] = 1.f;
+	vertices[34] = 1.f;
+	vertices[35] = -1.f;
+	//QUAD3
+	vertices[36] = 1.f;
+	vertices[37] = 1.f;
+	vertices[38] = -1.f;
+
+	vertices[39] = 1.f;
+	vertices[40] = 0.f;
+	vertices[41] = -1.f;
+
+	vertices[42] = 0.f;
+	vertices[43] = 0.f;
+	vertices[44] = -1.f;
+
+	vertices[45] = 1.f;
+	vertices[46] = 1.f;
+	vertices[47] = -1.f;
+
+	vertices[48] = 0.f;
+	vertices[49] = 0.f;
+	vertices[50] = -1.f;
+
+	vertices[51] = 0.f;
+	vertices[52] = 1.f;
+	vertices[53] = -1.f;
+
+	//QUAD4
+	vertices[54] = 0.f;
+	vertices[55] = 1.f;
+	vertices[56] = -1.f;
+
+	vertices[57] = 0.f;
+	vertices[58] = 0.f;
+	vertices[59] = -1.f;
+
+	vertices[60] = 0.f;
+	vertices[61] = 0.f;
+	vertices[62] = 0.f;
+
+	vertices[63] = 0.f;
+	vertices[64] = 1.f;
+	vertices[65] = -1.f;
+
+	vertices[66] = 0.f;
+	vertices[67] = 0.f;
+	vertices[68] = 0.f;
+
+	vertices[69] = 0.f;
+	vertices[70] = 1.f;
+	vertices[71] = 0.f;
+
+	//QUAD5
+	vertices[72] = 0.f;
+	vertices[73] = 1.f;
+	vertices[74] = 0.f;
+
+	vertices[75] = 1.f;
+	vertices[76] = 1.f;
+	vertices[77] = 0.f;
+
+	vertices[78] = 1.f;
+	vertices[79] = 1.f;
+	vertices[80] = -1.f;
+
+	vertices[81] = 0.f;
+	vertices[82] = 1.f;
+	vertices[83] = 0.f;
+
+	vertices[84] = 1.f;
+	vertices[85] = 1.f;
+	vertices[86] = -1.f;
+
+	vertices[87] = 0.f;
+	vertices[88] = 1.f;
+	vertices[89] = -1.f;
+
+	//QUAD6
+	vertices[90] = 0.f;
+	vertices[91] = 0.f;
+	vertices[92] = 0.f;
+
+	vertices[93] = 0.f;
+	vertices[94] = 0.f;
+	vertices[95] = -1.f;
+
+	vertices[96] = 1.f;
+	vertices[97] = 0.f;
+	vertices[98] = -1.f;
+
+	vertices[99] = 0.f;
+	vertices[100] = 0.f;
+	vertices[101] = 0.f;
+
+	vertices[102] = 1.f;
+	vertices[103] = 0.f;
+	vertices[104] = -1.f;
+
+	vertices[105] = 1.f;
+	vertices[106] = 0.f;
+	vertices[107] = 0.f;
 }

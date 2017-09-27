@@ -27,6 +27,7 @@ public:
 	SDL_GLContext context;
 	mat3x3 NormalMatrix;
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
+	void FillVertex();
 
 private:
 	bool bEnableDepthTest = true;
@@ -35,4 +36,6 @@ private:
 	bool bEnableColorMaterial = true;
 	bool bEnableGLTexture = true;
 	bool bEnableWireframe = false;
+
+	float vertices[108] = {};
 };

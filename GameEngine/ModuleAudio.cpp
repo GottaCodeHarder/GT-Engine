@@ -44,6 +44,13 @@ bool ModuleAudio::Init()
 	return ret;
 }
 
+void ModuleAudio::AddImGui()
+{
+	if (ImGui::CollapsingHeader("Window"))
+	{
+	}
+}
+
 // Called before quitting
 bool ModuleAudio::CleanUp()
 {

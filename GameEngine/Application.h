@@ -63,6 +63,8 @@ private:
 
 	std::string name;
 	std::string organization;
+	char*  name1 = "GT_Engine";
+	char* organization1 = "UPC";
 
 	void LoadConfiguration();
 	void SaveConfiguration();

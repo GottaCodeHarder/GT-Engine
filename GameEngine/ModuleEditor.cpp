@@ -89,7 +89,7 @@ update_status ModuleEditor::Update(float dt)
 	}
 	if (bShowExample)
 	{
-		ImGui::SetNextWindowPos(ImVec2(1040, 19));
+		ImGui::SetNextWindowPos(ImVec2(800, 19));
 		ImGui::ShowTestWindow();
 	}
 	if (bShowRandom)

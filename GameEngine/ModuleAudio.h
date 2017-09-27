@@ -14,6 +14,7 @@ public:
 	~ModuleAudio();
 
 	bool Init();
+	void AddImGui();
 	bool CleanUp();
 
 	// Play a music file

@@ -81,8 +81,11 @@ void Application::AddImGui()
 		if (ImGui::CollapsingHeader("Application"))
 		{
 			
-			ImGui::Text("App Name: %s", name.c_str());
-			ImGui::Text("Organization: %s", organization.c_str());
+			ImGui::InputText("App Name", name1 , 64);
+			ImGui::InputText("Organization", organization1, 64);
+
+			name.assign(name1);
+			organization.assign(organization1);
 
 			static float f1 = 0.0f;
 			ImGui::PushItemWidth(250);
