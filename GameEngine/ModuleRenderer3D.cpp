@@ -173,7 +173,54 @@ bool ModuleRenderer3D::CleanUp()
 
 void ModuleRenderer3D::AddImGui()
 {
-	
+	if (ImGui::CollapsingHeader("Renderer"))
+	{
+		if (ImGui::Checkbox("GL Depth Test", &bEnableDepthTest))
+		{
+			bEnableDepthTest != bEnableDepthTest;
+
+			if (bEnableDepthTest)
+				glEnable(GL_DEPTH_TEST);
+			if (!bEnableDepthTest)
+				glDisable(GL_DEPTH_TEST);
+		}
+		if (ImGui::Checkbox("GL Cull Face", &bEnableCullFace))
+		{
+			bEnableCullFace != bEnableCullFace;
+
+			if (bEnableCullFace)
+				glEnable(GL_CULL_FACE);
+			if (!bEnableCullFace)
+				glDisable(GL_CULL_FACE);
+		}
+		if (ImGui::Checkbox("GL Lighting", &bEnableLighting))
+		{
+			bEnableLighting != bEnableLighting;
+
+			if (bEnableLighting)
+				glEnable(GL_LIGHTING);
+			if (!bEnableLighting)
+				glDisable(GL_LIGHTING);
+		}
+		if (ImGui::Checkbox("GL Color Material", &bEnableColorMaterial))
+		{
+			bEnableColorMaterial != bEnableColorMaterial;
+
+			if (bEnableColorMaterial)
+				glEnable(GL_COLOR_MATERIAL);
+			if (!bEnableColorMaterial)
+				glDisable(GL_COLOR_MATERIAL);
+		}
+		if (ImGui::Checkbox("GL Texture 2D", &bEnableGLTexture))
+		{
+			bEnableGLTexture != bEnableGLTexture;
+
+			if (bEnableGLTexture)
+				glEnable(GL_TEXTURE_2D);
+			if (!bEnableGLTexture)
+				glDisable(GL_TEXTURE_2D);
+		}
+	}
 }
 
 void ModuleRenderer3D::OnResize(int width, int height)
