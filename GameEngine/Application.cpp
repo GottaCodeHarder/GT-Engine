@@ -77,33 +77,40 @@ void Application::AddImGui()
 
 	if (ImGui::Begin("Configuration"))
 	{
-
+		
 		if (ImGui::CollapsingHeader("Application"))
 		{
-
+			
 			ImGui::Text("App Name: %s", name.c_str());
 			ImGui::Text("Organization: %s", organization.c_str());
 
 			static float f1 = 0.0f;
 			ImGui::PushItemWidth(250);
 			ImGui::SliderFloat("Max FPS", &f1, 0.0f, 144.0f, "%.1f");
-
-
-			for (int i = 0; i <= 99; i++)
+			
+			if (second <= (startUp.readSec() - 1.f))
 			{
-
-				if (i == 99)
-				{
-					msArr[i] = (startUp.Read() - millisec);
-					fpsArr[i] = ImGui::GetIO().Framerate;
-				}
+				if (second == 0.0f)
+					second = startUp.readSec();
 				else
+					second += 1.0f;
+
+				for (int i = 0; i <= 49; i++)
 				{
-					msArr[i] = msArr[i + 1];
-					fpsArr[i] = fpsArr[i + 1];
+					if (i == 49)
+						fpsArr[i] = ImGui::GetIO().Framerate;
+					else
+						fpsArr[i] = fpsArr[i + 1];
 				}
 			}
 
+			for (int i = 0; i <= 99; i++)
+			{
+				if (i == 99)
+					msArr[i] = (startUp.Read() - millisec);
+				else
+					msArr[i] = msArr[i + 1];
+			}
 			millisec = startUp.Read();
 
 			char title[25];

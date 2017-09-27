@@ -298,7 +298,7 @@ tick_t Clock::TicksPerSec()
 unsigned long long Clock::Rdtsc()
 {
 #if defined(_MSC_VER) && !defined(WIN8PHONE)
-	return NULL; // Note that here should be: __rdtsc()
+	return __rdtsc();
 #elif defined(__x86_64__)
 	unsigned hi, lo;
 	__asm__ __volatile__ ("rdtsc" : "=a"(lo), "=d"(hi));
