@@ -91,33 +91,23 @@ void Application::AddImGui()
 			ImGui::PushItemWidth(250);
 			ImGui::SliderFloat("Max FPS", &f1, 0.0f, 144.0f, "%.1f");
 			
-			if (second <= (startUp.readSec() - 1.f))
-			{
-				if (second == 0.0f)
-					second = startUp.readSec();
-				else
-					second += 1.0f;
-
-				for (int i = 0; i <= 49; i++)
-				{
-					if (i == 49)
-						fpsArr[i] = ImGui::GetIO().Framerate;
-					else
-						fpsArr[i] = fpsArr[i + 1];
-				}
-			}
-
 			for (int i = 0; i <= 99; i++)
 			{
 				if (i == 99)
+				{
 					msArr[i] = (startUp.Read() - millisec);
+					fpsArr[i] = ImGui::GetIO().Framerate;
+				}
 				else
+				{
 					msArr[i] = msArr[i + 1];
+					fpsArr[i] = fpsArr[i + 1];
+				}
 			}
 			millisec = startUp.Read();
 
 			char title[25];
-			sprintf_s(title, 25, "Framerate %.1f", fpsArr[49]);
+			sprintf_s(title, 25, "Framerate %.1f", fpsArr[99]);
 			ImGui::PlotHistogram("##framerate", fpsArr, ((int)(sizeof(fpsArr) / sizeof(*fpsArr))), 0, title, 0.0f, 150.0f, ImVec2(310, 100));
 			sprintf_s(title, 25, "Milliseconds %.1f", msArr[99]);
 			ImGui::PlotHistogram("##milliseconds", msArr, ((int)(sizeof(msArr) / sizeof(*msArr))), 0, title, 0.0f, 40.0f, ImVec2(310, 100));

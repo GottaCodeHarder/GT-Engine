@@ -164,6 +164,8 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	App->editor->Draw();
 	*/
 	
+	
+	DirectCube();
 	FillVertex();
 
 	uint my_id = 0;
@@ -400,4 +402,59 @@ void ModuleRenderer3D::FillVertex()
 	vertices[105] = 1.f;
 	vertices[106] = 0.f;
 	vertices[107] = 0.f;
+}
+
+void ModuleRenderer3D::DirectCube()
+{
+	glBegin(GL_TRIANGLES);
+
+	glVertex3f(2.f, 0.f, 0.f);
+	glVertex3f(2.f, 1.f, 0.f);
+	glVertex3f(3.f, 0.f, 0.f);
+
+	glVertex3f(2.f, 1.f, 0.f);
+	glVertex3f(3.f, 1.f, 0.f);
+	glVertex3f(3.f, 0.f, 0.f);
+
+	glVertex3f(2.f, 0.f, 1.f);
+	glVertex3f(3.f, 0.f, 1.f);
+	glVertex3f(2.f, 1.f, 1.f);
+
+	glVertex3f(3.f, 0.f, 1.f);
+	glVertex3f(3.f, 1.f, 1.f);
+	glVertex3f(2.f, 1.f, 1.f);
+
+	glVertex3f(3.f, 1.f, 0.f);
+	glVertex3f(3.f, 1.f, 1.f);
+	glVertex3f(3.f, 0.f, 1.f);
+
+	glVertex3f(3.f, 0.f, 1.f);
+	glVertex3f(3.f, 0.f, 0.f);
+	glVertex3f(3.f, 1.f, 0.f);
+
+	glVertex3f(2.f, 0.f, 0.f);
+	glVertex3f(2.f, 0.f, 1.f);
+	glVertex3f(2.f, 1.f, 0.f);
+
+	glVertex3f(2.f, 1.f, 1.f);
+	glVertex3f(2.f, 1.f, 0.f);
+	glVertex3f(2.f, 0.f, 1.f);
+
+	glVertex3f(2.f, 1.f, 1.f);
+	glVertex3f(3.f, 1.f, 1.f);
+	glVertex3f(3.f, 1.f, 0.f);
+
+	glVertex3f(2.f, 1.f, 1.f);
+	glVertex3f(3.f, 1.f, 0.f);
+	glVertex3f(2.f, 1.f, 0.f);
+
+	glVertex3f(2.f, 0.f, 1.f);
+	glVertex3f(3.f, 0.f, 0.f);
+	glVertex3f(3.f, 0.f, 1.f);
+
+	glVertex3f(2.f, 0.f, 1.f);
+	glVertex3f(2.f, 0.f, 0.f);
+	glVertex3f(3.f, 0.f, 0.f);
+
+	glEnd();
 }

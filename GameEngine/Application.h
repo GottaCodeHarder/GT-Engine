@@ -56,9 +56,8 @@ private:
 
 	uint  frameCount = 0;
 	Timer startUp;
-	float second = 0.0f;
 	float millisec = 0.0f;
-	float fpsArr[50] = {};
+	float fpsArr[100] = {};
 	float msArr[100] = {};
 
 	std::string name;
