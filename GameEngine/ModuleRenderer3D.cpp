@@ -161,7 +161,6 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 		App->DebugDraw();
 		EndDebugDraw();
 	}
-	App->editor->Draw();
 	*/
 
 	FillVertex();
@@ -180,6 +179,9 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	
 	glDrawArrays(GL_TRIANGLES, 0, 36*3);
 	glDisableClientState(GL_VERTEX_ARRAY);
+
+	// Drawing UI
+	App->editor->Draw();
 
 	SDL_GL_SwapWindow(App->window->window);
 	return UPDATE_CONTINUE;

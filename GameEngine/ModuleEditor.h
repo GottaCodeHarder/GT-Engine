@@ -16,6 +16,8 @@ public:
 
 	void AddTextConsole(char* text);
 
+	void Draw();
+
 private:
 	ImGuiTextBuffer console_buffer;
 

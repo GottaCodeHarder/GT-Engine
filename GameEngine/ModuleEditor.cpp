@@ -112,8 +112,6 @@ update_status ModuleEditor::Update(float dt)
 		Console();
 	}
 
-	ImGui::Render();
-
 	return UPDATE_CONTINUE;
 }
 
@@ -126,6 +124,11 @@ void ModuleEditor::AddImGui()
 			SetStyle(bSetStyle);
 		}
 	}
+}
+
+void ModuleEditor::Draw()
+{
+	ImGui::Render();
 }
 
 // ---------------------------------------------< FILE
