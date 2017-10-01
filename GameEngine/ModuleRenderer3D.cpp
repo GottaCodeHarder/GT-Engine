@@ -163,10 +163,11 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	}
 	App->editor->Draw();
 	*/
-	
-	
-	DirectCube();
+
 	FillVertex();
+	DirectCube();
+
+	glColor4f(0.2f, 0.2f, 1.0f, 1.0f);
 
 	uint my_id = 0;
 	glGenBuffers(1, (GLuint*) &(my_id));
@@ -290,7 +291,7 @@ void ModuleRenderer3D::FillVertex()
 
 	vertices[24] = 1.f;
 	vertices[25] = 0.f;
-	vertices[26] = -1.f;
+	vertices[26] = 1.f;
 
 	vertices[27] = 1.f;
 	vertices[28] = 1.f;
@@ -298,44 +299,44 @@ void ModuleRenderer3D::FillVertex()
 
 	vertices[30] = 1.f;
 	vertices[31] = 0.f;
-	vertices[32] = -1.f;
+	vertices[32] = 1.f;
 
 	vertices[33] = 1.f;
 	vertices[34] = 1.f;
-	vertices[35] = -1.f;
+	vertices[35] = 1.f;
 	//QUAD3
 	vertices[36] = 1.f;
 	vertices[37] = 1.f;
-	vertices[38] = -1.f;
+	vertices[38] = 1.f;
 
 	vertices[39] = 1.f;
 	vertices[40] = 0.f;
-	vertices[41] = -1.f;
+	vertices[41] = 1.f;
 
 	vertices[42] = 0.f;
 	vertices[43] = 0.f;
-	vertices[44] = -1.f;
+	vertices[44] = 1.f;
 
 	vertices[45] = 1.f;
 	vertices[46] = 1.f;
-	vertices[47] = -1.f;
+	vertices[47] = 1.f;
 
 	vertices[48] = 0.f;
 	vertices[49] = 0.f;
-	vertices[50] = -1.f;
+	vertices[50] = 1.f;
 
 	vertices[51] = 0.f;
 	vertices[52] = 1.f;
-	vertices[53] = -1.f;
+	vertices[53] = 1.f;
 
 	//QUAD4
 	vertices[54] = 0.f;
 	vertices[55] = 1.f;
-	vertices[56] = -1.f;
+	vertices[56] = 1.f;
 
 	vertices[57] = 0.f;
 	vertices[58] = 0.f;
-	vertices[59] = -1.f;
+	vertices[59] = 1.f;
 
 	vertices[60] = 0.f;
 	vertices[61] = 0.f;
@@ -343,7 +344,7 @@ void ModuleRenderer3D::FillVertex()
 
 	vertices[63] = 0.f;
 	vertices[64] = 1.f;
-	vertices[65] = -1.f;
+	vertices[65] = 1.f;
 
 	vertices[66] = 0.f;
 	vertices[67] = 0.f;
@@ -364,7 +365,7 @@ void ModuleRenderer3D::FillVertex()
 
 	vertices[78] = 1.f;
 	vertices[79] = 1.f;
-	vertices[80] = -1.f;
+	vertices[80] = 1.f;
 
 	vertices[81] = 0.f;
 	vertices[82] = 1.f;
@@ -372,11 +373,11 @@ void ModuleRenderer3D::FillVertex()
 
 	vertices[84] = 1.f;
 	vertices[85] = 1.f;
-	vertices[86] = -1.f;
+	vertices[86] = 1.f;
 
 	vertices[87] = 0.f;
 	vertices[88] = 1.f;
-	vertices[89] = -1.f;
+	vertices[89] = 1.f;
 
 	//QUAD6
 	vertices[90] = 0.f;
@@ -385,11 +386,11 @@ void ModuleRenderer3D::FillVertex()
 
 	vertices[93] = 0.f;
 	vertices[94] = 0.f;
-	vertices[95] = -1.f;
+	vertices[95] = 1.f;
 
 	vertices[96] = 1.f;
 	vertices[97] = 0.f;
-	vertices[98] = -1.f;
+	vertices[98] = 1.f;
 
 	vertices[99] = 0.f;
 	vertices[100] = 0.f;
@@ -397,7 +398,7 @@ void ModuleRenderer3D::FillVertex()
 
 	vertices[102] = 1.f;
 	vertices[103] = 0.f;
-	vertices[104] = -1.f;
+	vertices[104] = 1.f;
 
 	vertices[105] = 1.f;
 	vertices[106] = 0.f;
@@ -406,6 +407,8 @@ void ModuleRenderer3D::FillVertex()
 
 void ModuleRenderer3D::DirectCube()
 {
+	glColor4f(1.0f, 0.2f, 0.8f, 1.0f);
+
 	glBegin(GL_TRIANGLES);
 
 	glVertex3f(2.f, 0.f, 0.f);

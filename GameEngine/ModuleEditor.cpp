@@ -457,7 +457,7 @@ void ModuleEditor::HelpAbout()
 		ImGui::Spacing(); ImGui::Spacing();
 		ImGui::Text("GT Engine is a Game Engine for educational purposes. Made by Pau Serra Colomer and Samuel Navarro Sato.");
 		ImGui::Spacing();
-		ImGui::Text("Using SDL (2.0.3), ImGui (1.50), PhysFS, Bullet (2.84), MathGeoLib (1.5), gl3w, glut (3.7) and parson (latest 2017)");
+		ImGui::Text("Using SDL (2.0.3), ImGui (1.50), PhysFS, Bullet (2.84), MathGeoLib (1.5), gl3w and parson (latest 2017)");
 		ImGui::Spacing();
 		ImGui::Text("MIT License. Copyright (c) 2017");
 	}

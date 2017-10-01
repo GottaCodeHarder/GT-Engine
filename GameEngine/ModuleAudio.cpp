@@ -46,9 +46,7 @@ bool ModuleAudio::Init()
 
 void ModuleAudio::AddImGui()
 {
-	if (ImGui::CollapsingHeader("Window"))
-	{
-	}
+
 }
 
 // Called before quitting
