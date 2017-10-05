@@ -125,6 +125,13 @@ bool ModuleRenderer3D::Init()
 	// Projection matrix for
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
+	std::vector<Mesh*> tmp = importer.CreateMesh("C:/Users/pausc1/Documents/GitHub/GT-Engine/GameEngine/Game/Assets/warrior.fbx");
+
+	for (std::vector<Mesh*>::iterator it = tmp.begin(); it != tmp.end(); it++)
+	{
+		meshes.push_back(*it);
+	}
+
 	return ret;
 }
 
@@ -169,7 +176,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	glColor4f(0.2f, 0.2f, 1.0f, 1.0f);
 
 	uint my_id = 0;
-	glGenBuffers(1, (GLuint*) &(my_id));
+	glGenBuffers(1, (GLuint*) &(my_id)); //TANTU
 	glBindBuffer(GL_ARRAY_BUFFER, my_id);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, vertices, GL_STATIC_DRAW);
 	
@@ -179,7 +186,28 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	
 	glDrawArrays(GL_TRIANGLES, 0, 36*3);
 	glDisableClientState(GL_VERTEX_ARRAY);
+//----------------------------------------------------------------------------------------------------------------------------
 
+	for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++)
+	{
+
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, (*it)->buff_vertex);
+		glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+		glEnableClientState(GL_NORMAL_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, (*it)->buff_normals);
+		glNormalPointer(GL_FLOAT, 0, NULL);
+
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, (*it)->buff_uv);
+		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (*it)->buff_index);
+		glDrawElements(GL_TRIANGLES, (*it)->num_index, GL_UNSIGNED_INT, NULL);
+
+	}
+	
 	// Drawing UI
 	App->editor->Draw();
 

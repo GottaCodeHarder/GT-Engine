@@ -102,6 +102,11 @@ update_status ModuleInput::PreUpdate(float dt)
 			mouse_y_motion = e.motion.yrel / SCREEN_SIZE;
 			break;
 
+			case SDL_DROPFILE:
+				e.drop.file; //BE ES LA RUTA
+				SDL_free(e.drop.file);
+				break;
+
 			case SDL_QUIT:
 			quit = true;
 			break;

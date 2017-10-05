@@ -3,6 +3,7 @@
 #include "Globals.h"
 #include "glmath.h"
 #include "Light.h"
+#include "Importer.h"
 
 #define MAX_LIGHTS 8
 
@@ -29,6 +30,7 @@ public:
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 	void FillVertex();
 	void DirectCube();
+	//char* ImportFbx(char* path);
 
 private:
 	bool bEnableDepthTest = true;
@@ -39,4 +41,8 @@ private:
 	bool bEnableWireframe = false;
 
 	float vertices[108] = {};
+
+	std::vector<Mesh*> meshes;
+	Importer importer;
+
 };
