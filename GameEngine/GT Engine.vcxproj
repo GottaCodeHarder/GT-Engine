@@ -76,6 +76,39 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Assimp\include\ai_assert.h" />
+    <ClInclude Include="Assimp\include\anim.h" />
+    <ClInclude Include="Assimp\include\camera.h" />
+    <ClInclude Include="Assimp\include\cexport.h" />
+    <ClInclude Include="Assimp\include\cfileio.h" />
+    <ClInclude Include="Assimp\include\cimport.h" />
+    <ClInclude Include="Assimp\include\color4.h" />
+    <ClInclude Include="Assimp\include\config.h" />
+    <ClInclude Include="Assimp\include\DefaultLogger.hpp" />
+    <ClInclude Include="Assimp\include\defs.h" />
+    <ClInclude Include="Assimp\include\Exporter.hpp" />
+    <ClInclude Include="Assimp\include\Importer.hpp" />
+    <ClInclude Include="Assimp\include\importerdesc.h" />
+    <ClInclude Include="Assimp\include\IOStream.hpp" />
+    <ClInclude Include="Assimp\include\IOSystem.hpp" />
+    <ClInclude Include="Assimp\include\light.h" />
+    <ClInclude Include="Assimp\include\Logger.hpp" />
+    <ClInclude Include="Assimp\include\LogStream.hpp" />
+    <ClInclude Include="Assimp\include\material.h" />
+    <ClInclude Include="Assimp\include\matrix3x3.h" />
+    <ClInclude Include="Assimp\include\matrix4x4.h" />
+    <ClInclude Include="Assimp\include\mesh.h" />
+    <ClInclude Include="Assimp\include\metadata.h" />
+    <ClInclude Include="Assimp\include\NullLogger.hpp" />
+    <ClInclude Include="Assimp\include\postprocess.h" />
+    <ClInclude Include="Assimp\include\ProgressHandler.hpp" />
+    <ClInclude Include="Assimp\include\quaternion.h" />
+    <ClInclude Include="Assimp\include\scene.h" />
+    <ClInclude Include="Assimp\include\texture.h" />
+    <ClInclude Include="Assimp\include\types.h" />
+    <ClInclude Include="Assimp\include\vector2.h" />
+    <ClInclude Include="Assimp\include\vector3.h" />
+    <ClInclude Include="Assimp\include\version.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="glew\include\eglew.h" />
     <ClInclude Include="glew\include\glew.h" />
@@ -90,6 +123,7 @@
     <ClInclude Include="ImGui\stb_rect_pack.h" />
     <ClInclude Include="ImGui\stb_textedit.h" />
     <ClInclude Include="ImGui\stb_truetype.h" />
+    <ClInclude Include="Importer.h" />
     <ClInclude Include="JSON\parson.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="MathGeoLib\Algorithm\GJK.h" />
@@ -186,6 +220,7 @@
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
     <ClCompile Include="ImGui\imgui_impl_sdl_gl3.cpp" />
+    <ClCompile Include="Importer.cpp" />
     <ClCompile Include="JSON\parson.c" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="log.cpp" />
@@ -250,6 +285,14 @@
     <Image Include="Game\logo.ico" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assimp\include\.editorconfig" />
+    <None Include="Assimp\include\color4.inl" />
+    <None Include="Assimp\include\material.inl" />
+    <None Include="Assimp\include\matrix3x3.inl" />
+    <None Include="Assimp\include\matrix4x4.inl" />
+    <None Include="Assimp\include\quaternion.inl" />
+    <None Include="Assimp\include\vector2.inl" />
+    <None Include="Assimp\include\vector3.inl" />
     <None Include="MathGeoLib\emscripten\library_system.js" />
     <None Include="MathGeoLib\Geometry\KDTree.inl" />
     <None Include="MathGeoLib\Geometry\QuadTree.inl" />

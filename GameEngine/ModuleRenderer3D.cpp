@@ -125,12 +125,23 @@ bool ModuleRenderer3D::Init()
 	// Projection matrix for
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	std::vector<Mesh*> tmp = importer.CreateMesh("C:/Users/pausc1/Documents/GitHub/GT-Engine/GameEngine/Game/Assets/warrior.fbx");
+	FillVertex();
+	DirectCube();
+	glColor4f(0.2f, 0.2f, 1.0f, 1.0f);
+	glGenBuffers(1, (GLuint*) &(my_id)); //TANTU
+	glBindBuffer(GL_ARRAY_BUFFER, my_id);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, vertices, GL_STATIC_DRAW);
 
-	for (std::vector<Mesh*>::iterator it = tmp.begin(); it != tmp.end(); it++)
-	{
-		meshes.push_back(*it);
-	}
+//	App->file_system->Load("Game/Assets/warrior.fbx");
+	
+	
+	
+	//std::vector<Mesh*> tmp = importer.CreateMesh("C:/Users/Usuari/Documents/GitHub/GT-Engine/GameEngine/Game/Assets/warrior.fbx");
+	//
+	//for (std::vector<Mesh*>::iterator it = tmp.begin(); it != tmp.end(); it++)
+	//{
+	//	meshes.push_back(*it);
+	//}
 
 	return ret;
 }
@@ -170,22 +181,24 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	}
 	*/
 
-	FillVertex();
-	DirectCube();
-
-	glColor4f(0.2f, 0.2f, 1.0f, 1.0f);
-
-	uint my_id = 0;
-	glGenBuffers(1, (GLuint*) &(my_id)); //TANTU
-	glBindBuffer(GL_ARRAY_BUFFER, my_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, vertices, GL_STATIC_DRAW);
-	
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glBindBuffer(GL_ARRAY_BUFFER, my_id);
 	glVertexPointer(3, GL_FLOAT, 0, NULL);
 	
 	glDrawArrays(GL_TRIANGLES, 0, 36*3);
 	glDisableClientState(GL_VERTEX_ARRAY);
+//---------------------------------------------------------------------------------------------------------------------------
+	if (App->input->has_dropped)
+	{
+		std::vector<Mesh*> tmp = importer.CreateMesh(dropped_fbx_path);
+		
+		for (std::vector<Mesh*>::iterator it = tmp.begin(); it != tmp.end(); it++)
+		{
+			meshes.push_back(*it);
+		}
+		
+		App->input->has_dropped = false;
+	}
 //----------------------------------------------------------------------------------------------------------------------------
 
 	for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++)
@@ -490,4 +503,9 @@ void ModuleRenderer3D::DirectCube()
 	glVertex3f(3.f, 0.f, 0.f);
 
 	glEnd();
+}
+
+void ModuleRenderer3D::ImportFbx(char * path)
+{
+	dropped_fbx_path = path;
 }

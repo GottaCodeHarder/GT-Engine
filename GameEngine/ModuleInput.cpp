@@ -103,7 +103,8 @@ update_status ModuleInput::PreUpdate(float dt)
 			break;
 
 			case SDL_DROPFILE:
-				e.drop.file; //BE ES LA RUTA
+				App->renderer3D->ImportFbx(e.drop.file); //BE ES LA RUTA
+				has_dropped = true;
 				SDL_free(e.drop.file);
 				break;
 

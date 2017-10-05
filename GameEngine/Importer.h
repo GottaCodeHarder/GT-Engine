@@ -23,15 +23,8 @@ public:
 class Importer
 {
 
-	
-
 public:
 
-	
 	std::vector<Mesh*> CreateMesh(char* path);
-
-
-
-
 
 };

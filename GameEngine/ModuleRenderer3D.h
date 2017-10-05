@@ -30,7 +30,7 @@ public:
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 	void FillVertex();
 	void DirectCube();
-	//char* ImportFbx(char* path);
+	void ImportFbx(char* path);
 
 private:
 	bool bEnableDepthTest = true;
@@ -41,8 +41,10 @@ private:
 	bool bEnableWireframe = false;
 
 	float vertices[108] = {};
+	char * dropped_fbx_path = NULL;
 
 	std::vector<Mesh*> meshes;
 	Importer importer;
+	uint my_id = 0;
 
 };
