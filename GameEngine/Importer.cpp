@@ -27,10 +27,19 @@ std::vector<Mesh*> Importer::CreateMesh(char * path)
 
 			mesh->vertex.reserve(scene->mMeshes[i]->mNumVertices);
 			memcpy(mesh->vertex.data(), scene->mMeshes[i]->mVertices, sizeof(float3)*scene->mMeshes[i]->mNumVertices);
+			
+			if (mesh->vertex.empty() != false)
+			{
+				glGenBuffers(1, (GLuint*) &(mesh->buff_vertex));
+				glBindBuffer(GL_ARRAY_BUFFER, mesh->buff_vertex);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * scene->mMeshes[i]->mNumVertices, mesh->vertex.data(), GL_STATIC_DRAW);
 
-			glGenBuffers(1, (GLuint*) &(mesh->buff_vertex));
-			glBindBuffer(GL_ARRAY_BUFFER, mesh->buff_vertex);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * scene->mMeshes[i]->mNumVertices, mesh->vertex.data(), GL_STATIC_DRAW);
+				MYLOG("Importer - Loading %i vertex succesful!" + (int)mesh->vertex.size());
+			}
+			else
+			{
+				MYLOG("WARNING, the scene has 0 vertex!");
+			}
 
 			if (scene->mMeshes[i]->HasNormals())
 			{
@@ -39,6 +48,8 @@ std::vector<Mesh*> Importer::CreateMesh(char * path)
 				glGenBuffers(1, (GLuint*) &(mesh->buff_normals));
 				glBindBuffer(GL_ARRAY_BUFFER, mesh->buff_normals);
 				glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * scene->mMeshes[i]->mNumVertices, mesh->normals.data(), GL_STATIC_DRAW);
+
+				MYLOG("Importer - Loading %i normals succesful!", (int)mesh->normals.size());
 			}
 			
 			if (scene->mMeshes[i]->HasTextureCoords(0))
@@ -49,6 +60,8 @@ std::vector<Mesh*> Importer::CreateMesh(char * path)
 				glGenBuffers(1, (GLuint*) &(mesh->buff_uv));
 				glBindBuffer(GL_ARRAY_BUFFER, mesh->buff_uv);
 				glBufferData(GL_ARRAY_BUFFER, sizeof(float2) * scene->mMeshes[i]->mNumVertices, uv, GL_STATIC_DRAW);
+
+				MYLOG("Importer - Loading UV succesful!");
 			}
 			
 			
@@ -69,6 +82,7 @@ std::vector<Mesh*> Importer::CreateMesh(char * path)
 			glGenBuffers(1, (GLuint*) &(mesh->buff_index));
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->buff_index);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * scene->mMeshes[i]->mNumFaces*3, index, GL_STATIC_DRAW);
+			MYLOG("Importer - Loading index succesful!");
 
 			mesh->buff_texture;
 			aiString texturePath; // path de la textura, desde donde esta el fbx
