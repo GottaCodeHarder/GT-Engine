@@ -44,7 +44,15 @@ std::vector<Mesh*> Importer::CreateMesh(char * path)
 			if (scene->mMeshes[i]->HasTextureCoords(0))
 			{
 				float2* uv = new float2[scene->mMeshes[i]->mNumVertices]; //BE
-				memcpy(uv, scene->mMeshes[i]->mTextureCoords, sizeof(float2)*scene->mMeshes[i]->mNumVertices);
+				if (uv > &float2(scene->mMeshes[i]->mNumVertices))
+				{
+					MYLOG("WARNING, don't have UV");
+				}
+				else
+				{
+					memcpy(uv, scene->mMeshes[i]->mTextureCoords, sizeof(float2)*scene->mMeshes[i]->mNumVertices);
+				}
+				
 
 				glGenBuffers(1, (GLuint*) &(mesh->buff_uv));
 				glBindBuffer(GL_ARRAY_BUFFER, mesh->buff_uv);
