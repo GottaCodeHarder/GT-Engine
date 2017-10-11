@@ -198,16 +198,16 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 		}
 		meshes.clear();
 
-		std::vector<Mesh*> tmp = importer.CreateMesh(dropped_fbx_path);
+		std::vector<Mesh*> tmp = importer.CreateMesh(App->input->GetFileDropped());
 
 		App->camera->referenceDone = true;
 		if (!tmp.empty())
 		{
 			std::vector<Mesh*>::iterator it = tmp.begin();
 
-			App->camera->Position.x = (*it)->aabbBox.maxPoint.x+10;
-			App->camera->Position.y = (*it)->aabbBox.maxPoint.y+10;
-			App->camera->Position.z = (*it)->aabbBox.maxPoint.z+10;
+			App->camera->Position.x = (*it)->aabbBox.maxPoint.x*2;
+			App->camera->Position.y = (*it)->aabbBox.maxPoint.y*2;
+			App->camera->Position.z = (*it)->aabbBox.maxPoint.z*2;
 			App->camera->LookAt(vec3((*it)->aabbBox.CenterPoint().x, (*it)->aabbBox.CenterPoint().y, (*it)->aabbBox.CenterPoint().z));
 		
 			for (std::vector<Mesh*>::iterator it = tmp.begin(); it != tmp.end(); it++)
@@ -535,9 +535,4 @@ void ModuleRenderer3D::DirectCube()
 	glVertex3f(3.f, 0.f, 0.f);
 
 	glEnd();
-}
-
-void ModuleRenderer3D::ImportFbx(char * path)
-{
-	dropped_fbx_path = path;
 }

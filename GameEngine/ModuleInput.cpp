@@ -106,7 +106,7 @@ update_status ModuleInput::PreUpdate(float dt)
 			break;
 
 			case SDL_DROPFILE:
-				App->renderer3D->ImportFbx(e.drop.file); //BE ES LA RUTA
+				file_path = e.drop.file; //BE ES LA RUTA
 				has_dropped = true;
 				SDL_free(e.drop.file);
 				break;
@@ -140,4 +140,14 @@ bool ModuleInput::CleanUp()
 	MYLOG("Quitting SDL input event subsystem");
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
 	return true;
+}
+
+const char * ModuleInput::GetFileDropped()
+{
+	if (has_dropped)
+	{
+		return file_path;
+	}
+	else return nullptr;
+	return nullptr;
 }

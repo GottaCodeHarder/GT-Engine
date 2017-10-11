@@ -33,6 +33,6 @@ class Importer
 
 public:
 
-	std::vector<Mesh*> CreateMesh(char* path);
+	std::vector<Mesh*> CreateMesh(const char* path);
 
 };

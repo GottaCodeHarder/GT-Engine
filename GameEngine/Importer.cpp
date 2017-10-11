@@ -12,7 +12,7 @@
 #pragma	comment (lib, "Devil/libx86/ILU.lib")
 #pragma	comment (lib, "Devil/libx86/ILUT.lib")
 
-std::vector<Mesh*> Importer::CreateMesh(char * path)
+std::vector<Mesh*> Importer::CreateMesh(const char * path)
 {
 	const aiScene* scene = aiImportFile(path, aiProcessPreset_TargetRealtime_MaxQuality);
 	std::vector<Mesh*> ret;

@@ -30,7 +30,6 @@ public:
 	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
 	void FillVertex();
 	void DirectCube();
-	void ImportFbx(char* path);
 	std::vector<Mesh*> meshes;
 
 private:
