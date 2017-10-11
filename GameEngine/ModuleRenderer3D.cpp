@@ -191,21 +191,24 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 //---------------------------------------------------------------------------------------------------------------------------
 	if (App->input->has_dropped)
 	{
-		std::vector<Mesh*> tmp = importer.CreateMesh(dropped_fbx_path);
 		meshes.clear(); //Memory Leak
+		std::vector<Mesh*> tmp = importer.CreateMesh(dropped_fbx_path);
+
 		App->camera->referenceDone = true;
-		std::vector<Mesh*>::iterator it = tmp.begin();
-
-		App->camera->Position.x = (*it)->aabbBox.maxPoint.x+10;
-		App->camera->Position.y = (*it)->aabbBox.maxPoint.y+10;
-		App->camera->Position.z = (*it)->aabbBox.maxPoint.z+10;
-		App->camera->LookAt(vec3((*it)->aabbBox.CenterPoint().x, (*it)->aabbBox.CenterPoint().y, (*it)->aabbBox.CenterPoint().z));
-
-		for (std::vector<Mesh*>::iterator it = tmp.begin(); it != tmp.end(); it++)
+		if (!tmp.empty())
 		{
-			meshes.push_back(*it);
-		}
+			std::vector<Mesh*>::iterator it = tmp.begin();
 
+			App->camera->Position.x = (*it)->aabbBox.maxPoint.x+10;
+			App->camera->Position.y = (*it)->aabbBox.maxPoint.y+10;
+			App->camera->Position.z = (*it)->aabbBox.maxPoint.z+10;
+			App->camera->LookAt(vec3((*it)->aabbBox.CenterPoint().x, (*it)->aabbBox.CenterPoint().y, (*it)->aabbBox.CenterPoint().z));
+		
+			for (std::vector<Mesh*>::iterator it = tmp.begin(); it != tmp.end(); it++)
+			{
+				meshes.push_back(*it);
+			}
+		}
 		
 		App->input->has_dropped = false;
 	}
@@ -236,7 +239,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
+		
 		glDisableClientState(GL_VERTEX_ARRAY);
 		glDisableClientState(GL_NORMAL_ARRAY);
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);

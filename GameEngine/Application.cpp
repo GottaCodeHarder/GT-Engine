@@ -117,6 +117,7 @@ void Application::AddImGui()
 		{
 			(*it)->AddImGui();
 		}
+		ImGui::SetWindowSize(ImVec2(430.0f, 1080.0f));
 		ImGui::End();
 	}
 }

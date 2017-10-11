@@ -27,8 +27,8 @@ bool ModuleEditor::Start()
 	bool ret = true;
 
 	active_menu.insert(std::pair<std::string, bool>("Geometry", false));
-	active_menu.insert(std::pair<std::string, bool>("Configuration", false));
-	active_menu.insert(std::pair<std::string, bool>("Console", false));
+	active_menu.insert(std::pair<std::string, bool>("Configuration", true));
+	active_menu.insert(std::pair<std::string, bool>("Console", true));
 
 	ImGui_ImplSdlGL3_Init(App->window->GetWindow());
 	
@@ -103,7 +103,7 @@ update_status ModuleEditor::Update(float dt)
 	}
 	if (active_menu["Configuration"])
 	{
-		ImGui::SetNextWindowPos(ImVec2(1040, 19));
+		ImGui::SetNextWindowPos(ImVec2(1170, 19));
 		Configuration();
 	}
 	if (active_menu["Console"])
