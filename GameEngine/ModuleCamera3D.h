@@ -19,6 +19,7 @@ public:
 	void LookAt(const vec3 &Spot);
 	void Move(const vec3 &Movement);
 	float* GetViewMatrix();
+	bool referenceDone = false;
 
 private:
 
@@ -36,4 +37,5 @@ private:
 	float max_following_dist;
 	float following_height;
 	bool camera;
+	
 };

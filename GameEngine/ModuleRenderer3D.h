@@ -31,6 +31,7 @@ public:
 	void FillVertex();
 	void DirectCube();
 	void ImportFbx(char* path);
+	std::vector<Mesh*> meshes;
 
 private:
 	bool bEnableDepthTest = true;
@@ -43,7 +44,7 @@ private:
 	float vertices[108] = {};
 	char * dropped_fbx_path = NULL;
 
-	std::vector<Mesh*> meshes;
+
 	Importer importer;
 	uint my_id = 0;
 

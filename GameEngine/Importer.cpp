@@ -97,7 +97,44 @@ std::vector<Mesh*> Importer::CreateMesh(char * path)
 			scene->mMaterials[scene->mMeshes[i]->mMaterialIndex]->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &texturePath);
 			mesh->buff_texture = ilutGLLoadImage(""/*path de la textura*/); // TODO
 
+
+		//	std::vector<math::float3> tmp = mesh->vertex.data();
+		//
+		//	for (std::vector<math::float3>::iterator it = tmp.begin(); it != tmp.end(); it++)
+		//	{
+		//		//minPoint
+		//		if (mesh->vec3MinPoint[0] > it._Ptr->x)
+		//		{			
+		//			mesh->vec3MinPoint[0] = it._Ptr->x;
+		//		}			 
+		//		if (mesh->vec3MinPoint[1] > it._Ptr->y)
+		//		{			  
+		//			mesh->vec3MinPoint[1] = it._Ptr->y;
+		//		}			 
+		//		if (mesh->vec3MinPoint[2] > it._Ptr->z)
+		//		{			 
+		//			mesh->vec3MinPoint[2] = it._Ptr->z;
+		//		}
+		//
+		//		//maxPoint
+		//		if (mesh->vec3MaxPoint[0] < it._Ptr->x)
+		//		{
+		//			mesh->vec3MaxPoint[0] = it._Ptr->x;
+		//		}
+		//		if (mesh->vec3MaxPoint[1] < it._Ptr->y)
+		//		{
+		//			mesh->vec3MaxPoint[1] = it._Ptr->y;
+		//		}
+		//		if (mesh->vec3MaxPoint[2] < it._Ptr->z)
+		//		{
+		//			mesh->vec3MaxPoint[2] = it._Ptr->z;
+		//		}
+		//	}
+			mesh->aabbBox.SetNegativeInfinity();
+			mesh->aabbBox.Enclose(mesh->vertex.data(), scene->mMeshes[i]->mNumVertices);
+			
 			ret.push_back(mesh);
+			
 		}
 		aiReleaseImport(scene);
 	}

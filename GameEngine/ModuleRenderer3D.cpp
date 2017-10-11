@@ -192,7 +192,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	{
 		std::vector<Mesh*> tmp = importer.CreateMesh(dropped_fbx_path);
 		meshes.clear(); //Memory Leak
-
+		App->camera->referenceDone = true;
 		for (std::vector<Mesh*>::iterator it = tmp.begin(); it != tmp.end(); it++)
 		{
 			meshes.push_back(*it);
@@ -205,35 +205,35 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 
 	for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++)
 	{
-
+	
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glBindBuffer(GL_ARRAY_BUFFER, (*it)->buff_vertex);
 		glVertexPointer(3, GL_FLOAT, 0, NULL);
-
+	
 		glEnableClientState(GL_NORMAL_ARRAY);
 		glBindBuffer(GL_ARRAY_BUFFER, (*it)->buff_normals);
 		glNormalPointer(GL_FLOAT, 0, NULL);
-
+	
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glBindBuffer(GL_ARRAY_BUFFER, (*it)->buff_uv);
 		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-
+	
 		glEnableClientState(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, (*it)->buff_texture);
-
+	
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (*it)->buff_index);
 		glDrawElements(GL_TRIANGLES, (*it)->num_index, GL_UNSIGNED_INT, NULL);
-
+	
 		// CleanUp
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+	
 		glDisableClientState(GL_VERTEX_ARRAY);
 		glDisableClientState(GL_NORMAL_ARRAY);
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		glDisableClientState(GL_TEXTURE_2D);
-
+	
 	}
 	
 	// Drawing UI
