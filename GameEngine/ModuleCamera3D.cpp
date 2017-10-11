@@ -58,17 +58,37 @@ update_status ModuleCamera3D::Update(float dt)
 
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT) newPos -= X * speed * 2;
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed * 2;
+		
+		if (App->input->GetMouseZ() == 1)
+		{
+			newPos -= Z * speed * 10;
+		}
+
+		if (App->input->GetMouseZ() == -1)
+		{
+			newPos += Z * speed * 10;
+		}
+
+		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+		{
+			LookAt(vec3(0, 0, 0));
+		}
+
 
 		Position += newPos;
 		Reference += newPos;
 
 		// Mouse motion ----------------
-
-		if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
-		{
 			int dx = -App->input->GetMouseXMotion();
 			int dy = -App->input->GetMouseYMotion();
 
+		if (App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
+		{
+			referenceDone = true;
+		}
+
+		if (App->input->GetMouseButton(SDL_BUTTON_RIGHT) == KEY_REPEAT)
+		{
 			float Sensitivity = 0.25f;
 
 			Position -= Reference;
@@ -98,6 +118,46 @@ update_status ModuleCamera3D::Update(float dt)
 
 			Position = Reference + Z * length(Position);
 		}
+		else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
+		{
+			float Sensitivity = 0.25f;
+			std::vector<Mesh*>::iterator it = App->renderer3D->meshes.begin();
+
+			if (!App->renderer3D->meshes.empty() && referenceDone)
+			{
+				Reference = vec3((*it)->aabbBox.CenterPoint().x, (*it)->aabbBox.CenterPoint().y, (*it)->aabbBox.CenterPoint().z);
+				referenceDone = false;
+			}
+		
+			Position -= Reference;
+
+			if (dx != 0)
+			{
+				float DeltaX = (float)dx * Sensitivity;
+
+				X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+				Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+				Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+			}
+
+			if (dy != 0)
+			{
+				float DeltaY = (float)dy * Sensitivity;
+
+				Y = rotate(Y, DeltaY, X);
+				Z = rotate(Z, DeltaY, X);
+
+				if (Y.y < 0.0f)
+				{
+					Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
+					Y = cross(Z, X);
+				}
+			}
+
+			Position = Reference + Z * length(Position);
+		}
+
+
 	}
 	// Recalculate matrix -------------
 	CalculateViewMatrix();

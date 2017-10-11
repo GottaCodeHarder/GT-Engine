@@ -3,6 +3,7 @@
 #include "Assimp/include/postprocess.h"
 #include "Assimp/include/cfileio.h"
 #include "Globals.h"
+#include "MathGeoLib/MathGeoLib.h"
 
 #pragma comment (lib, "Assimp/libx86/assimp.lib")
 
@@ -20,6 +21,11 @@ public:
 	uint buff_index = 0;
 	uint num_index = 0;
 	uint buff_texture = 0;
+
+	math::AABB aabbBox;
+	float vec3MinPoint[3] = { 0.0f, 0.0f, 0.0f };
+	float vec3MaxPoint[3] = { 0.0f, 0.0f, 0.0f };
+private:
 
 };
 
