@@ -193,6 +193,9 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 		std::vector<Mesh*> tmp = importer.CreateMesh(dropped_fbx_path);
 		meshes.clear(); //Memory Leak
 		App->camera->referenceDone = true;
+		std::vector<Mesh*>::iterator it = tmp.begin();
+		App->camera->LookAt(vec3((*it)->aabbBox.CenterPoint().x, (*it)->aabbBox.CenterPoint().y, (*it)->aabbBox.CenterPoint().z));
+
 		for (std::vector<Mesh*>::iterator it = tmp.begin(); it != tmp.end(); it++)
 		{
 			meshes.push_back(*it);
