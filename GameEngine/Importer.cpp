@@ -4,6 +4,13 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include "MathGeoLib\MathGeoLib.h"
+#include "Devil/include/il.h"
+#include "Devil/include/ilu.h"
+#include "Devil/include/ilut.h"
+
+#pragma comment (lib, "Devil/libx86/DevIL.lib")
+#pragma	comment (lib, "Devil/libx86/ILU.lib")
+#pragma	comment (lib, "Devil/libx86/ILUT.lib")
 
 std::vector<Mesh*> Importer::CreateMesh(char * path)
 {
@@ -18,20 +25,20 @@ std::vector<Mesh*> Importer::CreateMesh(char * path)
 		{
 			Mesh* mesh = new Mesh;
 
-			float3* vertices = new float3[scene->mMeshes[i]->mNumVertices];
-			memcpy(vertices, scene->mMeshes[i]->mVertices, sizeof(float3)*scene->mMeshes[i]->mNumVertices);
-			
+			mesh->vertex.reserve(scene->mMeshes[i]->mNumVertices);
+			memcpy(mesh->vertex.data(), scene->mMeshes[i]->mVertices, sizeof(float3)*scene->mMeshes[i]->mNumVertices);
+
 			glGenBuffers(1, (GLuint*) &(mesh->buff_vertex));
 			glBindBuffer(GL_ARRAY_BUFFER, mesh->buff_vertex);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * scene->mMeshes[i]->mNumVertices, vertices, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * scene->mMeshes[i]->mNumVertices, mesh->vertex.data(), GL_STATIC_DRAW);
 
 			if (scene->mMeshes[i]->HasNormals())
 			{
-				float3* normals = new float3[scene->mMeshes[i]->mNumVertices];
-				memcpy(normals, scene->mMeshes[i]->mNormals, sizeof(float3)*scene->mMeshes[i]->mNumVertices);
+				mesh->normals.reserve(scene->mMeshes[i]->mNumVertices);
+				memcpy(mesh->normals.data(), scene->mMeshes[i]->mNormals, sizeof(float3)*scene->mMeshes[i]->mNumVertices);
 				glGenBuffers(1, (GLuint*) &(mesh->buff_normals));
 				glBindBuffer(GL_ARRAY_BUFFER, mesh->buff_normals);
-				glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * scene->mMeshes[i]->mNumVertices, normals, GL_STATIC_DRAW);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * scene->mMeshes[i]->mNumVertices, mesh->normals.data(), GL_STATIC_DRAW);
 			}
 			
 			if (scene->mMeshes[i]->HasTextureCoords(0))
@@ -62,6 +69,11 @@ std::vector<Mesh*> Importer::CreateMesh(char * path)
 			glGenBuffers(1, (GLuint*) &(mesh->buff_index));
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->buff_index);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * scene->mMeshes[i]->mNumFaces*3, index, GL_STATIC_DRAW);
+
+			mesh->buff_texture;
+			aiString texturePath; // path de la textura, desde donde esta el fbx
+			scene->mMaterials[scene->mMeshes[i]->mMaterialIndex]->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &texturePath);
+			mesh->buff_texture = ilutGLLoadImage(""/*path de la textura*/); // TODO
 
 			ret.push_back(mesh);
 		}
