@@ -71,7 +71,10 @@ update_status ModuleCamera3D::Update(float dt)
 
 		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
 		{
-			LookAt(vec3(0, 0, 0));
+			std::vector<Mesh*>::iterator it = App->renderer3D->meshes.begin();
+
+			LookAt(vec3((*it)->aabbBox.CenterPoint().x, (*it)->aabbBox.CenterPoint().y, (*it)->aabbBox.CenterPoint().z));
+
 		}
 
 
@@ -125,6 +128,7 @@ update_status ModuleCamera3D::Update(float dt)
 
 			if (!App->renderer3D->meshes.empty() && referenceDone)
 			{
+
 				Reference = vec3((*it)->aabbBox.CenterPoint().x, (*it)->aabbBox.CenterPoint().y, (*it)->aabbBox.CenterPoint().z);
 				referenceDone = false;
 			}

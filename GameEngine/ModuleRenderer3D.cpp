@@ -125,12 +125,13 @@ bool ModuleRenderer3D::Init()
 	// Projection matrix for
 	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	FillVertex();
-	DirectCube();
-	glColor4f(0.2f, 0.2f, 1.0f, 1.0f);
-	glGenBuffers(1, (GLuint*) &(my_id)); //TANTU
-	glBindBuffer(GL_ARRAY_BUFFER, my_id);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, vertices, GL_STATIC_DRAW);
+//DRAW QUAD
+	//FillVertex();
+	//DirectCube();
+	//glColor4f(0.2f, 0.2f, 1.0f, 1.0f);
+	//glGenBuffers(1, (GLuint*) &(my_id)); //TANTU
+	//glBindBuffer(GL_ARRAY_BUFFER, my_id);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, vertices, GL_STATIC_DRAW);
 
 //	App->file_system->Load("Game/Assets/warrior.fbx");
 	
@@ -180,13 +181,13 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 		EndDebugDraw();
 	}
 	*/
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, my_id);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	
-	glDrawArrays(GL_TRIANGLES, 0, 36*3);
-	glDisableClientState(GL_VERTEX_ARRAY);
+//DRAW QUAD
+	//glEnableClientState(GL_VERTEX_ARRAY);
+	//glBindBuffer(GL_ARRAY_BUFFER, my_id);
+	//glVertexPointer(3, GL_FLOAT, 0, NULL);
+	//
+	//glDrawArrays(GL_TRIANGLES, 0, 36*3);
+	//glDisableClientState(GL_VERTEX_ARRAY);
 //---------------------------------------------------------------------------------------------------------------------------
 	if (App->input->has_dropped)
 	{
@@ -194,6 +195,10 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 		meshes.clear(); //Memory Leak
 		App->camera->referenceDone = true;
 		std::vector<Mesh*>::iterator it = tmp.begin();
+
+		App->camera->Position.x = (*it)->aabbBox.maxPoint.x+10;
+		App->camera->Position.y = (*it)->aabbBox.maxPoint.y+10;
+		App->camera->Position.z = (*it)->aabbBox.maxPoint.z+10;
 		App->camera->LookAt(vec3((*it)->aabbBox.CenterPoint().x, (*it)->aabbBox.CenterPoint().y, (*it)->aabbBox.CenterPoint().z));
 
 		for (std::vector<Mesh*>::iterator it = tmp.begin(); it != tmp.end(); it++)

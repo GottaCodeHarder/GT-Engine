@@ -23,8 +23,6 @@ public:
 	uint buff_texture = 0;
 
 	math::AABB aabbBox;
-	float vec3MinPoint[3] = { 0.0f, 0.0f, 0.0f };
-	float vec3MaxPoint[3] = { 0.0f, 0.0f, 0.0f };
 private:
 
 };
