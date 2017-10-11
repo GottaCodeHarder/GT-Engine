@@ -9,3 +9,4 @@
 *.opendb
 *.VC.db
 *.VC.VC.opendb
+.ipch
