@@ -53,23 +53,17 @@ std::vector<Mesh*> Importer::CreateMesh(char * path)
 			if (scene->mMeshes[i]->HasTextureCoords(0))
 			{
 				float2* uv = new float2[scene->mMeshes[i]->mNumVertices]; //BE
-				if (uv > &float2(scene->mMeshes[i]->mNumVertices))
-				{
-					MYLOG("WARNING, don't have UV");
-				}
-				else
-				{
-					memcpy(uv, scene->mMeshes[i]->mTextureCoords, sizeof(float2)*scene->mMeshes[i]->mNumVertices);
-				}
-				
+				memcpy(uv, scene->mMeshes[i]->mTextureCoords, sizeof(float2)*scene->mMeshes[i]->mNumVertices);
+								
 
 				glGenBuffers(1, (GLuint*) &(mesh->buff_uv));
 				glBindBuffer(GL_ARRAY_BUFFER, mesh->buff_uv);
-				glBufferData(GL_ARRAY_BUFFER, sizeof(float2) * scene->mMeshes[i]->mNumVertices, uv, GL_STATIC_DRAW);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(float2) * scene->mMeshes[i]->mNumVertices*2, uv, GL_STATIC_DRAW);
 			}
 			
 			
 			uint* index = new uint[scene->mMeshes[i]->mNumFaces*3];
+			mesh->num_index = scene->mMeshes[i]->mNumFaces * 3;
 			for (uint j = 0; j < scene->mMeshes[i]->mNumFaces; j++)
 			{
 				if (scene->mMeshes[i]->mFaces[j].mNumIndices != 3)
@@ -79,7 +73,6 @@ std::vector<Mesh*> Importer::CreateMesh(char * path)
 				else
 				{
 					memcpy(&index[j*3], scene->mMeshes[i]->mFaces[j].mIndices, sizeof(uint)*3);
-					mesh->num_index++;
 				}
 			}
 

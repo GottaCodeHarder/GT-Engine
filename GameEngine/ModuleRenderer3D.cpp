@@ -191,7 +191,13 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 //---------------------------------------------------------------------------------------------------------------------------
 	if (App->input->has_dropped)
 	{
-		meshes.clear(); //Memory Leak
+		for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++)
+		{
+			if ((*it) != nullptr)
+				delete (*it);
+		}
+		meshes.clear();
+
 		std::vector<Mesh*> tmp = importer.CreateMesh(dropped_fbx_path);
 
 		App->camera->referenceDone = true;
