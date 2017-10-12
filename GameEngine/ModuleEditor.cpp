@@ -271,22 +271,20 @@ void ModuleEditor::Console()
 {
 	if (ImGui::Begin("Console"))
 	{
-
-		ImGui::Text(console_buffer.c_str());
-
-		ImGui::End();
+		ImGui::Text(console_buffer.c_str());		
 	}
+
+	ImGui::End();
 }
 
 void ModuleEditor::Configuration()
 {
 	if (ImGui::Begin("Configuration"))
 	{
-
 		App->AddImGui();
-
-		ImGui::End();
 	}
+
+	ImGui::End();
 }
 
 void ModuleEditor::ToolRandom()
@@ -350,6 +348,7 @@ void ModuleEditor::ToolRandom()
 		}
 		}
 	}
+
 	ImGui::End();
 }
 
