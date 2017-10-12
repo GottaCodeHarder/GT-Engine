@@ -66,6 +66,7 @@ bool Application::Init()
 	{
 		(*it)->Start();
 	}
+	App->window->SetTitle(name.c_str());
 
 	ms_timer.Start();
 	return ret;

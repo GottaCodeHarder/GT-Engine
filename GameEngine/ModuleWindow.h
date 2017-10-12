@@ -30,7 +30,6 @@ public:
 	SDL_Surface* screen_surface;
 
 private:
-	std::string title;
 
 	int width = SCREEN_WIDTH * SCREEN_SIZE;
 	int	height = SCREEN_HEIGHT * SCREEN_SIZE;

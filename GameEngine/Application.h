@@ -46,6 +46,9 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+	std::string name;
+	std::string organization;
+
 	void RequestBrowser(std::string link);
 
 private:
@@ -60,9 +63,6 @@ private:
 	float millisec = 0.0f;
 	float fpsArr[100] = {};
 	float msArr[100] = {};
-
-	std::string name;
-	std::string organization;
 
 	void LoadConfiguration();
 	void SaveConfiguration();
