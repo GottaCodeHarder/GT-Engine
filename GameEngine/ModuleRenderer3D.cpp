@@ -254,6 +254,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	}
 	
 	// Drawing UI
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	App->editor->Draw();
 
 	SDL_GL_SwapWindow(App->window->window);
