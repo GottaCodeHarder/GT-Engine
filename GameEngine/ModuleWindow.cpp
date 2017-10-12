@@ -55,7 +55,9 @@ bool ModuleWindow::Init()
 			flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
 
-		window = SDL_CreateWindow(TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
+		title = "GT ENGINE";
+
+		window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
 
 		if(window == NULL)
 		{
@@ -81,15 +83,15 @@ void ModuleWindow::AddImGui()
 
 		ImGui::SliderInt("Width", &width, 600, 2000);
 		ImGui::SliderInt("Height", &height, 600, 1600);
-		if (!resizable) 
+		if (!bResizable) 
 		{
 			SDL_SetWindowSize(window, width, height);
-		}
-		
+		}		
 
-		if (ImGui::Checkbox("FullScreen", &fullscreen))
+		if (ImGui::Checkbox("FullScreen", &bFullscreen))
 		{
-			if (fullscreen) {
+			if (bFullscreen)
+			{
 				flags |= SDL_WINDOW_FULLSCREEN;
 				SDL_SetWindowFullscreen(window, flags);
 			}
@@ -97,40 +99,53 @@ void ModuleWindow::AddImGui()
 			{
 				flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 				SDL_SetWindowFullscreen(window, flags);
+				bFullscreenDesktop = false;
 
 			}
-						}
-		ImGui::SameLine();
-		if (ImGui::Checkbox("Resizable", &resizable))
-		{
-			if (resizable) {
-				//flags |= SDL_WINDOW_RESIZABLE;
-				//SDL_Resizable(window, flags);
-			}
-			else
-				SDL_RestoreWindow(window);
 		}
 
-		if (ImGui::Checkbox("Borderless", &borderless))
+		ImGui::SameLine();
+
+		if (ImGui::Checkbox("Resizable", &bResizable))
 		{
-			if (borderless) {
-				flags |= SDL_WINDOW_BORDERLESS;
+			if (bResizable)
+			{
+				flags |= SDL_WINDOW_RESIZABLE;
+			}
+			else
+			{
+				SDL_RestoreWindow(window);
+			}
+		}
+		if (ImGui::IsItemHovered())
+			ImGui::SetTooltip("Not yet available");
+
+		if (ImGui::Checkbox("Borderless", &bBorderless))
+		{
+			if (bBorderless)
+			{
+				SDL_SetWindowBordered(window, SDL_FALSE);
+			}
+			else
+			{
 				SDL_SetWindowBordered(window, SDL_TRUE);
 			}
-			else
-				SDL_RestoreWindow(window);
 		}
+
 		ImGui::SameLine();
-		if (ImGui::Checkbox("FullScreen Desktop", &fullscreen_desktop))
+
+		if (ImGui::Checkbox("FullScreen Desktop", &bFullscreenDesktop))
 		{
-			if (fullscreen_desktop) {
+			if (bFullscreenDesktop) {
 				flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 				SDL_SetWindowFullscreen(window, flags);
+				bFullscreen = true;
 			}
 			else
 			{
 				flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 				SDL_SetWindowFullscreen(window, flags);
+				bFullscreen = false;
 			}
 		}
 	}

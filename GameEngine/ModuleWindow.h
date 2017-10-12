@@ -30,12 +30,14 @@ public:
 	SDL_Surface* screen_surface;
 
 private:
+	std::string title;
+
 	int width = SCREEN_WIDTH * SCREEN_SIZE;
 	int	height = SCREEN_HEIGHT * SCREEN_SIZE;
-	bool fullscreen = WIN_FULLSCREEN;
-	bool fullscreen_desktop = WIN_FULLSCREEN_DESKTOP;
-	bool borderless = WIN_BORDERLESS;
-	bool resizable = WIN_RESIZABLE;
+	bool bFullscreen = WIN_FULLSCREEN;
+	bool bFullscreenDesktop = WIN_FULLSCREEN_DESKTOP;
+	bool bBorderless = WIN_BORDERLESS;
+	bool bResizable = WIN_RESIZABLE;
 };
 
 #endif // __ModuleWindow_H__

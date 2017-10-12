@@ -19,7 +19,7 @@ Application* App = NULL;
 
 int main(int argc, char ** argv)
 {
-	MYLOG("Starting game '%s'...", TITLE);
+	MYLOG("Starting GT GameEngine");
 
 	int main_return = EXIT_FAILURE;
 	main_states state = MAIN_CREATION;
@@ -84,7 +84,7 @@ int main(int argc, char ** argv)
 		}
 	}
 
-	MYLOG("Exiting game '%s'...\n", TITLE);
+	MYLOG("Exiting GT GameEngine...\n");
 	delete App;
 
 	return main_return;

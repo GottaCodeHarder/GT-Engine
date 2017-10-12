@@ -38,13 +38,6 @@ bool ModuleScene::CleanUp()
 // Update
 update_status ModuleScene::Update(float dt)
 {
-	// Title Stuff
-
-	char title[500];
-	sprintf_s(title, "GT ENGINE");
-
-	App->window->SetTitle(title);
-
 	return UPDATE_CONTINUE;
 }
 
