@@ -23,64 +23,63 @@ void ModuleHardware::AddImGui()
 	if (ImGui::CollapsingHeader("Hardware"))
 	{
 		char label[20];
-		ImVec4 color = ImVec4(0.0f, 1.0f, 1.0f, 1.0f);
 
 		ImGui::Text("SDL Version: ");
 		ImGui::SameLine();
-		ImGui::TextColored(color, sdlVersion);
+		ImGui::Text(sdlVersion);
 
 		ImGui::Separator();
 
 		sprintf_s(label, 20, "%i (Cache: %ikb)", cpuCount, cpuCache);
 		ImGui::Text("CPUs: ");
 		ImGui::SameLine();
-		ImGui::TextColored(color, label);
+		ImGui::Text(label);
 
 		sprintf_s(label, 20, "%.1fGb", ramGb);
 		ImGui::Text("System RAM: ");
 		ImGui::SameLine();
-		ImGui::TextColored(color, label);
+		ImGui::Text(label);
 
 		ImGui::Text("Caps:");
 		if (rdtsc)
 		{
-			ImGui::SameLine(); ImGui::TextColored(color, " RDTSC");
+			ImGui::SameLine(); ImGui::Text(" RDTSC");
 		}
 		if (mmx)
 		{
-			ImGui::SameLine(); ImGui::TextColored(color, ", MMX");
+			ImGui::SameLine(); ImGui::Text(", MMX");
 		}
 		if (sse)
 		{
-			ImGui::SameLine(); ImGui::TextColored(color, ", SSE");
+			ImGui::SameLine(); ImGui::Text(", SSE");
 		}
 		if (sse2)
 		{
-			ImGui::SameLine(); ImGui::TextColored(color, ", SSE2");
+			ImGui::SameLine(); ImGui::Text(", SSE2");
 		}
 		if (sse3)
 		{
-			ImGui::SameLine(); ImGui::TextColored(color, ", SSE3");
+			ImGui::SameLine(); ImGui::Text(", SSE3");
 		}
 		if (sse41)
 		{
-			ImGui::SameLine(); ImGui::TextColored(color, ", SSE41");
+			ImGui::SameLine(); ImGui::Text(", SSE41");
 		}
 		if (sse42)
 		{
-			ImGui::SameLine(); ImGui::TextColored(color, ", SSE42");
+			ImGui::SameLine(); ImGui::Text(", SSE42");
 		}
 		if (avx)
 		{
-			ImGui::SameLine(); ImGui::TextColored(color, ", AVX");
+			ImGui::SameLine(); ImGui::Text(", AVX");
 		}
 		if (altivec)
 		{
-			ImGui::SameLine(); ImGui::TextColored(color, ", AltiVec");
+			ImGui::SameLine(); ImGui::Text(", AltiVec");
 		}
 		if (dddnow)
 		{
-			ImGui::SameLine(); ImGui::TextColored(color, ", 3DNow");
+			ImGui::SameLine(); ImGui::Text(", 3DNow");
 		}
 	}
 }

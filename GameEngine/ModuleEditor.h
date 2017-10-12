@@ -1,6 +1,18 @@
 #pragma once
 #include "Module.h"
+#include "MathGeoLib/MathGeoLib.h"
 #include <map>
+
+struct Style
+{
+	bool active = true;
+
+	float3 cText;
+	float3 cHead;
+	float3 cArea;
+	float3 cBody;
+	float3 cPops;
+};
 
 class ModuleEditor : public Module
 {
@@ -21,7 +33,11 @@ public:
 private:
 	ImGuiTextBuffer console_buffer;
 
-	bool bSetStyle = false;
+	Style blueStyle;
+	Style mintStyle;
+	Style arcStyle;
+	Style gteStyle;
+
 	bool bShowRandom = false;
 	bool bShowExample = false;
 	bool bShowAbout = false;
@@ -42,7 +58,8 @@ private:
 	void Console();
 	void Configuration();
 
-	void SetStyle(bool set);
+	void SetStyle(Style style);
+	void InitStyles();
 
 private:
 
