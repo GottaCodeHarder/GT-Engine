@@ -92,12 +92,10 @@ update_status ModuleEditor::Update(float dt)
 	}
 	if (bShowExample)
 	{
-		ImGui::SetNextWindowPos(ImVec2(800, 19));
 		ImGui::ShowTestWindow();
 	}
 	if (bShowRandom)
 	{
-		ImGui::SetNextWindowPos(ImVec2(0, 19));
 		ToolRandom();
 	}
 	if (bShowAbout)
@@ -280,7 +278,7 @@ void ModuleEditor::Console()
 void ModuleEditor::Configuration()
 {
 	ImGuiWindowFlags flag = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_NoFocusOnAppearing;
+		ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_ShowBorders;
 	ImGui::Begin("Configuration", 0, ImVec2(500, 1000), 0.8f, flag);
 	{
 		App->AddImGui();
@@ -291,7 +289,8 @@ void ModuleEditor::Configuration()
 
 void ModuleEditor::ToolRandom()
 {
-	ImGui::Begin("Random Generator", 0, ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoCollapse);
+	ImGui::Begin("Random Generator", 0, ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoCollapse |
+	ImGuiWindowFlags_NoResize);
 	{
 		const char* RandType[] = { "Float", "Float (0~1)", "Int" };
 
