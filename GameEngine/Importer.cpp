@@ -82,6 +82,9 @@ std::vector<Mesh*> Importer::CreateMesh(const char * path)
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * scene->mMeshes[i]->mNumFaces*3, index, GL_STATIC_DRAW);
 			MYLOG("Importer - Loading %i index succesful!", (uint)scene->mMeshes[i]->mNumFaces * 3);
 
+			mesh->aabbBox.SetNegativeInfinity();
+			mesh->aabbBox.Enclose(mesh->vertex.data(), scene->mMeshes[i]->mNumVertices);
+
 			if (scene->HasMaterials())
 			{
 				if (scene->mMaterials[scene->mMeshes[i]->mMaterialIndex]->GetTextureCount(aiTextureType_DIFFUSE) > 0)
@@ -100,9 +103,13 @@ std::vector<Mesh*> Importer::CreateMesh(const char * path)
 							break;
 						}
 					}
-					if (scene->mMeshes[i]->HasTextureCoords(0))//falta comprovacio que no hi ha textura
+					if (strPath.c_str() == NULL)//falta comprovacio que no hi ha textura
 					{
 						mesh->buff_texture = loadImage(strPath.c_str());
+					}
+					else
+					{
+						MYLOG("ERROR Image not loaded");
 					}
 					
 					if (mesh->buff_texture == -1)
@@ -111,9 +118,6 @@ std::vector<Mesh*> Importer::CreateMesh(const char * path)
 					}
 				}
 			}
-
-			mesh->aabbBox.SetNegativeInfinity();
-			mesh->aabbBox.Enclose(mesh->vertex.data(), scene->mMeshes[i]->mNumVertices);
 			
 			ret.push_back(mesh);
 			

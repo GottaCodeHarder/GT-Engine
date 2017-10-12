@@ -75,10 +75,11 @@ update_status ModuleCamera3D::Update(float dt)
 			{
 				std::vector<Mesh*>::iterator it = App->renderer3D->meshes.begin();
 		
+				Position.x = (*it)->aabbBox.maxPoint.x * 2;
+				Position.y = (*it)->aabbBox.maxPoint.y * 2;
+				Position.z = (*it)->aabbBox.maxPoint.z * 2;
 				LookAt(vec3((*it)->aabbBox.CenterPoint().x, (*it)->aabbBox.CenterPoint().y, (*it)->aabbBox.CenterPoint().z));
-				Position.x = (*it)->aabbBox.maxPoint.x+10;
-				Position.y = (*it)->aabbBox.maxPoint.y+10;
-				Position.z = (*it)->aabbBox.maxPoint.z+10;
+		
 			}
 			
 		}
