@@ -1,9 +1,6 @@
 #include "Importer.h"
-#include "glew/include/glew.h"
-#include "SDL/include/SDL_opengl.h"
-#include <gl/GL.h>
-#include <gl/GLU.h>
-#include "MathGeoLib\MathGeoLib.h"
+
+#include "MathGeoLib/MathGeoLib.h"
 #include "Devil/include/il.h"
 #include "Devil/include/ilu.h"
 #include "Devil/include/ilut.h"
@@ -81,37 +78,31 @@ std::vector<Mesh*> Importer::CreateMesh(const char * path)
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * scene->mMeshes[i]->mNumFaces*3, index, GL_STATIC_DRAW);
 			MYLOG("Importer - Loading %i index succesful!", (uint)scene->mMeshes[i]->mNumFaces * 3);
 
-			mesh->buff_texture;
-			aiString texturePath; // path de la textura, desde donde esta el fbx
-			std::string strPath = path;
-			scene->mMaterials[scene->mMeshes[i]->mMaterialIndex]->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &texturePath);
-			
-			bool found = false;
-			for (uint i = strlen(path); i >= 0 && !found; i--)
+			if (scene->HasMaterials())
 			{
-				if (path[i] == '\\')
+				if (scene->mMaterials[scene->mMeshes[i]->mMaterialIndex]->GetTextureCount(aiTextureType_DIFFUSE) > 0)
 				{
-					for (uint y = 0; !found; y++)
-					{
-						if (strPath[i + 1] == '\0')
-						{
-							strPath.resize(strPath.size() + 1);
-						}
+					aiString texturePath; // Path to the texture, from FBX directory
+					scene->mMaterials[scene->mMeshes[i]->mMaterialIndex]->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &texturePath);
+					std::string texName = texturePath.C_Str();
+					std::string strPath = path;
 
-						i++;
-						strPath[i] = texturePath.C_Str()[y];
-						if (texturePath.C_Str()[y + 1] == '\0')
+					for (uint i = strlen(path); i >= 0; i--)
+					{
+						if (path[i] == '\\')
 						{
-							found = true;
+							strPath.resize(i + 1);
+							strPath += texName;
+							break;
 						}
+					}
+					mesh->buff_texture = loadImage(strPath.c_str());
+					if (mesh->buff_texture == -1)
+					{
+						MYLOG("ERROR Creating buffer for Texture");
 					}
 				}
 			}
-			//char* cstr = NULL;
-			//strcpy_s(cstr, strPath.length() + 1, strPath.c_str());
-
-			//mesh->buff_texture = ilutGLLoadImage(cstr);
-
 
 			mesh->aabbBox.SetNegativeInfinity();
 			mesh->aabbBox.Enclose(mesh->vertex.data(), scene->mMeshes[i]->mNumVertices);
@@ -126,4 +117,73 @@ std::vector<Mesh*> Importer::CreateMesh(const char * path)
 
 	
 	return ret;
+}
+
+GLuint Importer::loadImage(const char* theFileName)
+{
+	if (!bDevilInit)
+	{
+		ilInit();
+
+		GLenum err = glewInit();
+		if (GLEW_OK != err)
+		{
+			MYLOG("GLEW initialisation error: %s", glewGetErrorString(err));
+			exit(-1);
+		}
+		MYLOG("GLEW intialised successfully. Current GLEW version: %s", glewGetString(GLEW_VERSION));
+
+		bDevilInit = true;
+	}
+
+	ILuint imageID = 0;
+	GLuint textureID;
+
+	// Safe
+	ILboolean success;
+	ILenum error;
+
+	ilGenImages(1, &imageID);
+	ilBindImage(imageID);
+
+	success = ilLoadImage(theFileName);
+	if (success)
+	{
+		ILinfo ImageInfo;
+		iluGetImageInfo(&ImageInfo);
+		if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
+		{
+			iluFlipImage();
+		}
+
+		success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+
+		if (!success)
+		{
+			error = ilGetError();
+			MYLOG("Image conversion failed! IL error: %i - %s", error, iluErrorString(error));
+			return -1;
+		}
+
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glGenTextures(1, &textureID);
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), 0, GL_RGBA, GL_UNSIGNED_BYTE, ilGetData());
+	}
+	else
+	{
+		error = ilGetError();
+		MYLOG("Image loading failed! IL error: %i - %s", error, iluErrorString(error));
+		return -1;
+	}
+
+	//ilDeleteImages(1, &imageID);
+
+	MYLOG("Texture creation successful.");
+
+	return textureID;
 }
