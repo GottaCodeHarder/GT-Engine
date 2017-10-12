@@ -103,9 +103,12 @@ std::vector<Mesh*> Importer::CreateMesh(const char * path)
 							break;
 						}
 					}
-					if (strPath.c_str() == NULL)//falta comprovacio que no hi ha textura
+					if (strPath.c_str() != NULL)
 					{
-						mesh->buff_texture = loadImage(strPath.c_str());
+						if (FileExists(strPath.c_str()))
+						{
+							mesh->buff_texture = loadImage(strPath.c_str());
+						}
 					}
 					else
 					{
@@ -198,4 +201,10 @@ GLuint Importer::loadImage(const char* theFileName)
 	MYLOG("Texture creation successful.");
 
 	return textureID;
+}
+
+bool Importer::FileExists(const std::string& name)
+{
+	struct stat buffer;
+	return (stat(name.c_str(), &buffer) == 0);
 }

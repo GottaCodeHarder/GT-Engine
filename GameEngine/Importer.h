@@ -37,6 +37,7 @@ class Importer
 {
 
 public:
+	bool FileExists(const std::string& name);
 	GLuint loadImage(const char* file);
 
 	std::vector<Mesh*> CreateMesh(const char* path);
