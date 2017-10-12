@@ -53,8 +53,8 @@ std::vector<Mesh*> Importer::CreateMesh(const char * path)
 				//memcpy(uv, scene->mMeshes[i]->mTextureCoords, sizeof(float)*scene->mMeshes[i]->mNumVertices);
 				for (int j = 0; j < scene->mMeshes[i]->mNumVertices; ++j)
 				{
-					uv[j * 2] = scene->mMeshes[i]->mTextureCoords[0][j].x;
-					uv[j * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][j].y;
+					uv[j*2] = scene->mMeshes[i]->mTextureCoords[0][j].x;
+					uv[j*2+1] = scene->mMeshes[i]->mTextureCoords[0][j].y;
 				}
 
 				glGenBuffers(1, (GLuint*) &(mesh->buff_uv));
