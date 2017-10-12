@@ -106,7 +106,7 @@ update_status ModuleEditor::Update(float dt)
 	}
 	if (active_menu["Configuration"])
 	{
-		ImGui::SetNextWindowPos(ImVec2(1170, 19));
+		ImGui::SetNextWindowPos(ImVec2(1420, 19));
 		Configuration();
 	}
 	if (active_menu["Console"])
