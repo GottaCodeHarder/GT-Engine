@@ -75,50 +75,44 @@ void Application::AddImGui()
 {
 	std::vector<Module*>::iterator it = modulesList.begin();
 
-	if (ImGui::Begin("Configuration"))
+	if (ImGui::CollapsingHeader("Application"))
 	{
-		
-		if (ImGui::CollapsingHeader("Application"))
+
+		ImGui::InputText("App Name", name1, 64);
+		ImGui::InputText("Organization", organization1, 64);
+
+		name.assign(name1);
+		organization.assign(organization1);
+
+		static float f1 = 0.0f;
+		ImGui::PushItemWidth(250);
+		ImGui::SliderFloat("Max FPS", &f1, 0.0f, 144.0f, "%.1f");
+
+		for (int i = 0; i <= 99; i++)
 		{
-			
-			ImGui::InputText("App Name", name1 , 64);
-			ImGui::InputText("Organization", organization1, 64);
-
-			name.assign(name1);
-			organization.assign(organization1);
-
-			static float f1 = 0.0f;
-			ImGui::PushItemWidth(250);
-			ImGui::SliderFloat("Max FPS", &f1, 0.0f, 144.0f, "%.1f");
-			
-			for (int i = 0; i <= 99; i++)
+			if (i == 99)
 			{
-				if (i == 99)
-				{
-					msArr[i] = (startUp.Read() - millisec);
-					fpsArr[i] = ImGui::GetIO().Framerate;
-				}
-				else
-				{
-					msArr[i] = msArr[i + 1];
-					fpsArr[i] = fpsArr[i + 1];
-				}
+				msArr[i] = (startUp.Read() - millisec);
+				fpsArr[i] = ImGui::GetIO().Framerate;
 			}
-			millisec = startUp.Read();
-
-			char title[25];
-			sprintf_s(title, 25, "Framerate %.1f", fpsArr[99]);
-			ImGui::PlotHistogram("##framerate", fpsArr, ((int)(sizeof(fpsArr) / sizeof(*fpsArr))), 0, title, 0.0f, 150.0f, ImVec2(310, 100));
-			sprintf_s(title, 25, "Milliseconds %.1f", msArr[99]);
-			ImGui::PlotHistogram("##milliseconds", msArr, ((int)(sizeof(msArr) / sizeof(*msArr))), 0, title, 0.0f, 40.0f, ImVec2(310, 100));
+			else
+			{
+				msArr[i] = msArr[i + 1];
+				fpsArr[i] = fpsArr[i + 1];
+			}
 		}
+		millisec = startUp.Read();
 
-		for (it = modulesList.begin(); it != modulesList.end(); it++)
-		{
-			(*it)->AddImGui();
-		}
-		ImGui::SetWindowSize(ImVec2(430.0f, 1080.0f));
-		ImGui::End();
+		char title[25];
+		sprintf_s(title, 25, "Framerate %.1f", fpsArr[99]);
+		ImGui::PlotHistogram("##framerate", fpsArr, ((int)(sizeof(fpsArr) / sizeof(*fpsArr))), 0, title, 0.0f, 150.0f, ImVec2(310, 100));
+		sprintf_s(title, 25, "Milliseconds %.1f", msArr[99]);
+		ImGui::PlotHistogram("##milliseconds", msArr, ((int)(sizeof(msArr) / sizeof(*msArr))), 0, title, 0.0f, 40.0f, ImVec2(310, 100));
+	}
+
+	for (it = modulesList.begin(); it != modulesList.end(); it++)
+	{
+		(*it)->AddImGui();
 	}
 }
 

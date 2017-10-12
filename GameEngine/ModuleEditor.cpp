@@ -72,8 +72,8 @@ update_status ModuleEditor::Update(float dt)
 			// TOOLS
 			MenuTools();
 
-			// VIEW
-			MenuView();
+			// WINDOW
+			MenuWindow();
 
 			// ABOUT
 			MenuAbout();
@@ -182,7 +182,7 @@ void ModuleEditor::MenuTools()
 		}
 		ImGui::SameLine();
 
-		if (ImGui::MenuItem("Random"))
+		if (ImGui::MenuItem("Random", NULL, bShowRandom))
 		{
 			bShowRandom = !bShowRandom;
 		}
@@ -191,10 +191,10 @@ void ModuleEditor::MenuTools()
 	}
 }
 
-// ---------------------------------------------< VIEW
-void ModuleEditor::MenuView()
+// ---------------------------------------------< WINDOW
+void ModuleEditor::MenuWindow()
 {
-	if (ImGui::BeginMenu("View"))
+	if (ImGui::BeginMenu("Window"))
 	{
 		std::map<std::string, bool>::iterator it = active_menu.begin();
 		int n = 0;
@@ -216,7 +216,7 @@ void ModuleEditor::MenuView()
 			}
 			ImGui::SameLine();
 
-			if (ImGui::MenuItem(it->first.c_str()))
+			if (ImGui::MenuItem(it->first.c_str(), NULL, it->second))
 			{
 				it->second = !it->second;
 			}
@@ -238,8 +238,8 @@ void ModuleEditor::MenuAbout()
 		}
 		ImGui::SameLine();
 
-		if (ImGui::MenuItem("Example Window"))
-			bShowExample = true;
+		if (ImGui::MenuItem("Example Window", NULL, bShowExample))
+			bShowExample = !bShowExample;
 
 		ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
 
@@ -269,7 +269,7 @@ void ModuleEditor::MenuAbout()
 
 void ModuleEditor::Console()
 {
-	if (ImGui::Begin("Console"))
+	(ImGui::Begin("Console", 0, ImGuiWindowFlags_NoFocusOnAppearing));
 	{
 		ImGui::Text(console_buffer.c_str());		
 	}
@@ -279,7 +279,9 @@ void ModuleEditor::Console()
 
 void ModuleEditor::Configuration()
 {
-	if (ImGui::Begin("Configuration"))
+	ImGuiWindowFlags flag = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoFocusOnAppearing;
+	ImGui::Begin("Configuration", 0, ImVec2(500, 1000), 0.8f, flag);
 	{
 		App->AddImGui();
 	}
@@ -289,7 +291,7 @@ void ModuleEditor::Configuration()
 
 void ModuleEditor::ToolRandom()
 {
-	if (ImGui::Begin("Random Generator"), nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse)
+	ImGui::Begin("Random Generator", 0, ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoCollapse);
 	{
 		const char* RandType[] = { "Float", "Float (0~1)", "Int" };
 
@@ -348,14 +350,13 @@ void ModuleEditor::ToolRandom()
 		}
 		}
 	}
-
 	ImGui::End();
 }
 
 void ModuleEditor::ViewGeometry()
 {
 
-	if (ImGui::Begin("Geometry##Window"), NULL, ImGuiWindowFlags_AlwaysAutoResize)
+	ImGui::Begin("Geometry##Window", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing);
 	{
 		math::Sphere sphere;
 		math::Capsule capsule;

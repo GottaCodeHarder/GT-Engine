@@ -144,6 +144,7 @@ void ImGui::ShowTestWindow(bool* p_open)
     static bool no_border = true;
     static bool no_resize = false;
     static bool no_move = false;
+	static bool no_focus = true;
     static bool no_scrollbar = false;
     static bool no_collapse = false;
     static bool no_menu = false;
@@ -157,6 +158,7 @@ void ImGui::ShowTestWindow(bool* p_open)
     if (no_scrollbar) window_flags |= ImGuiWindowFlags_NoScrollbar;
     if (no_collapse)  window_flags |= ImGuiWindowFlags_NoCollapse;
     if (!no_menu)     window_flags |= ImGuiWindowFlags_MenuBar;
+	if (no_focus)	  window_flags |= ImGuiWindowFlags_NoFocusOnAppearing;
     ImGui::SetNextWindowSize(ImVec2(550,680), ImGuiSetCond_FirstUseEver);
     if (!ImGui::Begin("ImGui Demo", p_open, window_flags))
     {

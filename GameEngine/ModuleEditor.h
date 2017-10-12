@@ -52,7 +52,7 @@ private:
 	void HelpAbout();
 
 	void MenuFile();
-	void MenuView();
+	void MenuWindow();
 	void MenuTools();
 	void MenuAbout();
 	void Console();
