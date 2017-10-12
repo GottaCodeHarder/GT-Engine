@@ -49,13 +49,17 @@ std::vector<Mesh*> Importer::CreateMesh(const char * path)
 			
 			if (scene->mMeshes[i]->HasTextureCoords(0))
 			{
-				float2* uv = new float2[scene->mMeshes[i]->mNumVertices]; //BE
-				memcpy(uv, scene->mMeshes[i]->mTextureCoords, sizeof(float2)*scene->mMeshes[i]->mNumVertices);
-								
+				float* uv = new float[scene->mMeshes[i]->mNumVertices*2]; //BE
+				//memcpy(uv, scene->mMeshes[i]->mTextureCoords, sizeof(float)*scene->mMeshes[i]->mNumVertices);
+				for (int j = 0; j < scene->mMeshes[i]->mNumVertices; ++j)
+				{
+					uv[j * 2] = scene->mMeshes[i]->mTextureCoords[0][j].x;
+					uv[j * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][j].y;
+				}
 
 				glGenBuffers(1, (GLuint*) &(mesh->buff_uv));
 				glBindBuffer(GL_ARRAY_BUFFER, mesh->buff_uv);
-				glBufferData(GL_ARRAY_BUFFER, sizeof(float2) * scene->mMeshes[i]->mNumVertices*2, uv, GL_STATIC_DRAW);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(float) * scene->mMeshes[i]->mNumVertices*2, uv, GL_STATIC_DRAW);
 			}
 			
 			
@@ -96,7 +100,11 @@ std::vector<Mesh*> Importer::CreateMesh(const char * path)
 							break;
 						}
 					}
-					mesh->buff_texture = loadImage(strPath.c_str());
+					if (scene->mMeshes[i]->HasTextureCoords(0))//falta comprovacio que no hi ha textura
+					{
+						mesh->buff_texture = loadImage(strPath.c_str());
+					}
+					
 					if (mesh->buff_texture == -1)
 					{
 						MYLOG("ERROR Creating buffer for Texture");
