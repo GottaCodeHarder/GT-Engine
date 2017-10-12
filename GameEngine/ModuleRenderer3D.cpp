@@ -168,6 +168,8 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
 	if (bEnableWireframe)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	else
@@ -222,7 +224,9 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 
 	for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++)
 	{
-	
+		glEnableClientState(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, (*it)->buff_texture);
+
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glBindBuffer(GL_ARRAY_BUFFER, (*it)->buff_vertex);
 		glVertexPointer(3, GL_FLOAT, 0, NULL);
@@ -234,9 +238,6 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glBindBuffer(GL_ARRAY_BUFFER, (*it)->buff_uv);
 		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-	
-		glEnableClientState(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, (*it)->buff_texture);
 	
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (*it)->buff_index);
 		glDrawElements(GL_TRIANGLES, (*it)->num_index, GL_UNSIGNED_INT, NULL);
