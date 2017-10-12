@@ -77,28 +77,41 @@ void Application::AddImGui()
 
 	if (ImGui::CollapsingHeader("Application"))
 	{
+		static char input[100];
+		int size = sizeof(input) / sizeof(char);
+		sprintf_s(input, size, "%s", name.c_str());
 
-		ImGui::InputText("App Name", name1, 64);
-		ImGui::InputText("Organization", organization1, 64);
+		if (ImGui::InputText("App Name", input, size))
+		{
+			name.assign(input);
+			App->window->SetTitle(input);
+		}
 
-		name.assign(name1);
-		organization.assign(organization1);
+		sprintf_s(input, size, "%s", organization.c_str());
+
+		if (ImGui::InputText("Organization", input, sizeof(input) / sizeof(char)))
+		{
+			organization.assign(input);
+		}
 
 		static float f1 = 0.0f;
 		ImGui::PushItemWidth(250);
 		ImGui::SliderFloat("Max FPS", &f1, 0.0f, 144.0f, "%.1f");
 
-		for (int i = 0; i <= 99; i++)
+		if (!bFreeze)
 		{
-			if (i == 99)
+			for (int i = 0; i <= 99; i++)
 			{
-				msArr[i] = (startUp.Read() - millisec);
-				fpsArr[i] = ImGui::GetIO().Framerate;
-			}
-			else
-			{
-				msArr[i] = msArr[i + 1];
-				fpsArr[i] = fpsArr[i + 1];
+				if (i == 99)
+				{
+					msArr[i] = (startUp.Read() - millisec);
+					fpsArr[i] = ImGui::GetIO().Framerate;
+				}
+				else
+				{
+					msArr[i] = msArr[i + 1];
+					fpsArr[i] = fpsArr[i + 1];
+				}
 			}
 		}
 		millisec = startUp.Read();
@@ -108,6 +121,8 @@ void Application::AddImGui()
 		ImGui::PlotHistogram("##framerate", fpsArr, ((int)(sizeof(fpsArr) / sizeof(*fpsArr))), 0, title, 0.0f, 150.0f, ImVec2(310, 100));
 		sprintf_s(title, 25, "Milliseconds %.1f", msArr[99]);
 		ImGui::PlotHistogram("##milliseconds", msArr, ((int)(sizeof(msArr) / sizeof(*msArr))), 0, title, 0.0f, 40.0f, ImVec2(310, 100));
+		
+		ImGui::Checkbox("< Freeze Framerate Display", &bFreeze);
 	}
 
 	for (it = modulesList.begin(); it != modulesList.end(); it++)

@@ -54,6 +54,7 @@ private:
 	void PrepareUpdate();
 	void FinishUpdate();
 
+	bool bFreeze = false;
 	uint  frameCount = 0;
 	Timer startUp;
 	float millisec = 0.0f;
@@ -62,8 +63,6 @@ private:
 
 	std::string name;
 	std::string organization;
-	char*  name1 = "GT_Engine";
-	char* organization1 = "UPC";
 
 	void LoadConfiguration();
 	void SaveConfiguration();
