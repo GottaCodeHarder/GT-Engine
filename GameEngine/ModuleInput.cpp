@@ -98,18 +98,22 @@ update_status ModuleInput::PreUpdate(float dt)
 			break;
 
 			case SDL_MOUSEMOTION:
-			mouse_x = e.motion.x / SCREEN_SIZE;
-			mouse_y = e.motion.y / SCREEN_SIZE;
+			{
+				mouse_x = e.motion.x / SCREEN_SIZE;
+				mouse_y = e.motion.y / SCREEN_SIZE;
 
-			mouse_x_motion = e.motion.xrel / SCREEN_SIZE;
-			mouse_y_motion = e.motion.yrel / SCREEN_SIZE;
+				mouse_x_motion = e.motion.xrel / SCREEN_SIZE;
+				mouse_y_motion = e.motion.yrel / SCREEN_SIZE;
 			break;
-
+			}
+		
 			case SDL_DROPFILE:
+			{
 				file_path = e.drop.file; //BE ES LA RUTA
 				has_dropped = true;
 				SDL_free(e.drop.file);
 				break;
+			}
 
 			case SDL_QUIT:
 			quit = true;
