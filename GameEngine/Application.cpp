@@ -8,11 +8,9 @@ Application::Application()
 	window = new ModuleWindow(this);
 	input = new ModuleInput(this);
 	audio = new ModuleAudio(this, true);
-	scene = new ModuleScene(this);
 	renderer3D = new ModuleRenderer3D(this);
 	camera = new ModuleCamera3D(this);
 	physics = new ModulePhysics3D(this);
-	player = new ModulePlayer(this);
 	editor = new ModuleEditor(this);
 	file_system = new ModuleFileSystem(this);
 	hardware = new ModuleHardware(this);
@@ -30,10 +28,6 @@ Application::Application()
 	AddModule(file_system);
 	AddModule(hardware);
 	AddModule(editor);
-
-	// Scenes
-	AddModule(scene);
-	AddModule(player);
 
 	// Renderer last!
 	AddModule(renderer3D);
