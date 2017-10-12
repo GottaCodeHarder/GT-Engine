@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "ModuleHardware.h"
 #include "SDL/include/SDL.h"
+#include "glew/include/glew.h"
 
 ModuleHardware::ModuleHardware(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -13,7 +14,7 @@ bool ModuleHardware::Init()
 	MYLOG("Loading Hardware Specs");
 	bool ret = true;
 
-	RefreshSpecs();
+	RefreshSpecs(true);
 
 	return ret;
 }
@@ -23,76 +24,125 @@ void ModuleHardware::AddImGui()
 	if (ImGui::CollapsingHeader("Hardware"))
 	{
 		char label[20];
+		if (ImGui::TreeNodeEx("GPU Related", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::BeginGroup();
+			{
+				ImGui::Text("Vendor: ");
+				ImGui::Text("Renderer: ");
+				ImGui::Text("GL version: ");
+				ImGui::Text("GL shading ver: ");
+				ImGui::EndGroup();
+			}
+			ImGui::SameLine();
+			ImGui::BeginGroup();
+			{
+				ImGui::Text("%s", glGetString(GL_VENDOR));
+				ImGui::Text("%s", glGetString(GL_RENDERER));
+				ImGui::Text("%s", glGetString(GL_VERSION));
+				ImGui::Text("%s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+				ImGui::EndGroup();
+			}
+			ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
+			ImGui::TreePop();
+		}
 
-		ImGui::Text("SDL Version: ");
-		ImGui::SameLine();
-		ImGui::Text(sdlVersion);
+		if (ImGui::TreeNodeEx("CPU Related", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::BeginGroup();
+			{
+				ImGui::Text("SDL Version: ");
+				ImGui::Text("CPUs: ");
+				ImGui::Text("System RAM: ");
+				ImGui::EndGroup();
+			}
+			ImGui::SameLine();
+			ImGui::BeginGroup();
+			{
+				ImGui::Text(sdlVersion);
+				sprintf_s(label, 20, "%i (Cache: %ikb)", cpuCount, cpuCache);
+				ImGui::Text(label);
+				sprintf_s(label, 20, "%.1fGb", ramGb);
+				ImGui::Text(label);
+				ImGui::EndGroup();
+			}
 
-		ImGui::Separator();
+			ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 
-		sprintf_s(label, 20, "%i (Cache: %ikb)", cpuCount, cpuCache);
-		ImGui::Text("CPUs: ");
-		ImGui::SameLine();
-		ImGui::Text(label);
-
-		sprintf_s(label, 20, "%.1fGb", ramGb);
-		ImGui::Text("System RAM: ");
-		ImGui::SameLine();
-		ImGui::Text(label);
-
-		ImGui::Text("Caps:");
-		if (rdtsc)
-		{
-			ImGui::SameLine(); ImGui::Text(" RDTSC");
-		}
-		if (mmx)
-		{
-			ImGui::SameLine(); ImGui::Text(", MMX");
-		}
-		if (sse)
-		{
-			ImGui::SameLine(); ImGui::Text(", SSE");
-		}
-		if (sse2)
-		{
-			ImGui::SameLine(); ImGui::Text(", SSE2");
-		}
-		if (sse3)
-		{
-			ImGui::SameLine(); ImGui::Text(", SSE3");
-		}
-		if (sse41)
-		{
-			ImGui::SameLine(); ImGui::Text(", SSE41");
-		}
-		if (sse42)
-		{
-			ImGui::SameLine(); ImGui::Text(", SSE42");
-		}
-		if (avx)
-		{
-			ImGui::SameLine(); ImGui::Text(", AVX");
-		}
-		if (altivec)
-		{
-			ImGui::SameLine(); ImGui::Text(", AltiVec");
-		}
-		if (dddnow)
-		{
-			ImGui::SameLine(); ImGui::Text(", 3DNow");
+			ImGui::Text("Capacities:");
+			ImGui::BeginGroup();
+			{
+				if (ImGui::Checkbox("RDTSC", &rdtsc))
+				{
+					RefreshSpecs(false);
+				}
+				if (ImGui::Checkbox("MMX", &mmx))
+				{
+					RefreshSpecs(false);
+				}
+				if (ImGui::Checkbox("SSE", &sse))
+				{
+					RefreshSpecs(false);
+				}
+				ImGui::EndGroup();
+			}
+			ImGui::SameLine();
+			ImGui::BeginGroup();
+			{
+				if (ImGui::Checkbox("SSE2", &sse2))
+				{
+					RefreshSpecs(false);
+				}
+				if (ImGui::Checkbox("SSE3", &sse3))
+				{
+					RefreshSpecs(false);
+				}
+				if (ImGui::Checkbox("SSE41", &sse41))
+				{
+					RefreshSpecs(false);
+				}
+				ImGui::EndGroup();
+			}
+			ImGui::SameLine();
+			ImGui::BeginGroup();
+			{
+				if (ImGui::Checkbox("SSE42", &sse42))
+				{
+					RefreshSpecs(false);
+				}
+				if (ImGui::Checkbox("AVX", &avx))
+				{
+					RefreshSpecs(false);
+				}
+				if (ImGui::Checkbox("AltiVec", &altivec))
+				{
+					RefreshSpecs(false);
+				}
+				ImGui::EndGroup();
+			}
+			ImGui::SameLine();
+			if (ImGui::Checkbox("3DNow", &dddnow))
+			{
+				RefreshSpecs(false);
+			}
+			ImGui::TreePop();
 		}
 	}
 }
 
-void ModuleHardware::RefreshSpecs()
+void ModuleHardware::RefreshSpecs(bool all)
 {
-	SDL_version version;
-	SDL_GetVersion(&version);
+	if (all)
+	{
+		SDL_version version;
+		SDL_GetVersion(&version);
 
-	sprintf_s(sdlVersion, 10, "%i.%i.%i", version.major, version.minor, version.patch);
-	cpuCount = SDL_GetCPUCount();
-	cpuCache = SDL_GetCPUCacheLineSize();
-	ramGb = float(SDL_GetSystemRAM()) / 1024.f;
+		sprintf_s(sdlVersion, 10, "%i.%i.%i", version.major, version.minor, version.patch);
+		cpuCount = SDL_GetCPUCount();
+		cpuCache = SDL_GetCPUCacheLineSize();
+		ramGb = float(SDL_GetSystemRAM()) / 1024.f;
+	}
+
 	dddnow = SDL_Has3DNow() == SDL_TRUE;
 	avx = SDL_HasAVX() == SDL_TRUE;
 	altivec = SDL_HasAltiVec() == SDL_TRUE;

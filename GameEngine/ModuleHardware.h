@@ -12,9 +12,12 @@ public:
 
 	void AddImGui();
 
-	void RefreshSpecs();
+	void RefreshSpecs(bool all);
 
 public:
+
+	std::string a;
+
 	char sdlVersion[10] = "";
 	int cpuCount = 0;
 	int cpuCache = 0;
