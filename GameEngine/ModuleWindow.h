@@ -19,7 +19,7 @@ public:
 	void AddImGui();
 	bool CleanUp();
 
-	ImVec2 GetDimensions();
+	void UpdateWindowSize();
 	void SetTitle(const char* title);
 	SDL_Window* GetWindow();
 
@@ -32,8 +32,6 @@ public:
 
 private:
 
-	int width = SCREEN_WIDTH * SCREEN_SIZE;
-	int	height = SCREEN_HEIGHT * SCREEN_SIZE;
 	bool bFullscreen = WIN_FULLSCREEN;
 	bool bFullscreenDesktop = WIN_FULLSCREEN_DESKTOP;
 	bool bBorderless = WIN_BORDERLESS;

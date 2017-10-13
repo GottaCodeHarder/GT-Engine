@@ -60,7 +60,7 @@ bool ModuleWindow::Init()
 			flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
 
-		window = SDL_CreateWindow(App->name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
+		window = SDL_CreateWindow(App->name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH * SCREEN_SIZE, SCREEN_HEIGHT * SCREEN_SIZE, flags);
 
 		if(window == NULL)
 		{
@@ -83,15 +83,15 @@ void ModuleWindow::AddImGui()
 	{
 		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 
-		ImGui::SliderInt("Width", &width, 600, 2560);
+		ImGui::SliderInt("Width", &screenSurface->w, 600, 2560);
 		if (ImGui::IsItemHovered())
 			ImGui::SetTooltip("Doesn't apply if Maximized!\nDoesn't apply if Fullscreen!");
-		ImGui::SliderInt("Height", &height, 400, 1440);
+		ImGui::SliderInt("Height", &screenSurface->h, 400, 1440);
 		if (ImGui::IsItemHovered())
 			ImGui::SetTooltip("Doesn't apply if Maximized!\nDoesn't apply if Fullscreen!");
 		
 		if (!bMaximize)
-			SDL_SetWindowSize(window, width, height);
+			SDL_SetWindowSize(window, screenSurface->w, screenSurface->h);
 
 		if (ImGui::Checkbox("FullScreen", &bFullscreen))
 		{
@@ -181,9 +181,9 @@ bool ModuleWindow::CleanUp()
 	return true;
 }
 
-ImVec2 ModuleWindow::GetDimensions()
+void ModuleWindow::UpdateWindowSize()
 {
-	return ImVec2(width, height);
+	SDL_GetWindowSize(window, &screenSurface->w, &screenSurface->h);
 }
 
 void ModuleWindow::SetTitle(const char* title)

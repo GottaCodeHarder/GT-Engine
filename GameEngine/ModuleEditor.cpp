@@ -280,7 +280,7 @@ void ModuleEditor::Configuration()
 {
 	sizeX = 370.f;
 
-	ImGui::SetNextWindowSize(ImVec2(sizeX, App->window->GetDimensions().y));
+	ImGui::SetNextWindowSize(ImVec2(sizeX, App->window->screenSurface->h - 19.f));
 	ImGui::SetNextWindowPos(ImVec2(App->window->screenSurface->w - sizeX, 19.f));
 	ImGuiWindowFlags flag = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
 		ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_AlwaysAutoResize;
