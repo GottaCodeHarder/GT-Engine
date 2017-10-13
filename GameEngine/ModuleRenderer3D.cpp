@@ -193,12 +193,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 //---------------------------------------------------------------------------------------------------------------------------
 	if (App->input->has_dropped)
 	{
-		for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++)
-		{
-			if ((*it) != nullptr)
-				delete (*it);
-		}
-		meshes.clear();
+		CleanScene();
 
 		std::vector<Mesh*> tmp = importer.CreateMesh(App->input->GetFileDropped());
 
@@ -266,6 +261,8 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 bool ModuleRenderer3D::CleanUp()
 {
 	MYLOG("Destroying 3D Renderer");
+	
+	CleanScene();
 
 	SDL_GL_DeleteContext(context);
 
@@ -316,6 +313,16 @@ void ModuleRenderer3D::AddImGui()
 			
 		}
 	}
+}
+
+void ModuleRenderer3D::CleanScene()
+{
+	for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++)
+	{
+		if ((*it) != nullptr)
+			delete (*it);
+	}
+	meshes.clear();
 }
 
 void ModuleRenderer3D::OnResize(int width, int height)

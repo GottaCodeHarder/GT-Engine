@@ -17,6 +17,8 @@ class Mesh
 {
 public:
 
+	~Mesh();
+
 	std::vector<float3> normals;
 	std::vector<float3> vertex;
 
@@ -38,7 +40,7 @@ class Importer
 
 public:
 	bool FileExists(const std::string& name);
-	GLuint loadImage(const char* file);
+	GLuint LoadImage(const char* file);
 
 	std::vector<Mesh*> CreateMesh(const char* path);
 
