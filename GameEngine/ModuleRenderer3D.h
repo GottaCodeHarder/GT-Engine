@@ -19,6 +19,8 @@ public:
 	bool CleanUp();
 	void AddImGui();
 
+	void LoadMeshes(char* path);
+
 	void CleanScene();
 
 	void OnResize(int width, int height);

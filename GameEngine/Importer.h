@@ -13,6 +13,13 @@
 
 #pragma comment (lib, "Assimp/libx86/assimp.lib")
 
+enum FileExtensions
+{
+	Scene3D = 0,
+	Image,
+	Unrecognized
+};
+
 class Mesh
 {
 public:
@@ -39,6 +46,8 @@ class Importer
 {
 
 public:
+
+	FileExtensions GetExtension(const char* path);
 	bool FileExists(const std::string& name);
 	GLuint LoadImage(const char* file);
 

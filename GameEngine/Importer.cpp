@@ -198,9 +198,37 @@ GLuint Importer::LoadImage(const char* theFileName)
 
 	//ilDeleteImages(1, &imageID);
 
-	MYLOG("Texture creation successful.");
+	MYLOG("Texture succesful: %s", theFileName);
 
 	return textureID;
+}
+
+FileExtensions Importer::GetExtension(const char *path)
+{
+	char* ptr = &(char)path[strlen(path)];
+
+	for (; *ptr != '.' && ptr != path; ptr--)
+	{
+		// You found a secret :D
+	}
+	
+	ptr++;
+
+	std::string supportedImageFormats("bmp dcx dds hdr icns ico cur iff gif jpg jpe jpeg jp2 lbm png PNG raw tif tga");
+
+	if (supportedImageFormats.find(ptr) != std::string::npos)
+	{
+		return FileExtensions::Image;
+	}
+
+	std::string supported3DScenesFormats("FBX fbx OBJ obj");
+
+	if (supported3DScenesFormats.find(ptr) != std::string::npos)
+	{
+		return FileExtensions::Scene3D;
+	}
+
+	return FileExtensions::Unrecognized;
 }
 
 bool Importer::FileExists(const std::string& name)

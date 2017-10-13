@@ -193,24 +193,25 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 //---------------------------------------------------------------------------------------------------------------------------
 	if (App->input->has_dropped)
 	{
-		CleanScene();
+		FileExtensions extension = importer.GetExtension(App->input->GetFileDropped());
 
-		std::vector<Mesh*> tmp = importer.CreateMesh(App->input->GetFileDropped());
-
-		App->camera->referenceDone = true;
-		if (!tmp.empty())
+		switch (extension)
 		{
-			std::vector<Mesh*>::iterator it = tmp.begin();
+		case FileExtensions::Scene3D:
+		{
+			LoadMeshes((char*)App->input->GetFileDropped());
+			break;
+		}
+		case FileExtensions::Image:
+		{
 
-			App->camera->Position.x = (*it)->aabbBox.maxPoint.x*2;
-			App->camera->Position.y = (*it)->aabbBox.maxPoint.y*2;
-			App->camera->Position.z = (*it)->aabbBox.maxPoint.z*2;
-			App->camera->LookAt(vec3((*it)->aabbBox.CenterPoint().x, (*it)->aabbBox.CenterPoint().y, (*it)->aabbBox.CenterPoint().z));
-		
-			for (std::vector<Mesh*>::iterator it = tmp.begin(); it != tmp.end(); it++)
-			{
-				meshes.push_back(*it);
-			}
+			break;
+		}
+		case FileExtensions::Unrecognized:
+		{
+			MYLOG("File Type not supported by GT Engine");
+			break;
+		}
 		}
 		
 		App->input->has_dropped = false;
@@ -311,6 +312,29 @@ void ModuleRenderer3D::AddImGui()
 		if (ImGui::Checkbox("Wireframe Mode", &bEnableWireframe))
 		{
 			
+		}
+	}
+}
+
+void ModuleRenderer3D::LoadMeshes(char* path)
+{
+	CleanScene();
+
+	std::vector<Mesh*> tmp = importer.CreateMesh(path);
+
+	App->camera->referenceDone = true;
+	if (!tmp.empty())
+	{
+		std::vector<Mesh*>::iterator it = tmp.begin();
+
+		App->camera->Position.x = (*it)->aabbBox.maxPoint.x * 2;
+		App->camera->Position.y = (*it)->aabbBox.maxPoint.y * 2;
+		App->camera->Position.z = (*it)->aabbBox.maxPoint.z * 2;
+		App->camera->LookAt(vec3((*it)->aabbBox.CenterPoint().x, (*it)->aabbBox.CenterPoint().y, (*it)->aabbBox.CenterPoint().z));
+
+		for (std::vector<Mesh*>::iterator it = tmp.begin(); it != tmp.end(); it++)
+		{
+			meshes.push_back(*it);
 		}
 	}
 }
