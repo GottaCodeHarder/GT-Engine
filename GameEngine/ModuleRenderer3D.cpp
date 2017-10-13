@@ -340,12 +340,16 @@ void ModuleRenderer3D::LoadMeshes(char* path)
 	App->camera->referenceDone = true;
 	if (!tmp.empty())
 	{
-		std::vector<Mesh*>::iterator it = tmp.begin();
+		AABB aabb;
+		for (std::vector<Mesh*>::iterator it = tmp.begin(); it != tmp.end(); it++)
+		{
+			aabb.Enclose((*it)->aabbBox);
+		}
 
-		App->camera->Position.x = (*it)->aabbBox.maxPoint.x * 2;
-		App->camera->Position.y = (*it)->aabbBox.maxPoint.y * 2;
-		App->camera->Position.z = (*it)->aabbBox.maxPoint.z * 2;
-		App->camera->LookAt(vec3((*it)->aabbBox.CenterPoint().x, (*it)->aabbBox.CenterPoint().y, (*it)->aabbBox.CenterPoint().z));
+		App->camera->Position.x = aabb.maxPoint.x * 2;
+		App->camera->Position.y = aabb.maxPoint.y * 2;
+		App->camera->Position.z = aabb.maxPoint.z * 2;
+		App->camera->LookAt(vec3(aabb.CenterPoint().x, aabb.CenterPoint().y, aabb.CenterPoint().z));
 
 		for (std::vector<Mesh*>::iterator it = tmp.begin(); it != tmp.end(); it++)
 		{
