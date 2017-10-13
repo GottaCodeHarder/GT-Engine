@@ -20,12 +20,12 @@ public:
 	std::vector<float3> normals;
 	std::vector<float3> vertex;
 
-	uint buff_normals = 0;
-	uint buff_uv = 0;
-	uint buff_vertex = 0;
-	uint buff_index = 0;
-	uint num_index = 0;
-	GLuint buff_texture = 0;
+	uint buffNormals = 0;
+	uint buffUv = 0;
+	uint buffVertex = 0;
+	uint buffIndex = 0;
+	uint numIndex = 0;
+	GLuint buffTexture = 0;
 
 	math::AABB aabbBox;
 private:

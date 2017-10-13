@@ -25,8 +25,8 @@ private:
 
 	int memory;
 	bool	running;
-	Uint32	started_at;
-	Uint32	stopped_at;
+	Uint32	startedAt;
+	Uint32	stoppedAt;
 	Uint32	timeStartSeconds;
 	Uint32	timeStartMinutes;
 };

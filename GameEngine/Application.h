@@ -23,12 +23,12 @@ public:
 	ModuleCamera3D* camera;
 	ModulePhysics3D* physics;
 	ModuleEditor* editor;
-	ModuleFileSystem* file_system;
+	ModuleFileSystem* fileSystem;
 	ModuleHardware* hardware;
 
 private:
 
-	Timer	ms_timer;
+	Timer	msTimer;
 	float	dt;
 	std::vector<Module*> modulesList;
 
@@ -59,6 +59,8 @@ private:
 	float millisec = 0.0f;
 	float fpsArr[100] = {};
 	float msArr[100] = {};
+	float capFramerate = 60.0f;
+	float fps = 60.0f;
 
 	void LoadConfiguration();
 	void SaveConfiguration();

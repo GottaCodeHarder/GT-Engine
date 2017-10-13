@@ -33,9 +33,9 @@ private:
 
 	mat4x4 ViewMatrix, ViewMatrixInverse;
 	PhysBody3D* following;
-	float min_following_dist;
-	float max_following_dist;
-	float following_height;
+	float minFollowingDist;
+	float maxFollowingDist;
+	float followingHeight;
 	bool camera;
 	
 };

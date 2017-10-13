@@ -101,8 +101,6 @@ update_status ModuleCamera3D::Update(float dt)
 		{
 			float Sensitivity = 0.25f;
 
-			Position -= Reference;
-
 			if (dx != 0)
 			{
 				float DeltaX = (float)dx * Sensitivity;
@@ -126,7 +124,8 @@ update_status ModuleCamera3D::Update(float dt)
 				}
 			}
 
-			Position = Reference + Z * length(Position);
+			vec3 distanceCam = Reference - Position;
+			Reference = Position - (Z * length(distanceCam));
 		}
 		else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
 		{
@@ -233,9 +232,9 @@ void ModuleCamera3D::CalculateViewMatrix()
 // -----------------------------------------------------------------
 void ModuleCamera3D::Follow(PhysBody3D* body, float min, float max, float height)
 {
-	min_following_dist = min;
-	max_following_dist = max;
-	following_height = height;
+	minFollowingDist = min;
+	maxFollowingDist = max;
+	followingHeight = height;
 	following = body;
 }
 

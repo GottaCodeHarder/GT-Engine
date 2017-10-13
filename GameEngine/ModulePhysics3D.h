@@ -38,13 +38,13 @@ private:
 
 	bool debug;
 
-	btDefaultCollisionConfiguration*	collision_conf;
+	btDefaultCollisionConfiguration*	collisionConf;
 	btCollisionDispatcher*				dispatcher;
-	btBroadphaseInterface*				broad_phase;
+	btBroadphaseInterface*				broadPhase;
 	btSequentialImpulseConstraintSolver* solver;
 	btDiscreteDynamicsWorld*			world;
-	btDefaultVehicleRaycaster*			vehicle_raycaster;
-	DebugDrawer*						debug_draw;
+	btDefaultVehicleRaycaster*			vehicleRaycaster;
+	DebugDrawer*						debugDraw;
 
 	std::list<btCollisionShape*> shapes;
 	std::list<PhysBody3D*> bodies;

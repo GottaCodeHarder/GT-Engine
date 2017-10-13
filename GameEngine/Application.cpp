@@ -12,7 +12,7 @@ Application::Application()
 	camera = new ModuleCamera3D(this);
 	physics = new ModulePhysics3D(this);
 	editor = new ModuleEditor(this);
-	file_system = new ModuleFileSystem(this);
+	fileSystem = new ModuleFileSystem(this);
 	hardware = new ModuleHardware(this);
 
 	// The order of calls is very important!
@@ -25,7 +25,7 @@ Application::Application()
 	AddModule(input);
 	AddModule(audio);
 	AddModule(physics);
-	AddModule(file_system);
+	AddModule(fileSystem);
 	AddModule(hardware);
 	AddModule(editor);
 
@@ -62,7 +62,7 @@ bool Application::Init()
 	}
 	App->window->SetTitle(name.c_str());
 
-	ms_timer.Start();
+	msTimer.Start();
 	return ret;
 }
 
@@ -89,9 +89,9 @@ void Application::AddImGui()
 			organization.assign(input);
 		}
 
-		static float f1 = 0.0f;
 		ImGui::PushItemWidth(250);
-		ImGui::SliderFloat("Max FPS", &f1, 0.0f, 144.0f, "%.1f");
+		ImGui::SliderFloat("Max FPS", &capFramerate, 20.0f, 144.0f, "%.1f");
+		fps = (capFramerate > 0) ? 1000 / capFramerate : 0;
 
 		if (!bFreeze)
 		{
@@ -100,7 +100,8 @@ void Application::AddImGui()
 				if (i == 99)
 				{
 					msArr[i] = (startUp.Read() - millisec);
-					fpsArr[i] = ImGui::GetIO().Framerate;
+					//fpsArr[i] = ImGui::GetIO().Framerate;
+					fpsArr[i] = capFramerate;
 				}
 				else
 				{
@@ -129,8 +130,8 @@ void Application::AddImGui()
 // ---------------------------------------------
 void Application::PrepareUpdate()
 {
-	dt = (float)ms_timer.Read() / 1000.0f;
-	ms_timer.Start();
+	dt = (float)msTimer.Read() / 1000.0f;
+	msTimer.Start();
 }
 
 // ---------------------------------------------

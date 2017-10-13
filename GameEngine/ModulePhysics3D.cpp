@@ -18,21 +18,21 @@ ModulePhysics3D::ModulePhysics3D(Application* app, bool start_enabled) : Module(
 {
 	debug = true;
 
-	collision_conf = new btDefaultCollisionConfiguration();
-	dispatcher = new btCollisionDispatcher(collision_conf);
-	broad_phase = new btDbvtBroadphase();
+	collisionConf = new btDefaultCollisionConfiguration();
+	dispatcher = new btCollisionDispatcher(collisionConf);
+	broadPhase = new btDbvtBroadphase();
 	solver = new btSequentialImpulseConstraintSolver();
-	debug_draw = new DebugDrawer();
+	debugDraw = new DebugDrawer();
 }
 
 // Destructor
 ModulePhysics3D::~ModulePhysics3D()
 {
-	delete debug_draw;
+	delete debugDraw;
 	delete solver;
-	delete broad_phase;
+	delete broadPhase;
 	delete dispatcher;
-	delete collision_conf;
+	delete collisionConf;
 }
 
 // Render not available yet----------------------------------
@@ -49,10 +49,10 @@ bool ModulePhysics3D::Start()
 {
 	MYLOG("Creating Physics environment");
 
-	world = new btDiscreteDynamicsWorld(dispatcher, broad_phase, solver, collision_conf);
-	world->setDebugDrawer(debug_draw);
+	world = new btDiscreteDynamicsWorld(dispatcher, broadPhase, solver, collisionConf);
+	world->setDebugDrawer(debugDraw);
 	world->setGravity(GRAVITY);
-	vehicle_raycaster = new btDefaultVehicleRaycaster(world);
+	vehicleRaycaster = new btDefaultVehicleRaycaster(world);
 
 	// Big plane as ground
 	{
@@ -171,7 +171,7 @@ bool ModulePhysics3D::CleanUp()
 
 	bodies.clear();
 	
-	delete vehicle_raycaster;
+	delete vehicleRaycaster;
 	delete world;
 
 	return true;

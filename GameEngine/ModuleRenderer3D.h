@@ -26,8 +26,8 @@ public:
 
 	Light lights[MAX_LIGHTS];
 	SDL_GLContext context;
-	mat3x3 NormalMatrix;
-	mat4x4 ModelMatrix, ViewMatrix, ProjectionMatrix;
+	mat3x3 normalMatrix;
+	mat4x4 modelMatrix, viewMatrix, projectionMatrix;
 	void FillVertex();
 	void DirectCube();
 	std::vector<Mesh*> meshes;
@@ -41,10 +41,8 @@ private:
 	bool bEnableWireframe = false;
 
 	float vertices[108] = {};
-	char * dropped_fbx_path = NULL;
-
 
 	Importer importer;
-	uint my_id = 0;
+	uint myId = 0;
 
 };

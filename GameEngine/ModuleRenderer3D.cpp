@@ -129,11 +129,11 @@ bool ModuleRenderer3D::Init()
 	//FillVertex();
 	//DirectCube();
 	//glColor4f(0.2f, 0.2f, 1.0f, 1.0f);
-	//glGenBuffers(1, (GLuint*) &(my_id)); //TANTU
-	//glBindBuffer(GL_ARRAY_BUFFER, my_id);
+	//glGenBuffers(1, (GLuint*) &(myId)); //TANTU
+	//glBindBuffer(GL_ARRAY_BUFFER, myId);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, vertices, GL_STATIC_DRAW);
 
-//	App->file_system->Load("Game/Assets/warrior.fbx");
+//	App->fileSystem->Load("Game/Assets/warrior.fbx");
 	
 	
 	
@@ -176,7 +176,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	/*App->level->Draw();
-	if (debug_draw == true)
+	if (debugDraw == true)
 	{
 		BeginDebugDraw();
 		App->DebugDraw();
@@ -185,7 +185,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	*/
 //DRAW QUAD
 	//glEnableClientState(GL_VERTEX_ARRAY);
-	//glBindBuffer(GL_ARRAY_BUFFER, my_id);
+	//glBindBuffer(GL_ARRAY_BUFFER, myId);
 	//glVertexPointer(3, GL_FLOAT, 0, NULL);
 	//
 	//glDrawArrays(GL_TRIANGLES, 0, 36*3);
@@ -225,22 +225,22 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++)
 	{
 		glEnableClientState(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, (*it)->buff_texture);
+		glBindTexture(GL_TEXTURE_2D, (*it)->buffTexture);
 
 		glEnableClientState(GL_VERTEX_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, (*it)->buff_vertex);
+		glBindBuffer(GL_ARRAY_BUFFER, (*it)->buffVertex);
 		glVertexPointer(3, GL_FLOAT, 0, NULL);
 	
 		glEnableClientState(GL_NORMAL_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, (*it)->buff_normals);
+		glBindBuffer(GL_ARRAY_BUFFER, (*it)->buffNormals);
 		glNormalPointer(GL_FLOAT, 0, NULL);
 	
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, (*it)->buff_uv);
+		glBindBuffer(GL_ARRAY_BUFFER, (*it)->buffUv);
 		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 	
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (*it)->buff_index);
-		glDrawElements(GL_TRIANGLES, (*it)->num_index, GL_UNSIGNED_INT, NULL);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (*it)->buffIndex);
+		glDrawElements(GL_TRIANGLES, (*it)->numIndex, GL_UNSIGNED_INT, NULL);
 	
 		// CleanUp
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -324,8 +324,8 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	ProjectionMatrix = perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);
-	glLoadMatrixf(&ProjectionMatrix);
+	projectionMatrix = perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);
+	glLoadMatrixf(&projectionMatrix);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
