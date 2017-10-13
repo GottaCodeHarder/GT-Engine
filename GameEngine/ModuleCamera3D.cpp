@@ -124,8 +124,8 @@ update_status ModuleCamera3D::Update(float dt)
 				}
 			}
 
-			vec3 distanceCam = Reference - Position;
-			Reference = Position - (Z * length(distanceCam));
+			//Reference = Position - (Reference - Position);
+			Reference = Position - Reference;
 		}
 		else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
 		{

@@ -109,7 +109,7 @@ update_status ModuleEditor::Update(float dt)
 	}
 	if (active_menu["Console"])
 	{
-		ImGui::SetNextWindowPos(ImVec2(0, 790));
+		ImGui::SetNextWindowPos(ImVec2(0, 738));
 		Console();
 	}
 
@@ -269,7 +269,7 @@ void ModuleEditor::Console()
 {
 	(ImGui::Begin("Console", 0, ImGuiWindowFlags_NoFocusOnAppearing));
 	{
-		ImGui::SetWindowSize(ImVec2(1420.0f, 220.0f));
+		ImGui::SetWindowSize(ImVec2(1230.0f, 220.0f));
 		ImGui::Text(console_buffer.c_str());		
 	}
 
