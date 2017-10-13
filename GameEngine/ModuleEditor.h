@@ -38,6 +38,8 @@ private:
 	Style arcStyle;
 	Style gteStyle;
 
+	float sizeX;
+
 	bool bShowRandom = false;
 	bool bShowExample = false;
 	bool bShowAbout = false;

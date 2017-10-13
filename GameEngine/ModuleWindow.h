@@ -19,6 +19,7 @@ public:
 	void AddImGui();
 	bool CleanUp();
 
+	ImVec2 GetDimensions();
 	void SetTitle(const char* title);
 	SDL_Window* GetWindow();
 
@@ -37,6 +38,7 @@ private:
 	bool bFullscreenDesktop = WIN_FULLSCREEN_DESKTOP;
 	bool bBorderless = WIN_BORDERLESS;
 	bool bResizable = WIN_RESIZABLE;
+	bool bMaximize = WIN_MAXIMIZED;
 };
 
 #endif // __ModuleWindow_H__

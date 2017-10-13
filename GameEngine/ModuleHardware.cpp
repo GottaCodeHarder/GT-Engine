@@ -125,6 +125,7 @@ void ModuleHardware::AddImGui()
 			{
 				RefreshSpecs(false);
 			}
+			ImGui::Spacing();
 			ImGui::TreePop();
 		}
 	}
