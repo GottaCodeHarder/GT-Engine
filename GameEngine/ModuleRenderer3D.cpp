@@ -204,7 +204,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 		}
 		case FileExtensions::Image:
 		{
-
+			LoadImages((char*)App->input->GetFileDropped());
 			break;
 		}
 		case FileExtensions::Unrecognized:
@@ -220,24 +220,39 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 
 	for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++)
 	{
-		glEnableClientState(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, (*it)->buffTexture);
+		if (((*it)->buffTexture) > 0)
+		{
+			glEnableClientState(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, (*it)->buffTexture);
+		}
 
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, (*it)->buffVertex);
-		glVertexPointer(3, GL_FLOAT, 0, NULL);
-	
-		glEnableClientState(GL_NORMAL_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, (*it)->buffNormals);
-		glNormalPointer(GL_FLOAT, 0, NULL);
-	
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glBindBuffer(GL_ARRAY_BUFFER, (*it)->buffUv);
-		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-	
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (*it)->buffIndex);
-		glDrawElements(GL_TRIANGLES, (*it)->numIndex, GL_UNSIGNED_INT, NULL);
-	
+		if (((*it)->buffVertex) > 0)
+		{
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glBindBuffer(GL_ARRAY_BUFFER, (*it)->buffVertex);
+			glVertexPointer(3, GL_FLOAT, 0, NULL);
+		}
+
+		if (((*it)->buffNormals) > 0)
+		{
+			glEnableClientState(GL_NORMAL_ARRAY);
+			glBindBuffer(GL_ARRAY_BUFFER, (*it)->buffNormals);
+			glNormalPointer(GL_FLOAT, 0, NULL);
+		}
+
+		if (((*it)->buffUv) > 0)
+		{
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glBindBuffer(GL_ARRAY_BUFFER, (*it)->buffUv);
+			glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+		}
+
+		if (((*it)->buffIndex) > 0)
+		{
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (*it)->buffIndex);
+			glDrawElements(GL_TRIANGLES, (*it)->numIndex, GL_UNSIGNED_INT, NULL);
+		}
+
 		// CleanUp
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -336,6 +351,19 @@ void ModuleRenderer3D::LoadMeshes(char* path)
 		{
 			meshes.push_back(*it);
 		}
+	}
+}
+
+void ModuleRenderer3D::LoadImages(char * path)
+{
+	std::vector<Mesh*>::iterator it = meshes.begin();
+	for(; it != meshes.end(); it++)
+	{
+		if ((*it)->buffTexture > 0)
+		{
+			glDeleteBuffers(1, &(*it)->buffTexture);
+		}
+		(*it)->buffTexture = importer.LoadImageFile(path);
 	}
 }
 

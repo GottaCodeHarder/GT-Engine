@@ -34,7 +34,7 @@ public:
 	uint buffVertex = 0;
 	uint buffIndex = 0;
 	uint numIndex = 0;
-	GLuint buffTexture = 0;
+	uint buffTexture = 0;
 
 	math::AABB aabbBox;
 private:
@@ -49,7 +49,7 @@ public:
 
 	FileExtensions GetExtension(const char* path);
 	bool FileExists(const std::string& name);
-	GLuint LoadImage(const char* file);
+	GLuint LoadImageFile(const char* file);
 
 	std::vector<Mesh*> CreateMesh(const char* path);
 

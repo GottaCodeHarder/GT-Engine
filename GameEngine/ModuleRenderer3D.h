@@ -20,6 +20,7 @@ public:
 	void AddImGui();
 
 	void LoadMeshes(char* path);
+	void LoadImages(char* path);
 
 	void CleanScene();
 

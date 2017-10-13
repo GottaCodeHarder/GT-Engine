@@ -107,7 +107,7 @@ std::vector<Mesh*> Importer::CreateMesh(const char * path)
 					{
 						if (FileExists(strPath.c_str()))
 						{
-							mesh->buffTexture = LoadImage(strPath.c_str());
+							mesh->buffTexture = LoadImageFile(strPath.c_str());
 						}
 					}
 					else
@@ -134,7 +134,7 @@ std::vector<Mesh*> Importer::CreateMesh(const char * path)
 	return ret;
 }
 
-GLuint Importer::LoadImage(const char* theFileName)
+GLuint Importer::LoadImageFile(const char* theFileName)
 {
 	if (!bDevilInit)
 	{
