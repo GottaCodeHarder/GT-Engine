@@ -88,6 +88,10 @@ void ModuleWindow::AddImGui()
 		ImGui::VSliderInt("##Height", ImVec2(22, 140), &screenSurface->h, 400, 980);
 		if (ImGui::IsItemHovered())
 			ImGui::SetTooltip("Doesn't apply if Maximized!\nDoesn't apply if Fullscreen!");
+		if (ImGui::IsItemActive())
+		{
+			SDL_SetWindowSize(window, screenSurface->w, screenSurface->h);
+		}
 		ImGui::SameLine();
 		
 		ImGui::Text("\n\n\n\n\n         %i x %i", width, screenSurface->h);
@@ -98,13 +102,10 @@ void ModuleWindow::AddImGui()
 			ImGui::SetTooltip("Doesn't apply if Maximized!\nDoesn't apply if Fullscreen!");
 		if (ImGui::IsItemActive())
 		{
+			SDL_SetWindowSize(window, screenSurface->w, screenSurface->h);
 		}
 		else
 			screenSurface->w = width;
-
-
-		if (!bMaximize)
-			SDL_SetWindowSize(window, screenSurface->w, screenSurface->h);
 
 		if (ImGui::Checkbox("FullScreen", &bFullscreen))
 		{
@@ -140,12 +141,10 @@ void ModuleWindow::AddImGui()
 		if (ImGui::Checkbox("Maximize", &bMaximize))
 		{
 			if (bMaximize) {
-				flags |= SDL_WINDOW_MAXIMIZED;
 				SDL_MaximizeWindow(window);
 			}
 			else
 			{
-				flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 				SDL_RestoreWindow(window);
 			}
 		}
