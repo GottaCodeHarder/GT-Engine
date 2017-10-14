@@ -228,7 +228,7 @@ FileExtensions Importer::GetExtension(const char *path)
 		return FileExtensions::Scene3D;
 	}
 
-	return FileExtensions::Unrecognized;
+	return FileExtensions::Unsupported;
 }
 
 bool Importer::FileExists(const std::string& name)

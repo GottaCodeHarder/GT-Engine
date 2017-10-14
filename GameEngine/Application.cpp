@@ -70,6 +70,24 @@ void Application::AddImGui()
 {
 	std::vector<Module*>::iterator it = modulesList.begin();
 
+	if (!bFreeze)
+	{
+		for (int i = 0; i <= 99; i++)
+		{
+			if (i == 99)
+			{
+				msArr[i] = (startUp.Read() - millisec);
+				//fpsArr[i] = ImGui::GetIO().Framerate;
+				fpsArr[i] = capFramerate;
+			}
+			else
+			{
+				msArr[i] = msArr[i + 1];
+				fpsArr[i] = fpsArr[i + 1];
+			}
+		}
+	}
+
 	if (ImGui::CollapsingHeader("Application"))
 	{
 		static char input[100];
@@ -93,23 +111,6 @@ void Application::AddImGui()
 		ImGui::SliderFloat("Max FPS", &capFramerate, 20.0f, 144.0f, "%.1f");
 		fps = (capFramerate > 0) ? 1000 / capFramerate : 0;
 
-		if (!bFreeze)
-		{
-			for (int i = 0; i <= 99; i++)
-			{
-				if (i == 99)
-				{
-					msArr[i] = (startUp.Read() - millisec);
-					//fpsArr[i] = ImGui::GetIO().Framerate;
-					fpsArr[i] = capFramerate;
-				}
-				else
-				{
-					msArr[i] = msArr[i + 1];
-					fpsArr[i] = fpsArr[i + 1];
-				}
-			}
-		}
 		millisec = startUp.Read();
 
 		char title[25];

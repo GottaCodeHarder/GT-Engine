@@ -207,7 +207,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 			LoadImages((char*)App->input->GetFileDropped());
 			break;
 		}
-		case FileExtensions::Unrecognized:
+		case FileExtensions::Unsupported:
 		{
 			MYLOG("File Type not supported by GT Engine");
 			break;

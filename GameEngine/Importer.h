@@ -17,7 +17,7 @@ enum FileExtensions
 {
 	Scene3D = 0,
 	Image,
-	Unrecognized
+	Unsupported
 };
 
 class Mesh
