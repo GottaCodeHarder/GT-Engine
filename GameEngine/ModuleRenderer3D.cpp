@@ -266,6 +266,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	}
 	
 	// Drawing UI
+	ImporterUI();
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	App->editor->Draw();
 
@@ -600,4 +601,30 @@ void ModuleRenderer3D::DirectCube()
 	glVertex3f(3.f, 0.f, 0.f);
 
 	glEnd();
+}
+
+void ModuleRenderer3D::ImporterUI()
+{
+	ImGuiWindowFlags flag = ImGuiWindowFlags_NoFocusOnAppearing;
+	ImGui::Begin("Properties", 0, flag);
+	{
+		if (ImGui::CollapsingHeader("Transformation"))
+		{
+			int a = 1;
+			for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++)
+			{
+				ImGui::Text("Mesh %i", a);
+				ImGui::Text("Number of Vertex: %i", (*it)->vertex.size());
+				a++;
+			}
+		}
+		if (ImGui::CollapsingHeader("Geometry"))
+		{
+		}
+		if (ImGui::CollapsingHeader("Texture"))
+		{
+		}
+	}
+
+	ImGui::End();
 }

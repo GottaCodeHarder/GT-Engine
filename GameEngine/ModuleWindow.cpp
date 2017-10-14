@@ -102,10 +102,12 @@ void ModuleWindow::AddImGui()
 			ImGui::SetTooltip("Doesn't apply if Maximized!\nDoesn't apply if Fullscreen!");
 		if (ImGui::IsItemActive())
 		{
-			SDL_SetWindowSize(window, screenSurface->w, screenSurface->h);
 		}
 		else
+		{
 			screenSurface->w = width;
+			SDL_SetWindowSize(window, screenSurface->w, screenSurface->h);
+		}
 
 		if (ImGui::Checkbox("FullScreen", &bFullscreen))
 		{

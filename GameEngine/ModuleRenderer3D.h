@@ -19,6 +19,8 @@ public:
 	bool CleanUp();
 	void AddImGui();
 
+	void ImporterUI();
+
 	void LoadMeshes(char* path);
 	void LoadImages(char* path);
 
