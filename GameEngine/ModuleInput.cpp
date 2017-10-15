@@ -31,6 +31,8 @@ bool ModuleInput::Init()
 		ret = false;
 	}
 
+	SDL_EventState(SDL_DROPFILE, SDL_ENABLE);
+
 	return ret;
 }
 
@@ -84,9 +86,9 @@ update_status ModuleInput::PreUpdate(float dt)
 	}
 
 	mouseXMotion = mouseYMotion = 0;
-
 	bool quit = false;
-	SDL_Event e;
+	static SDL_Event e;
+
 	while(SDL_PollEvent(&e))
 	{
 		ImGui_ImplSdlGL3_ProcessEvent(&e);
@@ -94,8 +96,10 @@ update_status ModuleInput::PreUpdate(float dt)
 		switch(e.type)
 		{
 			case SDL_MOUSEWHEEL:
-			mouseZ = e.wheel.y;
-			break;
+			{
+				mouseZ = e.wheel.y;
+				break;
+			}
 
 			case SDL_MOUSEMOTION:
 			{
@@ -104,7 +108,7 @@ update_status ModuleInput::PreUpdate(float dt)
 
 				mouseXMotion = e.motion.xrel / SCREEN_SIZE;
 				mouseYMotion = e.motion.yrel / SCREEN_SIZE;
-			break;
+				break;
 			}
 		
 			case SDL_DROPFILE:
@@ -116,8 +120,10 @@ update_status ModuleInput::PreUpdate(float dt)
 			}
 
 			case SDL_QUIT:
-			quit = true;
-			break;
+			{
+				quit = true;
+				break;
+			}
 
 			case SDL_WINDOWEVENT:
 			{

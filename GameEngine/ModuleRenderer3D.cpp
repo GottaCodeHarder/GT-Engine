@@ -165,6 +165,37 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	return UPDATE_CONTINUE;
 }
 
+update_status ModuleRenderer3D::Update(float dt)
+{
+	if (App->input->has_dropped)
+	{
+		FileExtensions extension = importer.GetExtension(App->input->GetFileDropped());
+
+		switch (extension)
+		{
+		case FileExtensions::Scene3D:
+		{
+			LoadMeshes((char*)App->input->GetFileDropped());
+			break;
+		}
+		case FileExtensions::Image:
+		{
+			LoadImages((char*)App->input->GetFileDropped());
+			break;
+		}
+		case FileExtensions::Unsupported:
+		{
+			MYLOG("File Type not supported by GT Engine");
+			break;
+		}
+		}
+
+		App->input->has_dropped = false;
+	}
+
+	return UPDATE_CONTINUE;
+}
+
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
@@ -191,31 +222,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	//glDrawArrays(GL_TRIANGLES, 0, 36*3);
 	//glDisableClientState(GL_VERTEX_ARRAY);
 //---------------------------------------------------------------------------------------------------------------------------
-	if (App->input->has_dropped)
-	{
-		FileExtensions extension = importer.GetExtension(App->input->GetFileDropped());
-
-		switch (extension)
-		{
-		case FileExtensions::Scene3D:
-		{
-			LoadMeshes((char*)App->input->GetFileDropped());
-			break;
-		}
-		case FileExtensions::Image:
-		{
-			LoadImages((char*)App->input->GetFileDropped());
-			break;
-		}
-		case FileExtensions::Unsupported:
-		{
-			MYLOG("File Type not supported by GT Engine");
-			break;
-		}
-		}
-		
-		App->input->has_dropped = false;
-	}
+	
 //----------------------------------------------------------------------------------------------------------------------------
 
 	for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++)
