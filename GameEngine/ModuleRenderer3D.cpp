@@ -373,7 +373,7 @@ void ModuleRenderer3D::LoadImages(char * path)
 	{
 		if ((*it)->buffTexture > 0)
 		{
-			glDeleteBuffers(1, &(*it)->buffTexture);
+			//glDeleteBuffers(1, &(*it)->buffTexture);
 		}
 		(*it)->buffTexture = importer.LoadImageFile(path);
 	}
