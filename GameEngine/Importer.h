@@ -51,6 +51,8 @@ public:
 	bool FileExists(const std::string& name);
 	GLuint LoadImageFile(const char* file);
 
+	ImVec2 imageDimensions;
+
 	std::vector<Mesh*> CreateMesh(const char* path);
 
 private:
