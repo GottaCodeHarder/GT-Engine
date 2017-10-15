@@ -5,6 +5,7 @@ LINK TO REPOSITORY - (https://github.com/GottaCodeHarder/GT-Engine)
 GT Engine is a Game Engine for educational purposes made by Samuel Navarro Soto and Pau Serra Colomer.
 Using SDL (2.0.3), ImGui (1.50), PhysFs, Bullet (2.84), MathGeoLib (1.5), gl3w and parson (latest 2017)
 MIT License. Copyright (c) 2017
+LICENSE (https://github.com/GottaCodeHarder/GT-Engine/blob/master/LICENSE)
 
 #UI EXPLANATION
 
