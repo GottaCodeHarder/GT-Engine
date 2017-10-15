@@ -138,7 +138,39 @@ update_status ModuleInput::PreUpdate(float dt)
 
 void ModuleInput::AddImGui()
 {
+	static char* name = "";
+	if (GetFileDropped() != nullptr)
+	{
+		name = (char*)GetFileDropped();
+	}
 
+	if (ImGui::CollapsingHeader("Input"))
+	{
+		if (ImGui::TreeNodeEx("Mouse", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::BeginGroup();
+			{
+				ImGui::Text("Mouse position:");
+				ImGui::Text("Mouse motion:");
+				ImGui::Text("Mouse wheel:");
+				ImGui::EndGroup();
+			}
+			ImGui::SameLine();
+			ImGui::BeginGroup();
+			{
+				ImGui::Text("%i, %i", GetMouseX(), GetMouseY());
+				ImGui::Text("%i, %i", GetMouseXMotion(), GetMouseYMotion());
+				ImGui::Text("%i", GetMouseZ());
+				ImGui::EndGroup();
+			}
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNodeEx("Files", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::TextWrapped("Latest dropped file:\n%s", name);
+			ImGui::TreePop();
+		}
+	}
 }
 
 // Called before quitting
