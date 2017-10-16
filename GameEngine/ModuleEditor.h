@@ -30,6 +30,8 @@ public:
 
 	void Draw();
 
+	void ConfigApplication(bool &bFreeze, Timer &start, float &cap, float &mil, float &fps);
+
 private:
 	ImGuiTextBuffer console_buffer;
 

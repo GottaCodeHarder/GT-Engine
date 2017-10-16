@@ -155,6 +155,60 @@ void ModuleEditor::Draw()
 	ImGui::Render();
 }
 
+void ModuleEditor::ConfigApplication(bool &bFreeze, Timer &startUp, float &capFramerate, float &millisec, float &fps)
+{
+	if (!bFreeze)
+	{
+		for (int i = 0; i <= 99; i++)
+		{
+			if (i == 99)
+			{
+				App->msArr[i] = (startUp.Read() - millisec);
+				App->fpsArr[i] = capFramerate;
+			}
+			else
+			{
+				App->msArr[i] = App->msArr[i + 1];
+				App->fpsArr[i] = App->fpsArr[i + 1];
+			}
+		}
+	}
+
+	if (ImGui::CollapsingHeader("Application"))
+	{
+		static char input[100];
+		int size = sizeof(input) / sizeof(char);
+		sprintf_s(input, size, "%s", App->name.c_str());
+
+		if (ImGui::InputText("App Name", input, size))
+		{
+			App->name.assign(input);
+			App->window->SetTitle(input);
+		}
+
+		sprintf_s(input, size, "%s", App->organization.c_str());
+
+		if (ImGui::InputText("Organization", input, sizeof(input) / sizeof(char)))
+		{
+			App->organization.assign(input);
+		}
+
+		ImGui::PushItemWidth(250);
+		ImGui::SliderFloat("Max FPS", &capFramerate, 20.0f, 144.0f, "%.1f");
+		fps = (capFramerate > 0) ? 1000 / capFramerate : 0;
+
+		millisec = startUp.Read();
+
+		char title[25];
+		sprintf_s(title, 25, "Framerate %.1f", App->fpsArr[99]);
+		ImGui::PlotHistogram("##framerate", App->fpsArr, ((int)(sizeof(App->fpsArr) / sizeof(*App->fpsArr))), 0, title, 0.0f, 150.0f, ImVec2(310, 100));
+		sprintf_s(title, 25, "Milliseconds %.1f", App->msArr[99]);
+		ImGui::PlotHistogram("##milliseconds", App->msArr, ((int)(sizeof(App->msArr) / sizeof(*App->msArr))), 0, title, 0.0f, 40.0f, ImVec2(310, 100));
+
+		ImGui::Checkbox("< Freeze Framerate Display", &bFreeze);
+	}
+}
+
 // ---------------------------------------------< FILE
 void ModuleEditor::MenuFile()
 {

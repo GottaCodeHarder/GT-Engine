@@ -47,6 +47,9 @@ public:
 
 	void RequestBrowser(std::string link);
 
+	float fpsArr[100] = {};
+	float msArr[100] = {};
+
 private:
 
 	void AddModule(Module* mod);
@@ -57,8 +60,6 @@ private:
 	uint  frameCount = 0;
 	Timer startUp;
 	float millisec = 0.0f;
-	float fpsArr[100] = {};
-	float msArr[100] = {};
 	float capFramerate = 60.0f;
 	float fps = 60.0f;
 

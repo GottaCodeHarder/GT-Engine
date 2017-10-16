@@ -70,57 +70,7 @@ void Application::AddImGui()
 {
 	std::vector<Module*>::iterator it = modulesList.begin();
 
-	if (!bFreeze)
-	{
-		for (int i = 0; i <= 99; i++)
-		{
-			if (i == 99)
-			{
-				msArr[i] = (startUp.Read() - millisec);
-				//fpsArr[i] = ImGui::GetIO().Framerate;
-				fpsArr[i] = capFramerate;
-			}
-			else
-			{
-				msArr[i] = msArr[i + 1];
-				fpsArr[i] = fpsArr[i + 1];
-			}
-		}
-	}
-
-	if (ImGui::CollapsingHeader("Application"))
-	{
-		static char input[100];
-		int size = sizeof(input) / sizeof(char);
-		sprintf_s(input, size, "%s", name.c_str());
-
-		if (ImGui::InputText("App Name", input, size))
-		{
-			name.assign(input);
-			App->window->SetTitle(input);
-		}
-
-		sprintf_s(input, size, "%s", organization.c_str());
-
-		if (ImGui::InputText("Organization", input, sizeof(input) / sizeof(char)))
-		{
-			organization.assign(input);
-		}
-
-		ImGui::PushItemWidth(250);
-		ImGui::SliderFloat("Max FPS", &capFramerate, 20.0f, 144.0f, "%.1f");
-		fps = (capFramerate > 0) ? 1000 / capFramerate : 0;
-
-		millisec = startUp.Read();
-
-		char title[25];
-		sprintf_s(title, 25, "Framerate %.1f", fpsArr[99]);
-		ImGui::PlotHistogram("##framerate", fpsArr, ((int)(sizeof(fpsArr) / sizeof(*fpsArr))), 0, title, 0.0f, 150.0f, ImVec2(310, 100));
-		sprintf_s(title, 25, "Milliseconds %.1f", msArr[99]);
-		ImGui::PlotHistogram("##milliseconds", msArr, ((int)(sizeof(msArr) / sizeof(*msArr))), 0, title, 0.0f, 40.0f, ImVec2(310, 100));
-		
-		ImGui::Checkbox("< Freeze Framerate Display", &bFreeze);
-	}
+	editor->ConfigApplication(bFreeze, startUp, capFramerate, millisec, fps);
 
 	for (it = modulesList.begin(); it != modulesList.end(); it++)
 	{
