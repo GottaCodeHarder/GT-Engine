@@ -38,6 +38,7 @@ public:
 	void FillVertex();
 	void DirectCube();
 	std::vector<Mesh*> meshes;
+	Importer importer;
 
 private:
 	bool bEnableDepthTest = true;
@@ -49,7 +50,7 @@ private:
 
 	float vertices[108] = {};
 
-	Importer importer;
+	
 	uint myId = 0;
 
 };

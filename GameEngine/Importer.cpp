@@ -84,6 +84,7 @@ std::vector<Mesh*> Importer::CreateMesh(const char * path)
 
 			mesh->aabbBox.SetNegativeInfinity();
 			mesh->aabbBox.Enclose(mesh->vertex.data(), scene->mMeshes[i]->mNumVertices);
+			meshesBoxes.push_back(mesh->aabbBox);
 
 			if (scene->HasMaterials())
 			{
@@ -125,6 +126,14 @@ std::vector<Mesh*> Importer::CreateMesh(const char * path)
 			ret.push_back(mesh);
 			
 		}
+		
+		maxBox.SetNegativeInfinity();
+		std::list<AABB>::iterator itBoxes = meshesBoxes.begin();
+		for (; itBoxes != meshesBoxes.end(); itBoxes++)
+		{
+			maxBox.Enclose((*itBoxes));
+		}
+
 		aiReleaseImport(scene);
 	}
 	else

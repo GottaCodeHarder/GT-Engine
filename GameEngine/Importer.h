@@ -20,6 +20,8 @@ enum FileExtensions
 	Unsupported
 };
 
+
+
 class Mesh
 {
 public:
@@ -36,11 +38,18 @@ public:
 	uint numIndex = 0;
 	uint buffTexture = 0;
 
-	math::AABB aabbBox;
+	AABB aabbBox;
 private:
 
 };
 
+class Geometry
+{
+private:
+	AABB maxBox;
+	std::list<Mesh*> meshes;
+	std::list<AABB> meshesBoxes;
+};
 
 class Importer
 {
@@ -54,7 +63,10 @@ public:
 	ImVec2 imageDimensions;
 
 	std::vector<Mesh*> CreateMesh(const char* path);
+	AABB maxBox;
 
 private:
 	bool bDevilInit = false;
+	std::list<AABB> meshesBoxes;
+	
 };

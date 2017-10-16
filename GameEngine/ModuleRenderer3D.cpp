@@ -349,11 +349,12 @@ void ModuleRenderer3D::LoadMeshes(char* path)
 	if (!tmp.empty())
 	{
 		AABB aabb;
+		aabb.SetNegativeInfinity();
 		for (std::vector<Mesh*>::iterator it = tmp.begin(); it != tmp.end(); it++)
 		{
 			aabb.Enclose((*it)->aabbBox);
 		}
-
+		importer.maxBox = aabb;
 		App->camera->Position.x = aabb.maxPoint.x * 2;
 		App->camera->Position.y = aabb.maxPoint.y * 2;
 		App->camera->Position.z = aabb.maxPoint.z * 2;
