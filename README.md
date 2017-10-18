@@ -31,6 +31,16 @@ F - To focus on the mesh
 
 #RELEASES
 
+###Gt Engine v0.1.1:
+##UI
+
+Added new window to show all the heriarchy of the meshes
+Restructure UI windows.
+##Internal Structure
+
+Now working with heriarchy
+Using GameObjects + Components
+
 ###Gt Engine v0.1.0:
 
 Added functionality: Adding a texture will replace the previous one.
