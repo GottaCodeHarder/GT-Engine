@@ -29,7 +29,7 @@ public:
 		}
 	}
 //PER PINTAR JERARQUIA IMGUI::TRINODE
-	void DrawHirearchy(GameObject* son);
+	void DrawHeriarchy(GameObject* son);
 
 	void AddComponent(Component*);
 	//FUNCIO ACTIVAR I DESACTIVAR

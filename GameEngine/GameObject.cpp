@@ -39,13 +39,13 @@ Component * GameObject::FindComponent(componentType type)
 	return nullptr;
 }
 
-void GameObject::DrawHirearchy(GameObject* son)
+void GameObject::DrawHeriarchy(GameObject* son)
 {
 	if (ImGui::TreeNodeEx(name.data(), ImGuiTreeNodeFlags_NoAutoOpenOnLog))
 	{
 		for (auto sonsSons : son->sons)
 		{
-			sonsSons->DrawHirearchy(sonsSons);
+			sonsSons->DrawHeriarchy(sonsSons);
 		}
 		ImGui::TreePop();
 	}

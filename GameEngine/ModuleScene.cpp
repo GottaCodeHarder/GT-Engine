@@ -27,7 +27,7 @@ void ModuleScene::AddHeriarchyGui()
 {
 	for (auto sonsRoot : root->sons)
 	{
-		sonsRoot->DrawHirearchy(sonsRoot);
+		sonsRoot->DrawHeriarchy(sonsRoot);
 	}
 
 }
