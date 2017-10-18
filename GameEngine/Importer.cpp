@@ -51,10 +51,11 @@ GameObject* Importer::LoadFbx(const char * path)
 						parent->sons.push_back(gameObject);
 					}
 
-					cMesh* mesh = new cMesh;
+					cMesh* mesh = new cMesh();
 					mesh->vertex.reserve(scene->mMeshes[i]->mNumVertices);
 					memcpy(mesh->vertex.data(), scene->mMeshes[i]->mVertices, sizeof(float3)*scene->mMeshes[i]->mNumVertices);
-					gameObject->components.insert(std::pair<componentType, Component*>(MESH, mesh));
+					//gameObject->components.insert(std::pair<componentType, Component*>(MESH, mesh));
+					gameObject->AddComponent(mesh);
 
 					if (mesh->vertex.empty() != false)
 					{

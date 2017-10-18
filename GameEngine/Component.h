@@ -11,10 +11,6 @@ enum componentType
 	CAMERA
 };
 
-
-
-
-
 class Component
 {
 public:

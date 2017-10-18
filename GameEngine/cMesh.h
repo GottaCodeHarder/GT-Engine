@@ -4,7 +4,7 @@
 class cMesh : public Component
 {
 public:
-
+	cMesh();
 	~cMesh();
 
 	std::vector<float3> normals;

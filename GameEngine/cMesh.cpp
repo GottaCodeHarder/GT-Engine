@@ -5,6 +5,11 @@
 
 #include "cMesh.h"
 
+cMesh::cMesh()
+{
+	type = MESH;
+}
+
 cMesh::~cMesh()
 {
 	glDeleteBuffers(1, &buffNormals);

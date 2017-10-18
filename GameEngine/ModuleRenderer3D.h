@@ -25,8 +25,6 @@ public:
 
 	void LoadImages(char* path) {};
 
-
-
 	void OnResize(int width, int height);
 
 public:

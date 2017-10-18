@@ -32,6 +32,7 @@ public:
 	void AddComponent(Component*);
 	//FUNCIO ACTIVAR I DESACTIVAR
 
+
 private:
 
 };

@@ -33,6 +33,7 @@ bool ModuleEditor::Start()
 	active_menu.insert(std::pair<std::string, bool>("Configuration", true));
 	active_menu.insert(std::pair<std::string, bool>("Console", true));
 	active_menu.insert(std::pair<std::string, bool>("Heriarchy", true));
+	active_menu.insert(std::pair<std::string, bool>("Properties", true));
 
 
 	ImGui_ImplSdlGL3_Init(App->window->GetWindow());

@@ -4,7 +4,7 @@
 
 GameObject::GameObject(std::string _name, bool _active, GameObject * _parent) : name(_name) , active(_active) , parent(_parent)
 {
-
+	
 }
 
 void GameObject::Update()
