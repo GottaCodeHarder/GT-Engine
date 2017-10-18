@@ -14,6 +14,7 @@ Application::Application()
 	editor = new ModuleEditor(this);
 	fileSystem = new ModuleFileSystem(this);
 	hardware = new ModuleHardware(this);
+	scene = new ModuleScene(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -28,6 +29,7 @@ Application::Application()
 	AddModule(fileSystem);
 	AddModule(hardware);
 	AddModule(editor);
+	AddModule(scene);
 
 	// Renderer last!
 	AddModule(renderer3D);

@@ -1,3 +1,6 @@
+#ifndef __Component__
+#define __Component__
+
 #include "Globals.h"
 
 enum componentType
@@ -7,6 +10,10 @@ enum componentType
 	MATERIAL,
 	CAMERA
 };
+
+
+
+
 
 class Component
 {
@@ -44,3 +51,4 @@ private:
 	virtual void RealUpdate() {};
 	virtual void RealDrawUI() {};
 };
+#endif // !

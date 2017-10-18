@@ -22,10 +22,10 @@ public:
 
 	void ImporterUI();
 
-	void LoadMeshes(char* path);
-	void LoadImages(char* path);
 
-	void CleanScene();
+	void LoadImages(char* path) {};
+
+
 
 	void OnResize(int width, int height);
 

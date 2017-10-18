@@ -12,6 +12,7 @@
 #include "ModulePhysics3D.h"
 #include "ModuleFileSystem.h"
 #include "ModuleHardware.h"
+#include "ModuleScene.h"
 
 class Application
 {
@@ -25,6 +26,7 @@ public:
 	ModuleEditor* editor;
 	ModuleFileSystem* fileSystem;
 	ModuleHardware* hardware;
+	ModuleScene* scene;
 
 private:
 

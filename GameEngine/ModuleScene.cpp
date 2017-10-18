@@ -41,7 +41,7 @@ bool ModuleScene::CleanUp()
 	return true;
 }
 
-void ModuleScene::Update()
+update_status ModuleScene::Update(float dt)
 {
 	root->Update();
 
@@ -70,6 +70,8 @@ void ModuleScene::Update()
 
 		App->input->has_dropped = false;
 	}
+
+	return UPDATE_CONTINUE;
 }
 
 GameObject * ModuleScene::CreateGameObject(std::string name, bool active, GameObject * parent)

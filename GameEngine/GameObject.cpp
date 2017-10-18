@@ -29,10 +29,17 @@ void GameObject::Update()
 
 Component * GameObject::FindComponent(componentType type)
 {
-	return components[type];
+	Component * ret = nullptr;
+
+	std::map<componentType, Component*>::iterator it = components.find(type);
+	if (it != components.end())
+	{
+		return it->second;
+	}
+	return nullptr;
 }
 
-Component * GameObject::AddComponent(Component* addComponent)
+void GameObject::AddComponent(Component* addComponent)
 {
 	components.insert(std::pair<componentType, Component*>(addComponent->type, addComponent));
 }

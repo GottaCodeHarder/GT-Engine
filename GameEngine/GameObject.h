@@ -24,12 +24,12 @@ public:
 		{
 			for (auto itComp : components)
 			{
-				itComp.second->DrawUI();
+				itComp.second->DrawUI(); 
 			}
 		}
 	}
-
-	Component* AddComponent(Component*);
+//PER PINTAR JERARQUIA IMGUI::TRINODE
+	void AddComponent(Component*);
 	//FUNCIO ACTIVAR I DESACTIVAR
 
 private:

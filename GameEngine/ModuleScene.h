@@ -19,7 +19,7 @@ public:
 	bool Init();
 	void AddImGui();
 	bool CleanUp();
-	void Update();
+	update_status Update(float dt);
 
 	GameObject* CreateGameObject(std::string name = "GameObject", bool active = true, GameObject* parent = nullptr);
 	void CreateFbx(char* path);
