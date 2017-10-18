@@ -39,6 +39,18 @@ Component * GameObject::FindComponent(componentType type)
 	return nullptr;
 }
 
+void GameObject::DrawHirearchy(GameObject* son)
+{
+	if (ImGui::TreeNodeEx(name.data(), ImGuiTreeNodeFlags_NoAutoOpenOnLog))
+	{
+		for (auto sonsSons : son->sons)
+		{
+			sonsSons->DrawHirearchy(sonsSons);
+		}
+		ImGui::TreePop();
+	}
+}
+
 void GameObject::AddComponent(Component* addComponent)
 {
 	components.insert(std::pair<componentType, Component*>(addComponent->type, addComponent));

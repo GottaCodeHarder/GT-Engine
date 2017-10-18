@@ -27,14 +27,7 @@ void ModuleScene::AddHeriarchyGui()
 {
 	for (auto sonsRoot : root->sons)
 	{
-		if (ImGui::TreeNodeEx(sonsRoot->name.data(), ImGuiTreeNodeFlags_NoAutoOpenOnLog))
-		{
-			for (auto sonsSons : sonsRoot->sons)
-			{
-				
-			}
-			ImGui::TreePop();
-		}
+		sonsRoot->DrawHirearchy(sonsRoot);
 	}
 
 }
