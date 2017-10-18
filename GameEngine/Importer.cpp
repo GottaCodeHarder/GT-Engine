@@ -15,6 +15,7 @@ GameObject* Importer::LoadFbx(const char * path)
 {
 	const aiScene* scene = aiImportFile(path, aiProcessPreset_TargetRealtime_MaxQuality);
 	GameObject* ret = new GameObject("fakeRoot", true, nullptr);
+	bCalcRet = true;
 
 	if (scene != nullptr && scene->HasMeshes())
 	{
@@ -39,6 +40,12 @@ GameObject* Importer::LoadFbx(const char * path)
 					// Use scene->mNumMeshes to iterate on scene->mMeshes array
 					GameObject* gameObject = new GameObject(scene->mMeshes[i]->mName.data, true, parent);
 					me = gameObject;
+					if (bCalcRet)
+					{
+						ret = me;
+						bCalcRet = false;
+					}
+					
 					if (parent != nullptr)
 					{
 						parent->sons.push_back(gameObject);
@@ -152,7 +159,12 @@ GameObject* Importer::LoadFbx(const char * path)
 			{
 				GameObject* gameObject = new GameObject(loading->mName.data, true, parent);
 				me = gameObject;
-				ret = me;
+				if (bCalcRet)
+				{
+					ret = me;
+					bCalcRet = false;
+				}
+
 				if (parent != nullptr)
 				{
 					parent->sons.push_back(gameObject);

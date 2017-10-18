@@ -214,6 +214,8 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 
 void ModuleRenderer3D::DrawGameObject(GameObject* go)
 {
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
 	cMesh* mesh = (cMesh*)go->FindComponent(componentType::MESH);
 	if (mesh == nullptr) 
 	{
@@ -500,7 +502,7 @@ void ModuleRenderer3D::FillVertex()
 
 void ModuleRenderer3D::DirectCube()
 {
-	glColor4f(1.0f, 0.2f, 0.8f, 1.0f);
+	//glColor4f(1.0f, 0.2f, 0.8f, 1.0f);
 
 	glBegin(GL_TRIANGLES);
 
