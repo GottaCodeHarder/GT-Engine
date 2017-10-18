@@ -23,12 +23,20 @@ bool ModuleScene::Init()
 	return ret;
 }
 
-void ModuleScene::AddImGui()
+void ModuleScene::AddHeriarchyGui()
 {
-	if (ImGui::CollapsingHeader("Window"))
+	for (auto sonsRoot : root->sons)
 	{
-		
+		if (ImGui::TreeNodeEx(sonsRoot->name.data(), ImGuiTreeNodeFlags_NoAutoOpenOnLog))
+		{
+			for (auto sonsSons : sonsRoot->sons)
+			{
+				
+			}
+			ImGui::TreePop();
+		}
 	}
+
 }
 
 // Called before quitting

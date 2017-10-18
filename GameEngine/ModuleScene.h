@@ -17,7 +17,7 @@ public:
 	virtual ~ModuleScene();
 
 	bool Init();
-	void AddImGui();
+	void AddHeriarchyGui();
 	bool CleanUp();
 	update_status Update(float dt);
 

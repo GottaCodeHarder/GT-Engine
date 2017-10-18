@@ -32,6 +32,8 @@ bool ModuleEditor::Start()
 	active_menu.insert(std::pair<std::string, bool>("Geometry", false));
 	active_menu.insert(std::pair<std::string, bool>("Configuration", true));
 	active_menu.insert(std::pair<std::string, bool>("Console", true));
+	active_menu.insert(std::pair<std::string, bool>("Heriarchy", true));
+
 
 	ImGui_ImplSdlGL3_Init(App->window->GetWindow());
 	
@@ -104,8 +106,11 @@ update_status ModuleEditor::Update(float dt)
 	}
 	if (active_menu["Configuration"])
 	{
-		ImGui::SetNextWindowPos(ImVec2(1420, 19));
 		Configuration();
+	}
+	if (active_menu["Heriarchy"])
+	{
+		Heriarchy();
 	}
 	if (active_menu["Console"])
 	{
@@ -334,13 +339,28 @@ void ModuleEditor::Configuration()
 {
 	sizeX = 370.f;
 
-	ImGui::SetNextWindowSize(ImVec2(sizeX, App->window->screenSurface->h - 19.f));
-	ImGui::SetNextWindowPos(ImVec2(App->window->screenSurface->w - sizeX, 19.f));
+	ImGui::SetNextWindowSize(ImVec2(sizeX, App->window->screenSurface->h - 560.f));
+	ImGui::SetNextWindowPos(ImVec2(App->window->screenSurface->w - sizeX, 558.f));
 	ImGuiWindowFlags flag = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
 		ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_AlwaysAutoResize;
 	ImGui::Begin("Configuration", 0, ImVec2(500, 1000), 0.8f, flag);
 	{
 		App->AddImGui();
+	}
+
+	ImGui::End();
+}
+
+void ModuleEditor::Heriarchy()
+{
+
+	ImGui::SetNextWindowSize(ImVec2(sizeX, App->window->screenSurface->h - 243.f));
+	ImGui::SetNextWindowPos(ImVec2(0, 20));
+	ImGuiWindowFlags flag = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_AlwaysAutoResize;
+	ImGui::Begin("Heriarchy", 0, ImVec2(500, 1000), 0.8f, flag);
+	{
+		App->scene->AddHeriarchyGui();
 	}
 
 	ImGui::End();
