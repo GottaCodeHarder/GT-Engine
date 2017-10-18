@@ -39,6 +39,10 @@ GameObject* Importer::LoadFbx(const char * path)
 					int i = loading->mMeshes[j];
 					// Use scene->mNumMeshes to iterate on scene->mMeshes array
 					GameObject* gameObject = new GameObject(scene->mMeshes[i]->mName.data, true, parent);
+					if (gameObject->name == "")
+					{
+						gameObject->name.assign("default");
+					}
 					me = gameObject;
 					if (bCalcRet)
 					{
