@@ -13,6 +13,8 @@
 
 #pragma comment (lib, "Assimp/libx86/assimp.lib")
 
+class GameObject;
+
 enum FileExtensions
 {
 	Scene3D = 0,
@@ -41,14 +43,6 @@ private:
 
 };
 
-class Geometry
-{
-private:
-	AABB maxBox;
-	std::list<Mesh*> meshes;
-	std::list<AABB> meshesBoxes;
-};
-
 class Importer
 {
 
@@ -60,7 +54,7 @@ public:
 
 	ImVec2 imageDimensions;
 
-	std::vector<Mesh*> CreateMesh(const char* path);
+	GameObject* LoadFbx(const char* path);
 	AABB maxBox;
 
 private:

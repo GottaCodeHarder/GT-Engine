@@ -37,8 +37,7 @@ public:
 	mat4x4 modelMatrix, viewMatrix, projectionMatrix;
 	void FillVertex();
 	void DirectCube();
-	std::vector<Mesh*> meshes;
-	Importer importer;
+	void DrawGameObject(GameObject* go);
 
 private:
 	bool bEnableDepthTest = true;

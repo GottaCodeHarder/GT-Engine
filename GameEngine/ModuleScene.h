@@ -1,0 +1,35 @@
+#ifndef __ModuleScene_H__
+#define __ModuleScene_H__
+
+#include "Module.h"
+#include "SDL/include/SDL.h"
+
+class Application;
+class GameObject;
+
+class ModuleScene : public Module
+{
+public:
+
+	ModuleScene(Application* app, bool start_enabled = true);
+
+	// Destructor
+	virtual ~ModuleScene();
+
+	bool Init();
+	void AddImGui();
+	bool CleanUp();
+	void Update();
+
+	GameObject* CreateGameObject(std::string name = "GameObject", bool active = true, GameObject* parent = nullptr);
+	void CreateFbx(char* path);
+
+public:
+	GameObject* root;
+	Importer importer;
+
+private:
+
+};
+
+#endif // __ModuleScene_H__

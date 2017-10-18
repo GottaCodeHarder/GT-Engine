@@ -2,6 +2,9 @@
 
 #include "Application.h"
 #include "ModuleRenderer3D.h"
+#include "GameObject.h"
+#include "cMesh.h"
+
 
 #include "glew/include/glew.h"
 #include "SDL/include/SDL_opengl.h"
@@ -167,31 +170,6 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 
 update_status ModuleRenderer3D::Update(float dt)
 {
-	if (App->input->has_dropped)
-	{
-		FileExtensions extension = importer.GetExtension(App->input->GetFileDropped());
-
-		switch (extension)
-		{
-		case FileExtensions::Scene3D:
-		{
-			LoadMeshes((char*)App->input->GetFileDropped());
-			break;
-		}
-		case FileExtensions::Image:
-		{
-			LoadImages((char*)App->input->GetFileDropped());
-			break;
-		}
-		case FileExtensions::Unsupported:
-		{
-			MYLOG("File Type not supported by GT Engine");
-			break;
-		}
-		}
-
-		App->input->has_dropped = false;
-	}
 
 	return UPDATE_CONTINUE;
 }
@@ -224,53 +202,6 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 //---------------------------------------------------------------------------------------------------------------------------
 	
 //----------------------------------------------------------------------------------------------------------------------------
-
-	for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++)
-	{
-		if (((*it)->buffTexture) > 0)
-		{
-			glEnableClientState(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, (*it)->buffTexture);
-		}
-
-		if (((*it)->buffVertex) > 0)
-		{
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glBindBuffer(GL_ARRAY_BUFFER, (*it)->buffVertex);
-			glVertexPointer(3, GL_FLOAT, 0, NULL);
-		}
-
-		if (((*it)->buffNormals) > 0)
-		{
-			glEnableClientState(GL_NORMAL_ARRAY);
-			glBindBuffer(GL_ARRAY_BUFFER, (*it)->buffNormals);
-			glNormalPointer(GL_FLOAT, 0, NULL);
-		}
-
-		if (((*it)->buffUv) > 0)
-		{
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glBindBuffer(GL_ARRAY_BUFFER, (*it)->buffUv);
-			glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-		}
-
-		if (((*it)->buffIndex) > 0)
-		{
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (*it)->buffIndex);
-			glDrawElements(GL_TRIANGLES, (*it)->numIndex, GL_UNSIGNED_INT, NULL);
-		}
-
-		// CleanUp
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		
-		glDisableClientState(GL_VERTEX_ARRAY);
-		glDisableClientState(GL_NORMAL_ARRAY);
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState(GL_TEXTURE_2D);
-	
-	}
 	
 	// Drawing UI
 	ImporterUI();
@@ -279,6 +210,57 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 
 	SDL_GL_SwapWindow(App->window->window);
 	return UPDATE_CONTINUE;
+}
+
+void ModuleRenderer3D::DrawGameObject(GameObject* go)
+{
+	cMesh* mesh = (cMesh*)go->FindComponent(componentType::MESH);
+	if (mesh == nullptr) 
+	{
+		return;
+	}
+		if (((mesh)->buffTexture) > 0)
+		{
+			glEnableClientState(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, (mesh)->buffTexture);
+		}
+
+		if (((mesh)->buffVertex) > 0)
+		{
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glBindBuffer(GL_ARRAY_BUFFER, (mesh)->buffVertex);
+			glVertexPointer(3, GL_FLOAT, 0, NULL);
+		}
+
+		if (((mesh)->buffNormals) > 0)
+		{
+			glEnableClientState(GL_NORMAL_ARRAY);
+			glBindBuffer(GL_ARRAY_BUFFER, (mesh)->buffNormals);
+			glNormalPointer(GL_FLOAT, 0, NULL);
+		}
+
+		if (((mesh)->buffUv) > 0)
+		{
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+			glBindBuffer(GL_ARRAY_BUFFER, (mesh)->buffUv);
+			glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+		}
+
+		if (((mesh)->buffIndex) > 0)
+		{
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (mesh)->buffIndex);
+			glDrawElements(GL_TRIANGLES, (mesh)->numIndex, GL_UNSIGNED_INT, NULL);
+		}
+
+		// CleanUp
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_NORMAL_ARRAY);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		glDisableClientState(GL_TEXTURE_2D);
 }
 
 // Called before quitting
@@ -335,34 +317,6 @@ void ModuleRenderer3D::AddImGui()
 		if (ImGui::Checkbox("Wireframe Mode", &bEnableWireframe))
 		{
 			
-		}
-	}
-}
-
-void ModuleRenderer3D::LoadMeshes(char* path)
-{
-	CleanScene();
-
-	std::vector<Mesh*> tmp = importer.CreateMesh(path);
-
-	App->camera->referenceDone = true;
-	if (!tmp.empty())
-	{
-		AABB aabb;
-		aabb.SetNegativeInfinity();
-		for (std::vector<Mesh*>::iterator it = tmp.begin(); it != tmp.end(); it++)
-		{
-			aabb.Enclose((*it)->aabbBox);
-		}
-		importer.maxBox = aabb;
-		App->camera->Position.x = aabb.maxPoint.x * 2;
-		App->camera->Position.y = aabb.maxPoint.y * 2;
-		App->camera->Position.z = aabb.maxPoint.z * 2;
-		App->camera->LookAt(vec3(aabb.CenterPoint().x, aabb.CenterPoint().y, aabb.CenterPoint().z));
-
-		for (std::vector<Mesh*>::iterator it = tmp.begin(); it != tmp.end(); it++)
-		{
-			meshes.push_back(*it);
 		}
 	}
 }
