@@ -1,6 +1,7 @@
 # GT-Engine
 
 LINK TO REPOSITORY - (https://github.com/GottaCodeHarder/GT-Engine)
+LINK TO TRELLO - (https://trello.com/b/i8PU5gIu/motors)
 
 GT Engine is a Game Engine for educational purposes made by Samuel Navarro Soto and Pau Serra Colomer.
 Using SDL (2.0.3), ImGui (1.50), PhysFs, Bullet (2.84), MathGeoLib (1.5), gl3w and parson (latest 2017)
@@ -29,6 +30,13 @@ Alt left+left click - To pivotate around the mesh
 F - To focus on the mesh
 
 #RELEASES
+
+###Gt Engine v0.1.0:
+
+Added functionality: Adding a texture will replace the previous one.
+Added Properties window.
+Several features polish.
+Several bug fixes.
 
 ###Gt Engine v0.0.4:
 

@@ -20,8 +20,6 @@ enum FileExtensions
 	Unsupported
 };
 
-
-
 class Mesh
 {
 public:
