@@ -94,8 +94,10 @@ GameObject * ModuleScene::CreateGameObject(std::string name, bool active, GameOb
 void ModuleScene::CreateFbx(char* path)
 {
 	GameObject* tmp = importer.LoadFbx(path);
+	
 	for (auto childsTmp : tmp->sons)
 	{
+		//root = childsTmp->parent;
 		childsTmp->parent = root;
 		root->sons.push_back(childsTmp);
 	}
@@ -108,7 +110,7 @@ void ModuleScene::CreateFbx(char* path)
 		App->camera->Position.y = importer.maxBox.maxPoint.y * 2;
 		App->camera->Position.z = importer.maxBox.maxPoint.z * 2;
 		App->camera->LookAt(vec3(importer.maxBox.CenterPoint().x, importer.maxBox.CenterPoint().y, importer.maxBox.CenterPoint().z));
-
+		tmp = nullptr;
 		delete tmp;
 	}
 	

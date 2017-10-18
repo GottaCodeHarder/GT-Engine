@@ -23,6 +23,7 @@ GameObject* Importer::LoadFbx(const char * path)
 
 		while (toLoad.empty() == false)
 		{
+			
 			GameObject* parent = toLoad.front().second;
 			aiNode* loading = toLoad.front().first;
 			toLoad.pop();
@@ -46,6 +47,7 @@ GameObject* Importer::LoadFbx(const char * path)
 					cMesh* mesh = new cMesh;
 					mesh->vertex.reserve(scene->mMeshes[i]->mNumVertices);
 					memcpy(mesh->vertex.data(), scene->mMeshes[i]->mVertices, sizeof(float3)*scene->mMeshes[i]->mNumVertices);
+					gameObject->components.insert(std::pair<componentType, Component*>(MESH, mesh));
 
 					if (mesh->vertex.empty() != false)
 					{
@@ -150,6 +152,7 @@ GameObject* Importer::LoadFbx(const char * path)
 			{
 				GameObject* gameObject = new GameObject(loading->mName.data, true, parent);
 				me = gameObject;
+				ret = me;
 				if (parent != nullptr)
 				{
 					parent->sons.push_back(gameObject);
