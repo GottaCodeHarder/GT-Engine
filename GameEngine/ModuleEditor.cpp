@@ -113,6 +113,10 @@ update_status ModuleEditor::Update(float dt)
 	{
 		Heriarchy();
 	}
+	if (active_menu["Properties"])
+	{
+		Properties();
+	}
 	if (active_menu["Console"])
 	{
 		ImGui::SetNextWindowPos(ImVec2(0, 738));
@@ -354,6 +358,7 @@ void ModuleEditor::Configuration()
 
 void ModuleEditor::Heriarchy()
 {
+	sizeX = 370.f;
 
 	ImGui::SetNextWindowSize(ImVec2(sizeX, App->window->screenSurface->h - 243.f));
 	ImGui::SetNextWindowPos(ImVec2(0, 20));
@@ -362,6 +367,22 @@ void ModuleEditor::Heriarchy()
 	ImGui::Begin("Heriarchy", 0, ImVec2(500, 1000), 0.8f, flag);
 	{
 		App->scene->AddHeriarchyGui();
+	}
+
+	ImGui::End();
+}
+
+void ModuleEditor::Properties()
+{
+	sizeX = 370.f;
+
+	ImGui::SetNextWindowSize(ImVec2(sizeX, App->window->screenSurface->h - 423.f));
+	ImGui::SetNextWindowPos(ImVec2(App->window->screenSurface->w - sizeX, 20));
+	ImGuiWindowFlags flag = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_AlwaysAutoResize;
+	ImGui::Begin("Properties", 0, ImVec2(500, 1000), 0.8f, flag);
+	{
+		
 	}
 
 	ImGui::End();

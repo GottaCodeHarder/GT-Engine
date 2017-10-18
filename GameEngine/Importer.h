@@ -60,6 +60,6 @@ public:
 private:
 	bool bDevilInit = false;
 	bool bCalcRet = false;
-	std::list<AABB> meshesBoxes;
+	std::vector<AABB> meshesBoxes;
 	
 };

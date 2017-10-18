@@ -54,7 +54,6 @@ GameObject* Importer::LoadFbx(const char * path)
 					cMesh* mesh = new cMesh();
 					mesh->vertex.reserve(scene->mMeshes[i]->mNumVertices);
 					memcpy(mesh->vertex.data(), scene->mMeshes[i]->mVertices, sizeof(float3)*scene->mMeshes[i]->mNumVertices);
-					//gameObject->components.insert(std::pair<componentType, Component*>(MESH, mesh));
 					gameObject->AddComponent(mesh);
 
 					if (mesh->vertex.empty() != false)
@@ -179,7 +178,7 @@ GameObject* Importer::LoadFbx(const char * path)
 		}
 
 		maxBox.SetNegativeInfinity();
-		std::list<AABB>::iterator itBoxes = meshesBoxes.begin();
+		std::vector<AABB>::iterator itBoxes = meshesBoxes.begin();
 		for (; itBoxes != meshesBoxes.end(); itBoxes++)
 		{
 			maxBox.Enclose((*itBoxes));

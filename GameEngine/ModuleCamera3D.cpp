@@ -69,20 +69,20 @@ update_status ModuleCamera3D::Update(float dt)
 			newPos += Z * speed * 10;
 		}
 
-		//if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
-		//{
-		//	if (!App->renderer3D->meshes.empty())
-		//	{
-		//		std::vector<Mesh*>::iterator it = App->renderer3D->meshes.begin();
-		//
-		//		Position.x = App->renderer3D->importer.maxBox.maxPoint.x * 2;
-		//		Position.y = App->renderer3D->importer.maxBox.maxPoint.y * 2;
-		//		Position.z = App->renderer3D->importer.maxBox.maxPoint.z * 2;
-		//		LookAt(vec3(App->renderer3D->importer.maxBox.CenterPoint().x, App->renderer3D->importer.maxBox.CenterPoint().y, App->renderer3D->importer.maxBox.CenterPoint().z));
-		//
-		//	}
-		//	
-		//}
+		if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+		{
+			if (App->scene->root != nullptr)
+			{
+				std::vector<AABB>::iterator it = App->scene->fbxMaxBoxes.end()-1;
+				
+				Position.x = (*it).maxPoint.x * 2;
+				Position.y = (*it).maxPoint.y * 2;
+				Position.z = (*it).maxPoint.z * 2;
+				LookAt(vec3((*it).CenterPoint().x, (*it).CenterPoint().y, (*it).CenterPoint().z));
+		
+			}
+			
+		}
 
 
 		Position += newPos;

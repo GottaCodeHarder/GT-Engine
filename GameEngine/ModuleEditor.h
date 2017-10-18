@@ -62,6 +62,7 @@ private:
 	void Console();
 	void Configuration();
 	void Heriarchy();
+	void Properties();
 
 	void SetStyle(Style style);
 	void InitStyles();

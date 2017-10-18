@@ -113,7 +113,7 @@ void ModuleScene::CreateFbx(char* path)
 	App->camera->referenceDone = true;
 	if (tmp != nullptr)
 	{
-		
+		fbxMaxBoxes.push_back(importer.maxBox);
 		App->camera->Position.x = importer.maxBox.maxPoint.x * 2;
 		App->camera->Position.y = importer.maxBox.maxPoint.y * 2;
 		App->camera->Position.z = importer.maxBox.maxPoint.z * 2;

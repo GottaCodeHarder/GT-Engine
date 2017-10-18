@@ -27,6 +27,7 @@ public:
 public:
 	GameObject* root;
 	Importer importer;
+	std::vector<AABB> fbxMaxBoxes;
 
 private:
 
