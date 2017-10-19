@@ -32,6 +32,22 @@ void ModuleScene::AddHeriarchyGui()
 
 }
 
+void ModuleScene::AddPropertiesGui()
+{
+	if (root->sons.empty())
+	{
+		ImGui::Text("You must first load a Scene!");
+	}
+	else
+	{
+		for (auto sonsRoot : root->sons)
+		{
+			sonsRoot->DrawProperties();
+		}
+	}
+
+}
+
 // Called before quitting
 bool ModuleScene::CleanUp()
 {

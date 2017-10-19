@@ -382,7 +382,7 @@ void ModuleEditor::Properties()
 		ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_AlwaysAutoResize;
 	ImGui::Begin("Properties", 0, ImVec2(500, 1000), 0.8f, flag);
 	{
-		
+		App->scene->AddPropertiesGui();
 	}
 
 	ImGui::End();

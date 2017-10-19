@@ -480,6 +480,15 @@
     <ClInclude Include="cMesh.h">
       <Filter>Sources\GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="cTransform.h">
+      <Filter>Sources\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="cMaterial.h">
+      <Filter>Sources\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="cCamera.h">
+      <Filter>Sources\GameObjects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleAudio.cpp">
@@ -675,6 +684,15 @@
       <Filter>Sources\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="cMesh.cpp">
+      <Filter>Sources\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="cTransform.cpp">
+      <Filter>Sources\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="cMaterial.cpp">
+      <Filter>Sources\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="cCamera.cpp">
       <Filter>Sources\GameObjects</Filter>
     </ClCompile>
   </ItemGroup>

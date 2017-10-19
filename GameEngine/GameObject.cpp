@@ -51,6 +51,15 @@ void GameObject::DrawHeriarchy(GameObject* son)
 	}
 }
 
+void GameObject::DrawProperties()
+{
+	//ImGui::Text("This is GameObject Properties");
+	for (auto itComponents : components)
+	{
+		itComponents.second->DrawUI();
+	}
+}
+
 void GameObject::AddComponent(Component* addComponent)
 {
 	components.insert(std::pair<componentType, Component*>(addComponent->type, addComponent));

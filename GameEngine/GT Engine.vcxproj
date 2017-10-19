@@ -109,9 +109,12 @@
     <ClInclude Include="Assimp\include\vector2.h" />
     <ClInclude Include="Assimp\include\vector3.h" />
     <ClInclude Include="Assimp\include\version.h" />
+    <ClInclude Include="cCamera.h" />
+    <ClInclude Include="cMaterial.h" />
     <ClInclude Include="cMesh.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="cTransform.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="glew\include\eglew.h" />
     <ClInclude Include="glew\include\glew.h" />
@@ -216,8 +219,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="cCamera.cpp" />
+    <ClCompile Include="cMaterial.cpp" />
     <ClCompile Include="cMesh.cpp" />
     <ClCompile Include="Color.cpp" />
+    <ClCompile Include="cTransform.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="glmath.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />

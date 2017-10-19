@@ -22,6 +22,7 @@ cTransform::~cTransform()
 
 void cTransform::DrawUI()
 {
+	//ImGuiWindowFlags flag = ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_AlwaysAutoResize;
 	//	ImGui::Begin("Properties", 0, flag);
 	//	{
 	//		int a = 1;

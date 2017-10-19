@@ -18,6 +18,7 @@ public:
 
 	bool Init();
 	void AddHeriarchyGui();
+	void AddPropertiesGui();
 	bool CleanUp();
 	update_status Update(float dt);
 
