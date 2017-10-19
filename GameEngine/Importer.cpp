@@ -61,7 +61,7 @@ GameObject* Importer::LoadFbx(const char * path)
 					mesh->vertex.reserve(scene->mMeshes[i]->mNumVertices);
 					memcpy(mesh->vertex.data(), scene->mMeshes[i]->mVertices, sizeof(float3)*scene->mMeshes[i]->mNumVertices);
 					gameObject->AddComponent(mesh);
-					//gameObject->AddComponent(transform);
+					gameObject->AddComponent(transform);
 
 					aiVector3D vectorScale;
 					aiQuaternion quaternionTransform;
@@ -179,7 +179,7 @@ GameObject* Importer::LoadFbx(const char * path)
 				aiVector3D vectorScale;
 				aiQuaternion quaternionTransform;
 				aiVector3D vectorPosition;
-				//gameObject->AddComponent(transform);
+				gameObject->AddComponent(transform);
 				loading->mTransformation.Decompose(vectorScale, quaternionTransform, vectorPosition);
 				transform->scaleLocal = { vectorScale.x , vectorScale.y , vectorScale.z };
 				transform->positionLocal = { vectorPosition.x , vectorPosition.y , vectorPosition.z };

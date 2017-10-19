@@ -22,11 +22,19 @@ void GameObject::Update()
 		{
 			comp.second->Update();
 		}
-
-		//glPushMatrix();
-		//float4x4 tmp = ((cTransform*)FindComponent(TRANSFORM))->GetMatrixTransf();
-		//glMultMatrixf(((cTransform*)FindComponent(TRANSFORM))->GetMatrixTransf().ptr());
-
+		
+		GLfloat matrix[16];
+		glPushMatrix();
+		glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
+		float4x4 tmp = ((cTransform*)FindComponent(TRANSFORM))->GetMatrixTransf();
+		float4x4 tmp1 = ((cTransform*)FindComponent(TRANSFORM))->GetMatrixTransf().Transposed();
+		float4x4 tmp2 = float4x4::identity;
+		glMultMatrixf(((cTransform*)FindComponent(TRANSFORM))->GetMatrixTransf().ptr());
+		//glMultMatrixf(tmp2.ptr());
+		glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
+	//	GLfloat matrix[16];
+	//	glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
+	//	matrix;
 		if (!sons.empty())
 		{
 			for (auto itSons : sons)
@@ -37,7 +45,7 @@ void GameObject::Update()
 
 		App->renderer3D->DrawGameObject(this);
 
-		//glPopMatrix();
+		glPopMatrix();
 	}
 
 }

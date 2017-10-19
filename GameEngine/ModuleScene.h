@@ -20,6 +20,7 @@ public:
 	void AddHeriarchyGui();
 	void AddPropertiesGui();
 	bool CleanUp();
+	update_status PreUpdate(float dt);
 	update_status Update(float dt);
 
 	GameObject* CreateGameObject(std::string name = "GameObject", bool active = true, GameObject* parent = nullptr);

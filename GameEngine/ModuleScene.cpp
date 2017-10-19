@@ -65,12 +65,17 @@ bool ModuleScene::CleanUp()
 	return true;
 }
 
+update_status ModuleScene::PreUpdate(float dt)
+{
+
+	return UPDATE_CONTINUE;
+}
+
 update_status ModuleScene::Update(float dt)
 {
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 	root->Update();
-	glLoadIdentity();
+
 	if (App->input->has_dropped)
 	{
 		FileExtensions extension = importer.GetExtension(App->input->GetFileDropped());

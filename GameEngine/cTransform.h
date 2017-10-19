@@ -9,7 +9,7 @@ public:
 	~cTransform();
 
 	float3 positionLocal = {0.f,0.f,0.f};
-	float3 scaleLocal = float3::zero;
+	float3 scaleLocal = { 1.f,1.f,1.f };
 	Quat rotationLocal = Quat::identity;
 
 	const float3 getGlobalPos();
