@@ -1,23 +1,21 @@
 #include "Component.h"
 #include "MathGeoLib/MathGeoLib.h"
 
+class GameObject;
 class cTransform : public Component
 {
 public:
-	cTransform();
+	cTransform(GameObject* _gameObject);
 	~cTransform();
 
-	std::vector<float3> normals;
-	std::vector<float3> vertex;
+	float3 positionLocal = {0.f,0.f,0.f};
+	float3 scaleLocal = float3::zero;
+	Quat rotationLocal = Quat::identity;
 
-	uint buffNormals = 0;
-	uint buffUv = 0;
-	uint buffVertex = 0;
-	uint buffIndex = 0;
-	uint numIndex = 0;
-	uint buffTexture = 0;
-
-	AABB aabbBox;
+	const float3 getGlobalPos();
+	const float3 getGlobalScale() {};
+	const Quat getRoatation() {};
+	const float4x4 GetMatrixTransf();
 
 	void RealUpdate()
 	{
@@ -27,4 +25,5 @@ public:
 	void DrawUI();
 
 private:
+
 };

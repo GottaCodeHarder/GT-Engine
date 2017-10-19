@@ -4,6 +4,7 @@
 #include "Devil/include/ilu.h"
 #include "Devil/include/ilut.h"
 #include "cMesh.h"
+#include "cTransform.h"
 #include "GameObject.h"
 #include <queue>
 
@@ -55,10 +56,21 @@ GameObject* Importer::LoadFbx(const char * path)
 						parent->sons.push_back(gameObject);
 					}
 
-					cMesh* mesh = new cMesh();
+					cMesh* mesh = new cMesh(gameObject);
+					cTransform* transform = new cTransform(gameObject);
 					mesh->vertex.reserve(scene->mMeshes[i]->mNumVertices);
 					memcpy(mesh->vertex.data(), scene->mMeshes[i]->mVertices, sizeof(float3)*scene->mMeshes[i]->mNumVertices);
 					gameObject->AddComponent(mesh);
+					//gameObject->AddComponent(transform);
+
+					aiVector3D vectorScale;
+					aiQuaternion quaternionTransform;
+					aiVector3D vectorPosition;
+
+					loading->mTransformation.Decompose(vectorScale, quaternionTransform, vectorPosition);
+					transform->scaleLocal = { vectorScale.x , vectorScale.y , vectorScale.z };
+					transform->positionLocal = { vectorPosition.x , vectorPosition.y , vectorPosition.z };
+					transform->rotationLocal = { quaternionTransform.x,quaternionTransform.y, quaternionTransform.z, quaternionTransform.w };
 
 					if (mesh->vertex.empty() != false)
 					{
@@ -163,6 +175,16 @@ GameObject* Importer::LoadFbx(const char * path)
 			{
 				GameObject* gameObject = new GameObject(loading->mName.data, true, parent);
 				me = gameObject;
+				cTransform* transform = new cTransform(gameObject);
+				aiVector3D vectorScale;
+				aiQuaternion quaternionTransform;
+				aiVector3D vectorPosition;
+				//gameObject->AddComponent(transform);
+				loading->mTransformation.Decompose(vectorScale, quaternionTransform, vectorPosition);
+				transform->scaleLocal = { vectorScale.x , vectorScale.y , vectorScale.z };
+				transform->positionLocal = { vectorPosition.x , vectorPosition.y , vectorPosition.z };
+				transform->rotationLocal = { quaternionTransform.x,quaternionTransform.y, quaternionTransform.z, quaternionTransform.w };
+
 				if (bCalcRet)
 				{
 					ret = me;

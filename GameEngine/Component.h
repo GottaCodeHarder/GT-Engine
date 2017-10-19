@@ -11,12 +11,12 @@ enum componentType
 	CAMERA
 };
 
+class GameObject;
+
 class Component
 {
 public:
-	componentType type;
-	bool active = true;
-	bool uiOpen = false;
+	Component(componentType _type, GameObject* _gameObject) : type(_type), gameObject(_gameObject){}
 
 	virtual void Enable() {};
 
@@ -40,7 +40,10 @@ public:
 		}
 	}
 
-
+	componentType type;
+	bool active = true;
+	bool uiOpen = false;
+	GameObject* gameObject = nullptr;
 
 private:
 

@@ -1,7 +1,14 @@
 #include "GameObject.h"
 #include "Application.h"
 #include "ModuleRenderer3D.h"
+#include "cTransform.h"
 
+#include "glew/include/glew.h"
+#include "SDL/include/SDL_opengl.h"
+#include <gl/GL.h>
+#include <gl/GLU.h>
+
+class cTransform;
 GameObject::GameObject(std::string _name, bool _active, GameObject * _parent) : name(_name) , active(_active) , parent(_parent)
 {
 	
@@ -16,6 +23,10 @@ void GameObject::Update()
 			comp.second->Update();
 		}
 
+		//glPushMatrix();
+		//float4x4 tmp = ((cTransform*)FindComponent(TRANSFORM))->GetMatrixTransf();
+		//glMultMatrixf(((cTransform*)FindComponent(TRANSFORM))->GetMatrixTransf().ptr());
+
 		if (!sons.empty())
 		{
 			for (auto itSons : sons)
@@ -23,8 +34,12 @@ void GameObject::Update()
 				itSons->Update();
 			}
 		}
+
+		App->renderer3D->DrawGameObject(this);
+
+		//glPopMatrix();
 	}
-	App->renderer3D->DrawGameObject(this);
+
 }
 
 Component * GameObject::FindComponent(componentType type)

@@ -5,7 +5,7 @@
 
 #include "cMesh.h"
 
-cMesh::cMesh()
+cMesh::cMesh(GameObject* _gameObject) : Component(MESH, _gameObject)
 {
 	type = MESH;
 }

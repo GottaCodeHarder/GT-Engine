@@ -1,10 +1,11 @@
 #include "Component.h"
 #include "MathGeoLib/MathGeoLib.h"
 
+
 class cCamera : public Component
 {
 public:
-	cCamera();
+	cCamera(GameObject* _gameObject);
 	~cCamera();
 
 	std::vector<float3> normals;

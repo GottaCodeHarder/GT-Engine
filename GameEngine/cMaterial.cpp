@@ -5,19 +5,14 @@
 
 #include "cMaterial.h"
 
-cMaterial::cMaterial()
+cMaterial::cMaterial(GameObject* _gameObject) : Component(MATERIAL, _gameObject)
 {
-	type = MATERIAL;
 }
 
 cMaterial::~cMaterial()
 {
-	glDeleteBuffers(1, &buffNormals);
-	glDeleteBuffers(1, &buffIndex);
-	glDeleteBuffers(1, &buffVertex);
-	glDeleteBuffers(1, &buffUv);
 
-	glDeleteBuffers(1, &buffTexture);
+	//glDeleteBuffers(1, &buffTexture);
 }
 
 void cMaterial::DrawUI()

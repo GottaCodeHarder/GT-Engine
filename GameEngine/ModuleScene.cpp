@@ -2,6 +2,12 @@
 #include "Application.h"
 #include "ModuleScene.h"
 #include "GameObject.h"
+#include "cTransform.h"
+
+#include "glew/include/glew.h"
+#include "SDL/include/SDL_opengl.h"
+#include <gl/GL.h>
+#include <gl/GLU.h>
 
 ModuleScene::ModuleScene(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -19,7 +25,8 @@ bool ModuleScene::Init()
 	MYLOG("Init SDL window & surface");
 	bool ret = true;
 	root = new GameObject("root", true, nullptr);
-	
+
+	root->AddComponent(new cTransform(root));
 	return ret;
 }
 
@@ -60,8 +67,10 @@ bool ModuleScene::CleanUp()
 
 update_status ModuleScene::Update(float dt)
 {
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 	root->Update();
-
+	glLoadIdentity();
 	if (App->input->has_dropped)
 	{
 		FileExtensions extension = importer.GetExtension(App->input->GetFileDropped());

@@ -5,9 +5,8 @@
 
 #include "cCamera.h"
 
-cCamera::cCamera()
+cCamera::cCamera(GameObject* _gameObject) : Component(CAMERA, _gameObject)
 {
-	type = CAMERA;
 }
 
 cCamera::~cCamera()

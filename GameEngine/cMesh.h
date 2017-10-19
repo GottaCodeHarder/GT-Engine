@@ -1,10 +1,11 @@
 #include "Component.h"
 #include "MathGeoLib/MathGeoLib.h"
 
+class GameObject;
 class cMesh : public Component
 {
 public:
-	cMesh();
+	cMesh(GameObject* _gameObject);
 	~cMesh();
 
 	std::vector<float3> normals;
