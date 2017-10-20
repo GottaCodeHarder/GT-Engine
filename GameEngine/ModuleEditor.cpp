@@ -28,12 +28,17 @@ bool ModuleEditor::Start()
 	InitStyles();
 	SetStyle(mintStyle);
 	blueStyle.active = arcStyle.active = gteStyle.active = false;
+	
+	//Insert File Menu
+	file_menu.insert(std::pair<std::string, bool>("Exit(esc)", false));
+	file_menu.insert(std::pair<std::string, bool>("Load File", false));
 
-	active_menu.insert(std::pair<std::string, bool>("Geometry", false));
-	active_menu.insert(std::pair<std::string, bool>("Configuration", true));
-	active_menu.insert(std::pair<std::string, bool>("Console", true));
-	active_menu.insert(std::pair<std::string, bool>("Heriarchy", true));
-	active_menu.insert(std::pair<std::string, bool>("Properties", true));
+	//Insert Window Menu
+	window_menu.insert(std::pair<std::string, bool>("Geometry", false));
+	window_menu.insert(std::pair<std::string, bool>("Configuration", true));
+	window_menu.insert(std::pair<std::string, bool>("Console", true));
+	window_menu.insert(std::pair<std::string, bool>("Heriarchy", true));
+	window_menu.insert(std::pair<std::string, bool>("Properties", true));
 
 
 	ImGui_ImplSdlGL3_Init(App->window->GetWindow());
@@ -83,12 +88,21 @@ update_status ModuleEditor::Update(float dt)
 
 			ImGui::EndMainMenuBar();
 		}
-
-		if (bExit) return UPDATE_STOP;
 	}
 
-	// Show
-	if (active_menu["Geometry"])
+	//Show File Menu
+	if (file_menu["Load File"])
+	{
+		LoadFile();
+	}
+
+	if (file_menu["Exit(esc)"])
+	{
+		return UPDATE_STOP;
+	}
+
+	// Show Window Menu
+	if (window_menu["Geometry"])
 	{
 		ImGui::SetNextWindowPos(ImVec2(0, 19));
 		ViewGeometry();
@@ -105,19 +119,19 @@ update_status ModuleEditor::Update(float dt)
 	{
 		HelpAbout();
 	}
-	if (active_menu["Configuration"])
+	if (window_menu["Configuration"])
 	{
 		Configuration();
 	}
-	if (active_menu["Heriarchy"])
+	if (window_menu["Heriarchy"])
 	{
 		Heriarchy();
 	}
-	if (active_menu["Properties"])
+	if (window_menu["Properties"])
 	{
 		Properties();
 	}
-	if (active_menu["Console"])
+	if (window_menu["Console"])
 	{
 		ImGui::SetNextWindowPos(ImVec2(0, 738));
 		Console();
@@ -224,11 +238,33 @@ void ModuleEditor::MenuFile()
 {
 	if (ImGui::BeginMenu("File"))
 	{
+		std::map<std::string, bool>::iterator it = file_menu.begin();
+		int n = 0;
+		char check_box_n[50];
 
-		if (ImGui::MenuItem("Exit", "		Esc"))
+		for (; it != file_menu.end(); it++)
 		{
-			bExit = true;
+			if (it != file_menu.begin())
+			{
+				ImGui::Spacing();
+				ImGui::Separator();
+				ImGui::Spacing();
+			}
+
+			sprintf(check_box_n, " ##%d", n);
+			if (ImGui::SmallButton(check_box_n))
+			{
+				it->second = !it->second;
+			}
+			ImGui::SameLine();
+
+			if (ImGui::MenuItem(it->first.c_str(), NULL, it->second))
+			{
+				it->second = !it->second;
+			}
+			n++;
 		}
+
 		ImGui::EndMenu();
 	}
 }
@@ -258,13 +294,13 @@ void ModuleEditor::MenuWindow()
 {
 	if (ImGui::BeginMenu("Window"))
 	{
-		std::map<std::string, bool>::iterator it = active_menu.begin();
+		std::map<std::string, bool>::iterator it = window_menu.begin();
 		int n = 0;
 		char check_box_n[50];
 		
-		for (; it != active_menu.end(); it++)
+		for (; it != window_menu.end(); it++)
 		{
-			if (it != active_menu.begin())
+			if (it != window_menu.begin())
 			{
 				ImGui::Spacing();
 				ImGui::Separator();
@@ -387,6 +423,35 @@ void ModuleEditor::Properties()
 
 	ImGui::End();
 }
+
+void ModuleEditor::LoadFile()
+{
+	char fileName[1024];
+	ZeroMemory(&fileName, sizeof(fileName));
+
+	OPENFILENAME oFileName;
+	ZeroMemory(&oFileName, sizeof(oFileName));
+	oFileName.lStructSize = sizeof(oFileName);
+	oFileName.lpstrFile = fileName;
+	oFileName.nMaxFile = 1024;
+	oFileName.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+	oFileName.lpstrTitle = "Select file to import";
+	if (GetOpenFileName(&oFileName) != 0)
+	{
+		App->scene->CreateFbx(fileName);
+	}
+
+	file_menu["Load File"] = false;
+
+	//for (auto itFile : file_menu) 
+	//{
+	//	if (file_menu["Load File"])
+	//	{
+	//
+	//	}
+	//}
+}
+
 
 void ModuleEditor::ToolRandom()
 {

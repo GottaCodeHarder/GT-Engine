@@ -323,13 +323,3 @@ bool Importer::FileExists(const std::string& name)
 	struct stat buffer;
 	return (stat(name.c_str(), &buffer) == 0);
 }
-
-Mesh::~Mesh()
-{
-	glDeleteBuffers(1, &buffNormals);
-	glDeleteBuffers(1, &buffIndex);
-	glDeleteBuffers(1, &buffVertex);
-	glDeleteBuffers(1, &buffUv);
-
-	glDeleteBuffers(1, &buffTexture);
-}

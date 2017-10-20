@@ -46,10 +46,12 @@ private:
 	bool bShowExample = false;
 	bool bShowAbout = false;
 	bool bGeometryFigures = false;
-	bool bExit = false;
 
 	std::list<AABB> box_list;
-	std::map<std::string, bool> active_menu;
+	std::map<std::string, bool> window_menu;
+	std::map<std::string, bool> file_menu;
+	std::map<std::string, bool> help_menu;
+	std::map<std::string, bool> tools_menu;
 
 	void ToolRandom();
 	void ViewGeometry();
@@ -63,6 +65,7 @@ private:
 	void Configuration();
 	void Heriarchy();
 	void Properties();
+	void LoadFile();
 
 	void SetStyle(Style style);
 	void InitStyles();
