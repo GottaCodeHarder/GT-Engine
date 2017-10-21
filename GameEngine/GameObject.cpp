@@ -68,25 +68,37 @@ void GameObject::DrawUI()
 void GameObject::DrawHeriarchy(GameObject* son)
 {
 
-	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
+	//static int selection_mask = (1 << 2); // Dumb representation of what may be user-side selection state. You may carry selection state inside or outside your objects in whatever format you see fit.
+	int node_clicked = -1;
+	ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+	//| ImGuiTreeNodeFlags_Selected;
+
+	if (bool node_open = ImGui::TreeNodeEx(name.data(), node_flags))
 	{
-		if (ImGui::IsItemHovered())
+		if (ImGui::IsItemClicked())
 		{
+			node_clicked = 7;
+			this->clicked = true;
+			App->editor->selected->clicked = false;
 			App->editor->selected = this;
 		}
-	}
-	if (App->editor->selected = this)
-	{
-		ImGui::ShowStyleEditor();
-	}
 
-	if (ImGui::TreeNodeEx(name.data(), ImGuiTreeNodeFlags_NoAutoOpenOnLog))
-	{
-		for (auto sonsSons : son->sons)
+		if (node_open)
 		{
-			sonsSons->DrawHeriarchy(sonsSons);
+			for (auto sonsSons : son->sons)
+			{
+				sonsSons->DrawHeriarchy(sonsSons);
+			}
 		}
-
+	
+		//if (clicked)
+		//{
+		//	// Update selection state. Process outside of tree loop to avoid visual inconsistencies during the clicking-frame.
+		//	if (ImGui::GetIO().KeyCtrl)
+		//		selection_mask ^= (1 << node_clicked);          // CTRL+click to toggle
+		//	else //if (!(selection_mask & (1 << node_clicked))) // Depending on selection behavior you want, this commented bit preserve selection when clicking on item that is part of the selection
+		//		selection_mask = (1 << node_clicked);           // Click to single-select
+		//}
 		ImGui::TreePop();
 	}
 }

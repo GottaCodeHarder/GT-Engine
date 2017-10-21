@@ -486,6 +486,9 @@ void ModuleEditor::Properties()
 		}
 		else
 		{
+			ImGui::Text("Properties for the Game Object: ");
+			ImGui::Text(selected->name.c_str());
+
 			selected->DrawProperties();
 		}
 	}

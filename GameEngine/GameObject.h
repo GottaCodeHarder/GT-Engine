@@ -14,6 +14,7 @@ public:
 	std::vector<GameObject*> sons;
 	bool active = true;
 	bool collapsedHierarchy = false;
+	bool clicked = false;
 
 	std::map<componentType, Component*> components;
 
