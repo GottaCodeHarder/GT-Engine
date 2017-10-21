@@ -92,6 +92,10 @@ GameObject* Importer::LoadFbx(const char * path)
 					{
 						MYLOG("WARNING, the scene has 0 vertex!");
 					}
+					if (mesh->vertex.size() == 0)
+					{
+						//mesh->vertex.data() = mesh->vertex._Myfirst;
+					}
 
 					if (scene->mMeshes[i]->HasNormals())
 					{
