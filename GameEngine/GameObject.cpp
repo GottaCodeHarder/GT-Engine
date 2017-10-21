@@ -73,6 +73,12 @@ void GameObject::DrawHeriarchy(GameObject* son)
 		{
 			sonsSons->DrawHeriarchy(sonsSons);
 		}
+		if (ImGui::IsItemClicked())
+		{
+			App->editor->selected;
+		}
+
+		bool tmp = ImGui::IsItemClicked();
 		ImGui::TreePop();
 	}
 }

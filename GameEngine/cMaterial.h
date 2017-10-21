@@ -11,6 +11,7 @@ public:
 	float3 color;
 	uint buffTexture = 0;
 	std::string path;
+	ImVec2 imageDimensions;
 
 	void RealUpdate()
 	{
