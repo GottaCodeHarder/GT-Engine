@@ -45,10 +45,6 @@ private:
 	Style gteStyle;
 
 	float sizeX;
-
-	bool bShowRandom = false;
-	bool bShowExample = false;
-	bool bShowAbout = false;
 	bool bGeometryFigures = false;
 
 	std::list<AABB> box_list;
@@ -57,12 +53,10 @@ private:
 	std::map<std::string, bool> help_menu;
 	std::map<std::string, bool> tools_menu;
 
-
-
 	void MenuFile();
 	void MenuWindow();
 	void MenuTools();
-	void MenuAbout();
+	void MenuHelp();
 	void Console();
 	void Configuration();
 	void Heriarchy();

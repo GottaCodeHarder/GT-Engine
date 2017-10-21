@@ -38,13 +38,21 @@ bool ModuleEditor::Start()
 	//Insert Tools Menu
 	tools_menu.insert(std::pair<std::string, bool>("Style Editor", false));
 	tools_menu.insert(std::pair<std::string, bool>("Random", false));
+	tools_menu.insert(std::pair<std::string, bool>("Geometry", false));
 
 	//Insert Window Menu
-	window_menu.insert(std::pair<std::string, bool>("Geometry", false));
+
 	window_menu.insert(std::pair<std::string, bool>("Configuration", true));
 	window_menu.insert(std::pair<std::string, bool>("Console", true));
 	window_menu.insert(std::pair<std::string, bool>("Heriarchy", true));
 	window_menu.insert(std::pair<std::string, bool>("Properties", true));
+
+	//Insert Menu About
+	help_menu.insert(std::pair<std::string, bool>("About", false));
+	help_menu.insert(std::pair<std::string, bool>("ImGui Example Window", false));
+	help_menu.insert(std::pair<std::string, bool>("Documentation", false));
+	help_menu.insert(std::pair<std::string, bool>("Report a Bug", false));
+	help_menu.insert(std::pair<std::string, bool>("Latest Release", false));
 
 
 	ImGui_ImplSdlGL3_Init(App->window->GetWindow());
@@ -90,7 +98,7 @@ update_status ModuleEditor::Update(float dt)
 			MenuWindow();
 
 			// ABOUT
-			MenuAbout();
+			MenuHelp();
 
 			ImGui::EndMainMenuBar();
 		}
@@ -116,22 +124,13 @@ update_status ModuleEditor::Update(float dt)
 	{
 		ToolRandom();
 	}
-
-	// Show Window Menu
-	if (window_menu["Geometry"])
+	if (tools_menu["Geometry"])
 	{
 		ImGui::SetNextWindowPos(ImVec2(0, 19));
 		ViewGeometry();
 	}
-	if (bShowExample)
-	{
-		ImGui::ShowTestWindow();
-	}
 
-	if (bShowAbout)
-	{
-		HelpAbout();
-	}
+	// Show Window Menu
 	if (window_menu["Configuration"])
 	{
 		Configuration();
@@ -149,6 +148,44 @@ update_status ModuleEditor::Update(float dt)
 		ImGui::SetNextWindowPos(ImVec2(0, 738));
 		Console();
 	}
+
+	//Show Help Menu
+	if (help_menu["ImGui Example Window"])
+	{
+		ImGui::ShowTestWindow();
+	}
+	if (help_menu["About"])
+	{
+		HelpAbout();
+	}
+	if (help_menu["Documentation"])
+	{
+		App->RequestBrowser("https://github.com/GottaCodeHarder/GT-Engine/wiki");
+		std::map<std::string, bool>::iterator it = help_menu.find("Documentation");
+		if (it->second == true)
+		{
+			it->second = false;
+		}
+	}
+	if (help_menu["Latest Release"])
+	{
+		App->RequestBrowser("https://github.com/GottaCodeHarder/GT-Engine/releases");
+		std::map<std::string, bool>::iterator it = help_menu.find("Latest Release");
+		if (it->second == true)
+		{
+			it->second = false;
+		}
+	}
+	if (help_menu["Report a Bug"])
+	{
+		App->RequestBrowser("https://github.com/GottaCodeHarder/GT-Engine/issues");
+		std::map<std::string, bool>::iterator it = help_menu.find("Report a Bug");
+		if (it->second == true)
+		{
+			it->second = false;
+		}
+	}
+
 
 	return UPDATE_CONTINUE;
 }
@@ -355,39 +392,35 @@ void ModuleEditor::MenuWindow()
 }
 
 // ---------------------------------------------< ABOUT
-void ModuleEditor::MenuAbout()
+void ModuleEditor::MenuHelp()
 {
 	if (ImGui::BeginMenu("Help"))
 	{
-		if (ImGui::SmallButton(" ##Example"))
+		std::map<std::string, bool>::iterator it = help_menu.begin();
+		int n = 0;
+		char check_box_n[50];
+
+		for (; it != help_menu.end(); it++)
 		{
-			bShowExample = !bShowExample;
-		}
-		ImGui::SameLine();
+			if (it != help_menu.begin())
+			{
+				ImGui::Spacing();
+				ImGui::Separator();
+				ImGui::Spacing();
+			}
 
-		if (ImGui::MenuItem("Example Window", NULL, bShowExample))
-			bShowExample = !bShowExample;
+			sprintf(check_box_n, " ##%d", n);
+			if (ImGui::SmallButton(check_box_n))
+			{
+				it->second = !it->second;
+			}
+			ImGui::SameLine();
 
-		ImGui::Spacing(); ImGui::Separator(); ImGui::Spacing();
-
-		if (ImGui::MenuItem("Documentation"))
-			App->RequestBrowser("https://github.com/GottaCodeHarder/GT-Engine/wiki");
-
-		ImGui::Spacing();
-
-		if (ImGui::MenuItem("Download latest"))
-			App->RequestBrowser("https://github.com/GottaCodeHarder/GT-Engine/releases");
-
-		ImGui::Spacing();
-
-		if (ImGui::MenuItem("Report a bug"))
-			App->RequestBrowser("https://github.com/GottaCodeHarder/GT-Engine/issues");
-
-		ImGui::Spacing();
-
-		if (ImGui::MenuItem("About"))
-		{
-			bShowAbout = !bShowAbout;
+			if (ImGui::MenuItem(it->first.c_str(), NULL, it->second))
+			{
+				it->second = !it->second;
+			}
+			n++;
 		}
 
 		ImGui::EndMenu();
