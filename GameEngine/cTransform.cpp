@@ -36,14 +36,13 @@ const float4x4 cTransform::GetMatrixTransf()
 
 void cTransform::DrawUI()
 {
-	if (ImGui::CollapsingHeader("Transform")) //AMB EL NOM QUE LI TOQUI
+	if (ImGui::CollapsingHeader("Transform"))
 	{
-
-		if (ImGui::TreeNodeEx("Transformation"))
+		if (ImGui::TreeNodeEx("Transformation",ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			ImGui::Text("Unknown Position - Not supported");
-			ImGui::Text("Unknown Rotation - Not supported");
-			ImGui::Text("Unknown Scale    - Not supported");
+			ImGui::Text("Position: %d, %d, %d", positionLocal.x,positionLocal.y, positionLocal.z);
+			ImGui::Text("Scale: %d, %d, %d", scaleLocal.x, scaleLocal.y, scaleLocal.z);
+			ImGui::Text("Rotation: %d, %d, %d, %d ", rotationLocal.x, rotationLocal.y, rotationLocal.z, rotationLocal.w);
 			ImGui::TreePop();
 		}
 		ImGui::Spacing();

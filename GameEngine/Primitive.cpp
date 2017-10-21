@@ -5,7 +5,7 @@
 #include "Primitive.h"
 
 // ------------------------------------------------------------
-Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(false), type(PrimitiveTypes::Primitive_Point)
+Primitive::Primitive() : transform(IdentityMatrix), color(White), wire(false), axis(true), type(PrimitiveTypes::Primitive_Point)
 {}
 
 // ------------------------------------------------------------

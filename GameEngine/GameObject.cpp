@@ -56,7 +56,7 @@ Component * GameObject::FindComponent(componentType type)
 
 void GameObject::DrawUI()
 {
-	if (ImGui::CollapsingHeader(name.data())) //AMB EL NOM DEL GAME
+	if (ImGui::CollapsingHeader(name.data()))
 	{
 		for (auto itComp : components)
 		{
@@ -105,14 +105,29 @@ void GameObject::DrawHeriarchy(GameObject* son)
 
 void GameObject::DrawProperties()
 {
-	//ImGui::Text("This is GameObject Properties");
-	for (auto itComponents : components)
+	if (!ImGui::Checkbox("Enable/Disable", &active))
 	{
-		itComponents.second->DrawUI();
+		if (active)
+		{
+			for (auto itComponents : components)
+			{
+				itComponents.second->DrawUI();
+			}
+		}
 	}
 }
 
 void GameObject::AddComponent(Component* addComponent)
 {
 	components.insert(std::pair<componentType, Component*>(addComponent->type, addComponent));
+}
+
+void GameObject::Enable()
+{
+	active =true ;
+}
+
+void GameObject::Disable()
+{
+	active = false;
 }

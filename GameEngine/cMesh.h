@@ -2,6 +2,7 @@
 #include "MathGeoLib/MathGeoLib.h"
 
 class GameObject;
+
 class cMesh : public Component
 {
 public:
@@ -19,12 +20,12 @@ public:
 
 	AABB aabbBox;
 
-	void RealUpdate()
-	{
-		int i = 5;
-	};
+	void RealUpdate();
 
 	void DrawUI();
 
 private:
+	bool aabbActive = false;
+	bool wireframe = false;
+
 };

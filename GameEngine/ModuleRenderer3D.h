@@ -35,6 +35,7 @@ public:
 	void FillVertex();
 	void DirectCube();
 	void DrawGameObject(GameObject* go);
+	bool bEnableWireframe = false;
 
 private:
 	bool bEnableDepthTest = true;
@@ -42,7 +43,7 @@ private:
 	bool bEnableLighting = true;
 	bool bEnableColorMaterial = true;
 	bool bEnableGLTexture = true;
-	bool bEnableWireframe = false;
+
 
 	float vertices[108] = {};
 

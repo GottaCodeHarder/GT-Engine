@@ -17,9 +17,8 @@ cMaterial::~cMaterial()
 
 void cMaterial::DrawUI()
 {
-	if (ImGui::CollapsingHeader("Material")) //AMB EL NOM QUE LI TOQUI
+	if (ImGui::CollapsingHeader("Material"))
 	{
-
 		if (ImGui::TreeNodeEx("Texture", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			ImVec2 texScreenPos = ImGui::GetCursorScreenPos();

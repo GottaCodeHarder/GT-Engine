@@ -29,6 +29,9 @@ public:
 	void AddComponent(Component*);
 	//FUNCIO ACTIVAR I DESACTIVAR
 
+	void Enable();
+	void Disable();
+
 
 private:
 
