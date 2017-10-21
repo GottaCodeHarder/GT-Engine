@@ -3,7 +3,6 @@
 #include "Globals.h"
 #include "glmath.h"
 #include "Light.h"
-#include "Importer.h"
 
 #define MAX_LIGHTS 8
 

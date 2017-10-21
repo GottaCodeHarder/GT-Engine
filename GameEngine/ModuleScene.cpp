@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleScene.h"
 #include "GameObject.h"
+//#include "Importer.h"
 #include "cTransform.h"
 
 #include "glew/include/glew.h"
@@ -35,22 +36,6 @@ void ModuleScene::AddHeriarchyGui()
 	for (auto sonsRoot : root->sons)
 	{
 		sonsRoot->DrawHeriarchy(sonsRoot);
-	}
-
-}
-
-void ModuleScene::AddPropertiesGui()
-{
-	if (root->sons.empty())
-	{
-		ImGui::Text("You must first load a Scene!");
-	}
-	else
-	{
-		for (auto sonsRoot : root->sons)
-		{
-			sonsRoot->DrawProperties();
-		}
 	}
 
 }
@@ -125,10 +110,10 @@ GameObject * ModuleScene::CreateGameObject(std::string name, bool active, GameOb
 void ModuleScene::CreateFbx(char* path)
 {
 	GameObject* tmp = importer.LoadFbx(path);
-	
+	App->editor->selected = *tmp->sons.begin();
 	for (auto childsTmp : tmp->sons)
 	{
-		//root = childsTmp->parent;
+		//App->editor->selected = childsTmp;
 		childsTmp->parent = root;
 		root->sons.push_back(childsTmp);
 	}

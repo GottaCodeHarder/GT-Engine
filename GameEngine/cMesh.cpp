@@ -27,9 +27,9 @@ void cMesh::DrawUI()
 		
 	}
 
-	ImGuiWindowFlags flag = ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_AlwaysAutoResize;
-	ImGui::Begin("Mesh", 0, flag);
-	{
+	//ImGuiWindowFlags flag = ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_AlwaysAutoResize;
+	//ImGui::Begin("Mesh", 0, flag);
+	//{
 	//	int a = 1;
 	//		char title[30];
 	//		sprintf_s(title, sizeof(title), "Mesh %i", a);
@@ -77,6 +77,6 @@ void cMesh::DrawUI()
 	//			}
 	//		}
 	//
-	}
-	ImGui::End();
+	//}
+	//ImGui::End();
 }

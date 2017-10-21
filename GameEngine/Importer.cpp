@@ -45,6 +45,7 @@ GameObject* Importer::LoadFbx(const char * path)
 						gameObject->name.assign("default");
 					}
 					me = gameObject;
+					//App;
 					if (bCalcRet)
 					{
 						ret = me;

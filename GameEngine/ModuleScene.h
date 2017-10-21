@@ -2,10 +2,12 @@
 #define __ModuleScene_H__
 
 #include "Module.h"
+#include "Importer.h"
 #include "SDL/include/SDL.h"
 
 class Application;
 class GameObject;
+//class Importer;
 
 class ModuleScene : public Module
 {
@@ -18,7 +20,6 @@ public:
 
 	bool Init();
 	void AddHeriarchyGui();
-	void AddPropertiesGui();
 	bool CleanUp();
 	update_status PreUpdate(float dt);
 	update_status Update(float dt);
