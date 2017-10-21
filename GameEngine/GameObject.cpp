@@ -67,18 +67,22 @@ void GameObject::DrawUI()
 
 void GameObject::DrawHeriarchy(GameObject* son)
 {
+
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
+	{
+		if (ImGui::IsItemHovered())
+		{
+			App->editor->selected = this;
+		}
+	}
+
 	if (ImGui::TreeNodeEx(name.data(), ImGuiTreeNodeFlags_NoAutoOpenOnLog))
 	{
 		for (auto sonsSons : son->sons)
 		{
 			sonsSons->DrawHeriarchy(sonsSons);
 		}
-		if (ImGui::IsItemClicked())
-		{
-			App->editor->selected;
-		}
 
-		bool tmp = ImGui::IsItemClicked();
 		ImGui::TreePop();
 	}
 }

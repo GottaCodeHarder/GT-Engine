@@ -23,10 +23,11 @@ GameObject* Importer::LoadFbx(const char * path)
 	{
 		std::queue<std::pair<aiNode*, GameObject*>> toLoad;
 		toLoad.push(std::pair<aiNode*, GameObject*>(scene->mRootNode, nullptr));
+		int numMeshes = 0;
 
 		while (toLoad.empty() == false)
 		{
-			
+
 			GameObject* parent = toLoad.front().second;
 			aiNode* loading = toLoad.front().first;
 			toLoad.pop();
@@ -43,7 +44,10 @@ GameObject* Importer::LoadFbx(const char * path)
 					GameObject* gameObject = new GameObject(scene->mMeshes[i]->mName.data, true, parent);
 					if (gameObject->name == "")
 					{
+						std::string number = std::to_string(numMeshes);
 						gameObject->name.assign("default");
+						gameObject->name += number;
+						numMeshes++;
 					}
 					me = gameObject;
 					//App;
