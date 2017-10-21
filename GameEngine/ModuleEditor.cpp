@@ -508,6 +508,7 @@ void ModuleEditor::LoadFile()
 	oFileName.nMaxFile = 1024;
 	oFileName.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
 	oFileName.lpstrTitle = "Select file to import";
+
 	if (GetOpenFileName(&oFileName) != 0)
 	{
 		App->scene->CreateFbx(fileName);

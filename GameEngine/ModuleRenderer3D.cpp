@@ -19,11 +19,14 @@
 
 ModuleRenderer3D::ModuleRenderer3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
+	debugDraw = new DebugDrawer();
 }
 
 // Destructor
 ModuleRenderer3D::~ModuleRenderer3D()
-{}
+{
+	delete debugDraw;
+}
 
 // Called before render is available
 bool ModuleRenderer3D::Init()
@@ -137,17 +140,6 @@ bool ModuleRenderer3D::Init()
 	//glBindBuffer(GL_ARRAY_BUFFER, myId);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, vertices, GL_STATIC_DRAW);
 
-//	App->fileSystem->Load("Game/Assets/warrior.fbx");
-	
-	
-	
-	//std::vector<Mesh*> tmp = importer.CreateMesh("C:/Users/Usuari/Documents/GitHub/GT-Engine/GameEngine/Game/Assets/warrior.fbx");
-	//
-	//for (std::vector<Mesh*>::iterator it = tmp.begin(); it != tmp.end(); it++)
-	//{
-	//	meshes.push_back(*it);
-	//}
-
 	return ret;
 }
 
@@ -172,7 +164,6 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 
 update_status ModuleRenderer3D::Update(float dt)
 {
-
 	return UPDATE_CONTINUE;
 }
 
@@ -186,14 +177,6 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	else
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	/*App->level->Draw();
-	if (debugDraw == true)
-	{
-		BeginDebugDraw();
-		App->DebugDraw();
-		EndDebugDraw();
-	}
-	*/
 //DRAW QUAD
 	//glEnableClientState(GL_VERTEX_ARRAY);
 	//glBindBuffer(GL_ARRAY_BUFFER, myId);
@@ -204,9 +187,8 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 //---------------------------------------------------------------------------------------------------------------------------
 	
 //----------------------------------------------------------------------------------------------------------------------------
-	
+
 	// Drawing UI
-	ImporterUI();
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	App->editor->Draw();
 
@@ -324,19 +306,6 @@ void ModuleRenderer3D::AddImGui()
 		}
 	}
 }
-
-//void ModuleRenderer3D::LoadImages(char * path)
-//{
-//	std::vector<Mesh*>::iterator it = meshes.begin();
-//	for(; it != meshes.end(); it++)
-//	{
-//		if ((*it)->buffTexture > 0)
-//		{
-//			//glDeleteBuffers(1, &(*it)->buffTexture);
-//		}
-//		(*it)->buffTexture = importer.LoadImageFile(path);
-//	}
-//}
 
 
 void ModuleRenderer3D::OnResize(int width, int height)
@@ -560,70 +529,39 @@ void ModuleRenderer3D::DirectCube()
 	glEnd();
 }
 
-void ModuleRenderer3D::ImporterUI()
+
+// =============================================
+void DebugDrawer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
 {
-	ImGuiWindowFlags flag = ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_AlwaysAutoResize;
-	//	ImGui::Begin("Properties", 0, flag);
-	//	{
-	//		int a = 1;
-	//		if (meshes.empty())
-	//		{
-	//			ImGui::Text("You must first load a Scene!");
-	//		}
-	//		else
-	//		{
-	//			for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++)
-	//			{
-	//				char title[30];
-	//				sprintf_s(title, sizeof(title), "Mesh %i", a);
-	//				if (ImGui::CollapsingHeader(title, 0))
-	//				{
-	//					if (ImGui::TreeNodeEx("Transformation"))
-	//					{
-	//						ImGui::Text("Unknown Position - Not supported");
-	//						ImGui::Text("Unknown Rotation - Not supported");
-	//						ImGui::Text("Unknown Scale    - Not supported");
-	//						ImGui::TreePop();
-	//					}
-	//					ImGui::Spacing();
-	//					if (ImGui::TreeNodeEx("Geometry", ImGuiTreeNodeFlags_DefaultOpen))
-	//					{
-	//						ImGui::Text("Triangle Count: %i", (*it)->numIndex / 3);
-	//						ImGui::TreePop();
-	//					}
-	//					ImGui::Spacing();
-	//					if (ImGui::TreeNodeEx("Texture", ImGuiTreeNodeFlags_DefaultOpen))
-	//					{
-	//						ImVec2 texScreenPos = ImGui::GetCursorScreenPos();
-	//						float texWidth = 200.f;
-	//						float texHeight = 200.f;
-	//						ImTextureID textureID = (ImTextureID)(*it)->buffTexture;
-	//
-	//						ImGui::Text("Currently displaying resized texture, hover to zoom");
-	//						ImGui::Text("Dimensions: %.0fx%.0f", importer.imageDimensions.x, importer.imageDimensions.y);
-	//						ImGui::Image(textureID, ImVec2(texWidth, texHeight), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 255, 255, 255), ImColor(255, 255, 255, 128));
-	//
-	//						if (ImGui::IsItemHovered())
-	//						{
-	//							ImGui::BeginTooltip();
-	//							float focus_sz = 32.0f;
-	//							float focusX = ImGui::GetMousePos().x - texScreenPos.x - focus_sz * 0.5f; if (focusX < 0.0f) focusX = 0.0f; else if (focusX > texWidth - focus_sz) focusX = texWidth - focus_sz;
-	//							float focusY = ImGui::GetMousePos().y - texScreenPos.y - focus_sz * 0.5f; if (focusY < 0.0f) focusY = 0.0f; else if (focusY > texHeight - focus_sz) focusY = texHeight - focus_sz;
-	//							ImGui::Text("Min: (%.2f, %.2f)", focusX, focusY);
-	//							ImGui::Text("Max: (%.2f, %.2f)", focusX + focus_sz, focusY + focus_sz);
-	//							ImVec2 uv0 = ImVec2((focusX) / texWidth, (focusY) / texHeight);
-	//							ImVec2 uv1 = ImVec2((focusX + focus_sz) / texWidth, (focusY + focus_sz) / texHeight);
-	//							ImGui::Image(textureID, ImVec2(128, 128), uv0, uv1, ImColor(255, 255, 255, 255), ImColor(255, 255, 255, 128));
-	//							ImGui::EndTooltip();
-	//						}
-	//						ImGui::TreePop();
-	//					}
-	//				}
-	//				a++;
-	//			}
-	//		}
-	//	}
-	//
-	//	ImGui::End();
-	
+	line.origin.Set(from.getX(), from.getY(), from.getZ());
+	line.destination.Set(to.getX(), to.getY(), to.getZ());
+	line.color.Set(color.getX(), color.getY(), color.getZ());
+	line.Render();
+}
+
+void DebugDrawer::drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color)
+{
+	point.transform.translate(PointOnB.getX(), PointOnB.getY(), PointOnB.getZ());
+	point.color.Set(color.getX(), color.getY(), color.getZ());
+	point.Render();
+}
+
+void DebugDrawer::reportErrorWarning(const char* warningString)
+{
+	MYLOG("Bullet warning: %s", warningString);
+}
+
+void DebugDrawer::draw3dText(const btVector3& location, const char* textString)
+{
+	MYLOG("Bullet draw text: %s", textString);
+}
+
+void DebugDrawer::setDebugMode(int debugMode)
+{
+	mode = (DebugDrawModes)debugMode;
+}
+
+int	 DebugDrawer::getDebugMode() const
+{
+	return mode;
 }

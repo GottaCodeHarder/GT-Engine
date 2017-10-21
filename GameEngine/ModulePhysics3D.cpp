@@ -114,18 +114,7 @@ update_status ModulePhysics3D::Update(float dt)
 	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
 
-	if(debug == true)
-	{
-		world->debugDrawWorld();
-
-		// Render vehicles
-		/*p2List_item<PhysVehicle3D*>* item = vehicles.getFirst();
-		while(item)
-		{
-			item->data->Render();
-			item = item->next;
-		}*/
-	}
+	world->debugDrawWorld();
 
 	return UPDATE_CONTINUE;
 }
@@ -298,38 +287,38 @@ void ModulePhysics3D::AddConstraintSlider(PhysBody3D& bodyA, PhysBody3D& bodyB, 
 
 
 
-// =============================================
-void DebugDrawer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
-{
-	line.origin.Set(from.getX(), from.getY(), from.getZ());
-	line.destination.Set(to.getX(), to.getY(), to.getZ());
-	line.color.Set(color.getX(), color.getY(), color.getZ());
-	line.Render();
-}
-
-void DebugDrawer::drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color)
-{
-	point.transform.translate(PointOnB.getX(), PointOnB.getY(), PointOnB.getZ());
-	point.color.Set(color.getX(), color.getY(), color.getZ());
-	point.Render();
-}
-
-void DebugDrawer::reportErrorWarning(const char* warningString)
-{
-	MYLOG("Bullet warning: %s", warningString);
-}
-
-void DebugDrawer::draw3dText(const btVector3& location, const char* textString)
-{
-	MYLOG("Bullet draw text: %s", textString);
-}
-
-void DebugDrawer::setDebugMode(int debugMode)
-{
-	mode = (DebugDrawModes) debugMode;
-}
-
-int	 DebugDrawer::getDebugMode() const
-{
-	return mode;
-}
+//// =============================================
+//void DebugDrawer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
+//{
+//	line.origin.Set(from.getX(), from.getY(), from.getZ());
+//	line.destination.Set(to.getX(), to.getY(), to.getZ());
+//	line.color.Set(color.getX(), color.getY(), color.getZ());
+//	line.Render();
+//}
+//
+//void DebugDrawer::drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color)
+//{
+//	point.transform.translate(PointOnB.getX(), PointOnB.getY(), PointOnB.getZ());
+//	point.color.Set(color.getX(), color.getY(), color.getZ());
+//	point.Render();
+//}
+//
+//void DebugDrawer::reportErrorWarning(const char* warningString)
+//{
+//	MYLOG("Bullet warning: %s", warningString);
+//}
+//
+//void DebugDrawer::draw3dText(const btVector3& location, const char* textString)
+//{
+//	MYLOG("Bullet draw text: %s", textString);
+//}
+//
+//void DebugDrawer::setDebugMode(int debugMode)
+//{
+//	mode = (DebugDrawModes) debugMode;
+//}
+//
+//int	 DebugDrawer::getDebugMode() const
+//{
+//	return mode;
+//}

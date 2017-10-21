@@ -139,6 +139,7 @@ GameObject* Importer::LoadFbx(const char * path)
 
 					mesh->aabbBox.SetNegativeInfinity();
 					mesh->aabbBox.Enclose(mesh->vertex.data(), scene->mMeshes[i]->mNumVertices);
+					mesh->numVertex = scene->mMeshes[i]->mNumVertices;
 					meshesBoxes.push_back(mesh->aabbBox);
 
 					if (scene->HasMaterials())

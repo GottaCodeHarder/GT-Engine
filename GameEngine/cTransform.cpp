@@ -4,6 +4,7 @@
 #include <gl/GLU.h>
 #include "GameObject.h"
 
+
 #include "cTransform.h"
 
 cTransform::cTransform(GameObject* _gameObject) : Component(TRANSFORM, _gameObject)

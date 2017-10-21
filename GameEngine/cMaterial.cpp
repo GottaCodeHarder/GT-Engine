@@ -2,6 +2,8 @@
 #include "SDL/include/SDL_opengl.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
+#include <commdlg.h>
+#include "Application.h"
 
 #include "cMaterial.h"
 
@@ -19,6 +21,10 @@ void cMaterial::DrawUI()
 {
 	if (ImGui::CollapsingHeader("Material"))
 	{
+		if (ImGui::Button("Load Texture"))
+		{
+			LoadTexture();
+		}
 		if (ImGui::TreeNodeEx("Texture", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			ImVec2 texScreenPos = ImGui::GetCursorScreenPos();
@@ -46,7 +52,29 @@ void cMaterial::DrawUI()
 			}
 			ImGui::TreePop();
 		}
-
-
 	}
 }
+
+void cMaterial::LoadTexture()
+{
+	char fileName[1024];
+	ZeroMemory(&fileName, sizeof(fileName));
+
+	OPENFILENAME oFileName;
+	ZeroMemory(&oFileName, sizeof(oFileName));
+	oFileName.lStructSize = sizeof(oFileName);
+	oFileName.lpstrFile = fileName;
+	oFileName.nMaxFile = 1024;
+	oFileName.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+	oFileName.lpstrTitle = "Select file to import";
+	if (GetOpenFileName(&oFileName) != 0)
+	{
+		if (buffTexture > 0)
+		{
+			//glDeleteBuffers(1, &(*it)->buffTexture);
+		}
+		buffTexture = App->scene->importer.LoadImageFile(fileName, this);
+	}
+
+}
+

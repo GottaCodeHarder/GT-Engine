@@ -17,12 +17,14 @@ public:
 	uint buffVertex = 0;
 	uint buffIndex = 0;
 	uint numIndex = 0;
+	uint numVertex = 0;
 
 	AABB aabbBox;
 
 	void RealUpdate();
 
 	void DrawUI();
+	void DrawAABB(AABB aabbBox);
 
 private:
 	bool aabbActive = false;

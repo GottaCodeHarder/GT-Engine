@@ -19,6 +19,7 @@ public:
 	};
 
 	void DrawUI();
+	void LoadTexture();
 
 private:
 };
