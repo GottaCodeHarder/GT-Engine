@@ -40,7 +40,7 @@ void GameObject::Update()
 			matrix2.Set(matrix1);
 
 			OBB obb = ((cMesh*)FindComponent(MESH))->aabbBox.Transform(matrix2);
-			((cMesh*)FindComponent(MESH))->aabbBox.Enclose(obb);
+			//((cMesh*)FindComponent(MESH))->aabbBox.Enclose(obb);
 		}
 
 
