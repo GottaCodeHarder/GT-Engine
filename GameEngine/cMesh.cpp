@@ -22,6 +22,11 @@ cMesh::~cMesh()
 
 void cMesh::DrawUI()
 {
+	if (ImGui::CollapsingHeader("Mesh")) //AMB EL NOM QUE LI TOQUI
+	{
+		
+	}
+
 	ImGuiWindowFlags flag = ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_AlwaysAutoResize;
 	ImGui::Begin("Mesh", 0, flag);
 	{

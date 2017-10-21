@@ -19,15 +19,8 @@ public:
 
 	void Update();
 	Component* FindComponent(componentType);
-	void DrawUI() {
-		if (ImGui::CollapsingHeader(name.data())) //AMB EL NOM DEL GAME
-		{
-			for (auto itComp : components)
-			{
-				itComp.second->DrawUI(); 
-			}
-		}
-	}
+
+	void DrawUI();
 
 	void DrawHeriarchy(GameObject* son);
 	void DrawProperties();

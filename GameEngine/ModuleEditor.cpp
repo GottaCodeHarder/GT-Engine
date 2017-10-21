@@ -7,6 +7,7 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 
+#include "GameObject.h"
 #include "Random.h"
 
 ModuleEditor::ModuleEditor(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -418,7 +419,14 @@ void ModuleEditor::Properties()
 		ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_AlwaysAutoResize;
 	ImGui::Begin("Properties", 0, ImVec2(500, 1000), 0.8f, flag);
 	{
-		App->scene->AddPropertiesGui();
+		if (selected == nullptr)
+		{
+			ImGui::Text("You must first load fbx!");
+		}
+		else
+		{
+			selected->DrawProperties();
+		}
 	}
 
 	ImGui::End();

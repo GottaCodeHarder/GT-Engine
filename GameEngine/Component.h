@@ -30,24 +30,14 @@ public:
 	
 	virtual void Disable() {};
 
-	void DrawUI() {
-		if (ImGui::CollapsingHeader("Window")) //AMB EL NOM QUE LI TOQUI
-		{
-			if (uiOpen)
-			{
-				RealDrawUI();
-			}
-		}
-	}
+	virtual void DrawUI() {};
 
 	componentType type;
 	bool active = true;
-	bool uiOpen = false;
 	GameObject* gameObject = nullptr;
 
 private:
 
 	virtual void RealUpdate() {};
-	virtual void RealDrawUI() {};
 };
 #endif // !

@@ -3,6 +3,8 @@
 #include "MathGeoLib/MathGeoLib.h"
 #include <map>
 
+class GameObject;
+
 struct Style
 {
 	bool active = true;
@@ -31,6 +33,8 @@ public:
 	void Draw();
 
 	void ConfigApplication(bool &bFreeze, Timer &start, float &cap, float &mil, float &fps);
+
+	GameObject* selected = nullptr;
 
 private:
 	ImGuiTextBuffer console_buffer;

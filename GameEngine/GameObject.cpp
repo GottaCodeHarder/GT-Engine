@@ -54,6 +54,17 @@ Component * GameObject::FindComponent(componentType type)
 	return nullptr;
 }
 
+void GameObject::DrawUI()
+{
+	if (ImGui::CollapsingHeader(name.data())) //AMB EL NOM DEL GAME
+	{
+		for (auto itComp : components)
+		{
+			itComp.second->DrawUI();
+		}
+	}
+}
+
 void GameObject::DrawHeriarchy(GameObject* son)
 {
 	if (ImGui::TreeNodeEx(name.data(), ImGuiTreeNodeFlags_NoAutoOpenOnLog))

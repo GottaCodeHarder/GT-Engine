@@ -36,6 +36,11 @@ const float4x4 cTransform::GetMatrixTransf()
 
 void cTransform::DrawUI()
 {
+	if (ImGui::CollapsingHeader("Transform")) //AMB EL NOM QUE LI TOQUI
+	{
+
+	}
+
 	//ImGuiWindowFlags flag = ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_AlwaysAutoResize;
 	//	ImGui::Begin("Properties", 0, flag);
 	//	{
