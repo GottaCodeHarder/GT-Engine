@@ -4,6 +4,7 @@
 #include "ModuleRenderer3D.h"
 #include "GameObject.h"
 #include "cMesh.h"
+#include "cMaterial.h"
 
 
 #include "glew/include/glew.h"
@@ -218,14 +219,15 @@ void ModuleRenderer3D::DrawGameObject(GameObject* go)
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 	cMesh* mesh = (cMesh*)go->FindComponent(componentType::MESH);
+	cMaterial* material = (cMaterial*)go->FindComponent(componentType::MATERIAL);
 	if (mesh == nullptr) 
 	{
 		return;
 	}
-		if (((mesh)->buffTexture) > 0)
+		if (((material)->buffTexture) > 0)
 		{
 			glEnableClientState(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, (mesh)->buffTexture);
+			glBindTexture(GL_TEXTURE_2D, (material)->buffTexture);
 		}
 
 		if (((mesh)->buffVertex) > 0)

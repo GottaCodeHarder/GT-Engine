@@ -7,16 +7,21 @@
 
 cMaterial::cMaterial(GameObject* _gameObject) : Component(MATERIAL, _gameObject)
 {
+	path.assign("No path");
 }
 
 cMaterial::~cMaterial()
 {
-
-	//glDeleteBuffers(1, &buffTexture);
+	glDeleteBuffers(1, &buffTexture);
 }
 
 void cMaterial::DrawUI()
 {
+	if (ImGui::CollapsingHeader("Material")) //AMB EL NOM QUE LI TOQUI
+	{
+
+	}
+
 	//ImGuiWindowFlags flag = ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_AlwaysAutoResize;
 	//	ImGui::Begin("Properties", 0, flag);
 	//	{

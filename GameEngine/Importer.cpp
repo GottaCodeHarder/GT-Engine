@@ -5,6 +5,7 @@
 #include "Devil/include/ilut.h"
 #include "cMesh.h"
 #include "cTransform.h"
+#include "cMaterial.h"
 #include "GameObject.h"
 #include <queue>
 
@@ -59,10 +60,12 @@ GameObject* Importer::LoadFbx(const char * path)
 
 					cMesh* mesh = new cMesh(gameObject);
 					cTransform* transform = new cTransform(gameObject);
+					cMaterial* material = new cMaterial(gameObject);
 					mesh->vertex.reserve(scene->mMeshes[i]->mNumVertices);
 					memcpy(mesh->vertex.data(), scene->mMeshes[i]->mVertices, sizeof(float3)*scene->mMeshes[i]->mNumVertices);
 					gameObject->AddComponent(mesh);
 					gameObject->AddComponent(transform);
+					gameObject->AddComponent(material);
 
 					aiVector3D vectorScale;
 					aiQuaternion quaternionTransform;
@@ -142,6 +145,7 @@ GameObject* Importer::LoadFbx(const char * path)
 							scene->mMaterials[scene->mMeshes[i]->mMaterialIndex]->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &texturePath);
 							std::string texName = texturePath.C_Str();
 							std::string strPath = path;
+							material->path = texturePath.C_Str();
 
 							for (uint i = strlen(path); i >= 0; i--)
 							{
@@ -156,7 +160,7 @@ GameObject* Importer::LoadFbx(const char * path)
 							{
 								if (FileExists(strPath.c_str()))
 								{
-									mesh->buffTexture = LoadImageFile(strPath.c_str());
+									material->buffTexture = LoadImageFile(strPath.c_str());
 								}
 							}
 							else
@@ -164,7 +168,7 @@ GameObject* Importer::LoadFbx(const char * path)
 								MYLOG("ERROR Image not loaded");
 							}
 
-							if (mesh->buffTexture == -1)
+							if (material->buffTexture == -1)
 							{
 								MYLOG("ERROR Creating buffer for Texture");
 							}

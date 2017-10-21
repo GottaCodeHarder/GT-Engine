@@ -16,7 +16,6 @@ public:
 	uint buffVertex = 0;
 	uint buffIndex = 0;
 	uint numIndex = 0;
-	uint buffTexture = 0;
 
 	AABB aabbBox;
 

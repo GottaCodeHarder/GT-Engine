@@ -10,6 +10,7 @@ public:
 
 	float3 color;
 	uint buffTexture = 0;
+	std::string path;
 
 	void RealUpdate()
 	{

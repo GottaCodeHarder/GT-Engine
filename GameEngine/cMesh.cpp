@@ -16,8 +16,6 @@ cMesh::~cMesh()
 	glDeleteBuffers(1, &buffIndex);
 	glDeleteBuffers(1, &buffVertex);
 	glDeleteBuffers(1, &buffUv);
-
-	glDeleteBuffers(1, &buffTexture);
 }
 
 void cMesh::DrawUI()
