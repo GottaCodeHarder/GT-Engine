@@ -75,6 +75,10 @@ void GameObject::DrawHeriarchy(GameObject* son)
 			App->editor->selected = this;
 		}
 	}
+	if (App->editor->selected = this)
+	{
+		ImGui::ShowStyleEditor();
+	}
 
 	if (ImGui::TreeNodeEx(name.data(), ImGuiTreeNodeFlags_NoAutoOpenOnLog))
 	{

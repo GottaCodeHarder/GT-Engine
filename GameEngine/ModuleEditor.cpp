@@ -33,6 +33,11 @@ bool ModuleEditor::Start()
 	//Insert File Menu
 	file_menu.insert(std::pair<std::string, bool>("Exit(esc)", false));
 	file_menu.insert(std::pair<std::string, bool>("Load File", false));
+	file_menu.insert(std::pair<std::string, bool>("Reset Scene", false));
+
+	//Insert Tools Menu
+	tools_menu.insert(std::pair<std::string, bool>("Style Editor", false));
+	tools_menu.insert(std::pair<std::string, bool>("Random", false));
 
 	//Insert Window Menu
 	window_menu.insert(std::pair<std::string, bool>("Geometry", false));
@@ -102,6 +107,16 @@ update_status ModuleEditor::Update(float dt)
 		return UPDATE_STOP;
 	}
 
+	//Show Tools Menu
+	if (tools_menu["Style Editor"])
+	{
+		StyleEditor();
+	}	
+	if (tools_menu["Random"])
+	{
+		ToolRandom();
+	}
+
 	// Show Window Menu
 	if (window_menu["Geometry"])
 	{
@@ -112,10 +127,7 @@ update_status ModuleEditor::Update(float dt)
 	{
 		ImGui::ShowTestWindow();
 	}
-	if (bShowRandom)
-	{
-		ToolRandom();
-	}
+
 	if (bShowAbout)
 	{
 		HelpAbout();
@@ -275,15 +287,31 @@ void ModuleEditor::MenuTools()
 {
 	if (ImGui::BeginMenu("Tools"))
 	{
-		if (ImGui::SmallButton(" ##Random"))
-		{
-			bShowRandom = !bShowRandom;
-		}
-		ImGui::SameLine();
+		std::map<std::string, bool>::iterator it = tools_menu.begin();
+		int n = 0;
+		char check_box_n[50];
 
-		if (ImGui::MenuItem("Random", NULL, bShowRandom))
+		for (; it != tools_menu.end(); it++)
 		{
-			bShowRandom = !bShowRandom;
+			if (it != tools_menu.begin())
+			{
+				ImGui::Spacing();
+				ImGui::Separator();
+				ImGui::Spacing();
+			}
+
+			sprintf(check_box_n, " ##%d", n);
+			if (ImGui::SmallButton(check_box_n))
+			{
+				it->second = !it->second;
+			}
+			ImGui::SameLine();
+
+			if (ImGui::MenuItem(it->first.c_str(), NULL, it->second))
+			{
+				it->second = !it->second;
+			}
+			n++;
 		}
 
 		ImGui::EndMenu();
@@ -458,6 +486,21 @@ void ModuleEditor::LoadFile()
 	//
 	//	}
 	//}
+}
+
+void ModuleEditor::StyleEditor()
+{
+	ImGui::Begin("Style Editor", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing);
+	{
+		ImGui::ShowStyleEditor();
+	}
+	ImGui::End();
+
+	//ImGui::Begin("Heriarchy", 0, ImVec2(500, 1000), 0.8f, flag);
+	//{
+	//	App->scene->AddHeriarchyGui();
+	//}
+
 }
 
 

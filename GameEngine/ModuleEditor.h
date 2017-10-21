@@ -57,9 +57,7 @@ private:
 	std::map<std::string, bool> help_menu;
 	std::map<std::string, bool> tools_menu;
 
-	void ToolRandom();
-	void ViewGeometry();
-	void HelpAbout();
+
 
 	void MenuFile();
 	void MenuWindow();
@@ -70,6 +68,10 @@ private:
 	void Heriarchy();
 	void Properties();
 	void LoadFile();
+	void StyleEditor();
+	void ToolRandom();
+	void ViewGeometry();
+	void HelpAbout();
 
 	void SetStyle(Style style);
 	void InitStyles();
