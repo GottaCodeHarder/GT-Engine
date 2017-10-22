@@ -32,7 +32,7 @@ public:
 
 	void Draw();
 
-	void ConfigApplication(bool &bFreeze, Timer &start, float &cap, float &mil, float &fps);
+	void ConfigApplication( Timer &start, float &cap);
 
 	GameObject* selected = nullptr;
 
@@ -77,4 +77,11 @@ private:
 	float fRandomMax = 0.0f;
 	float fResult = 0.0f;
 	int iSelectedRand = 0;
+
+	// Config Temporal
+	float fpsArr[100] = {};
+	float msArr[100] = {};
+	float millisec = 0.0f;
+	float fps = 60.0f;
+	bool bFreeze = false;
 };

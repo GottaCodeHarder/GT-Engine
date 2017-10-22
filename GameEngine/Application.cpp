@@ -72,7 +72,7 @@ void Application::AddImGui()
 {
 	std::vector<Module*>::iterator it = modulesList.begin();
 
-	editor->ConfigApplication(bFreeze, startUp, capFramerate, millisec, fps);
+	editor->ConfigApplication(startUp, capFramerate);
 
 	for (it = modulesList.begin(); it != modulesList.end(); it++)
 	{

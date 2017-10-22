@@ -229,7 +229,7 @@ void ModuleEditor::Draw()
 	ImGui::Render();
 }
 
-void ModuleEditor::ConfigApplication(bool &bFreeze, Timer &startUp, float &capFramerate, float &millisec, float &fps)
+void ModuleEditor::ConfigApplication(Timer &startUp, float &capFramerate)
 {
 	if (!bFreeze)
 	{
@@ -237,13 +237,13 @@ void ModuleEditor::ConfigApplication(bool &bFreeze, Timer &startUp, float &capFr
 		{
 			if (i == 99)
 			{
-				App->msArr[i] = (startUp.Read() - millisec);
-				App->fpsArr[i] = capFramerate;
+				msArr[i] = (startUp.Read() - millisec);
+				fpsArr[i] = capFramerate;
 			}
 			else
 			{
-				App->msArr[i] = App->msArr[i + 1];
-				App->fpsArr[i] = App->fpsArr[i + 1];
+				msArr[i] = msArr[i + 1];
+				fpsArr[i] = fpsArr[i + 1];
 			}
 		}
 	}
@@ -274,10 +274,10 @@ void ModuleEditor::ConfigApplication(bool &bFreeze, Timer &startUp, float &capFr
 		millisec = startUp.Read();
 
 		char title[25];
-		sprintf_s(title, 25, "Framerate %.1f", App->fpsArr[99]);
-		ImGui::PlotHistogram("##framerate", App->fpsArr, ((int)(sizeof(App->fpsArr) / sizeof(*App->fpsArr))), 0, title, 0.0f, 150.0f, ImVec2(310, 100));
-		sprintf_s(title, 25, "Milliseconds %.1f", App->msArr[99]);
-		ImGui::PlotHistogram("##milliseconds", App->msArr, ((int)(sizeof(App->msArr) / sizeof(*App->msArr))), 0, title, 0.0f, 40.0f, ImVec2(310, 100));
+		sprintf_s(title, 25, "Framerate %.1f", fpsArr[99]);
+		ImGui::PlotHistogram("##framerate", fpsArr, ((int)(sizeof(fpsArr) / sizeof(*fpsArr))), 0, title, 0.0f, 150.0f, ImVec2(310, 100));
+		sprintf_s(title, 25, "Milliseconds %.1f", msArr[99]);
+		ImGui::PlotHistogram("##milliseconds", msArr, ((int)(sizeof(msArr) / sizeof(*msArr))), 0, title, 0.0f, 40.0f, ImVec2(310, 100));
 
 		ImGui::Checkbox("< Freeze Framerate Display", &bFreeze);
 	}
@@ -429,7 +429,7 @@ void ModuleEditor::MenuHelp()
 
 void ModuleEditor::Console()
 {
-	(ImGui::Begin("Console", 0, ImGuiWindowFlags_NoFocusOnAppearing));
+	(ImGui::Begin("Console", 0, ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoResize));
 	{
 		ImGui::SetWindowSize(ImVec2(1230.0f, 220.0f));
 		ImGui::Text(console_buffer.c_str());		

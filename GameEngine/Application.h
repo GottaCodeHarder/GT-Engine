@@ -49,21 +49,15 @@ public:
 
 	void RequestBrowser(std::string link);
 
-	float fpsArr[100] = {};
-	float msArr[100] = {};
-
 private:
 
 	void AddModule(Module* mod);
 	void PrepareUpdate();
 	void FinishUpdate();
 
-	bool bFreeze = false;
 	uint  frameCount = 0;
 	Timer startUp;
-	float millisec = 0.0f;
 	float capFramerate = 60.0f;
-	float fps = 60.0f;
 
 	void LoadConfiguration();
 	void SaveConfiguration();
