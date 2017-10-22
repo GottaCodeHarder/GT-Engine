@@ -110,6 +110,17 @@ update_status ModuleEditor::Update(float dt)
 		LoadFile();
 	}
 
+	if (file_menu["Reset Scene"])
+	{
+		App->scene->ResetScene();
+		
+		std::map<std::string, bool>::iterator it = file_menu.find("Reset Scene");
+		if (it->second == true)
+		{
+			it->second = false;
+		}
+	}
+
 	if (file_menu["Exit(esc)"])
 	{
 		return UPDATE_STOP;

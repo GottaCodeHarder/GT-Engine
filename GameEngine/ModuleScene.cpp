@@ -18,6 +18,7 @@ ModuleScene::ModuleScene(Application* app, bool start_enabled) : Module(app, sta
 // Destructor
 ModuleScene::~ModuleScene()
 {
+	delete root;
 }
 
 // Called before render is available
@@ -130,4 +131,17 @@ void ModuleScene::CreateFbx(char* path)
 		delete tmp;
 	}
 	
+}
+
+void ModuleScene::ResetScene()
+{
+	for (auto itSons : root->sons)
+	{
+		delete itSons;
+	}
+	root = new GameObject("root", true, nullptr);
+
+	root->AddComponent(new cTransform(root));
+	App->editor->selected = nullptr;
+
 }

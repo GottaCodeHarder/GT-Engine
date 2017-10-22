@@ -12,10 +12,13 @@ public:
 	float3 scaleLocal = { 1.f,1.f,1.f };
 	Quat rotationLocal = Quat::identity;
 
-	const float3 getGlobalPos();
-	const float3 getGlobalScale() {};
-	const Quat getRoatation() {};
-	const float4x4 GetMatrixTransf();
+	void SetGlobalPos() {};
+
+	const float3 GetGlobalPos();
+	const float3 GetGlobalScale();
+	const Quat GetGlobalRoatation();
+	const float4x4 GetLocalMatrixTransf();
+	const float4x4 GetGlobalMatrixTransf();
 
 	void RealUpdate()
 	{

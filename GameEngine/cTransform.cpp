@@ -16,34 +16,75 @@ cTransform::~cTransform()
 
 }
 
-const float3 cTransform::getGlobalPos()
+const float3 cTransform::GetGlobalPos()
 {
 	if (gameObject->parent != nullptr)
 	{
 		cTransform* transformParent = (cTransform*)gameObject->parent->FindComponent(TRANSFORM);
 		if (transformParent != nullptr)
 		{
-			return positionLocal + transformParent->getGlobalPos();
+			return positionLocal + transformParent->GetGlobalPos();
 		}
 	}
 	//rotationLocal = rotationLocal * Quat::RotateX(1.0f);
 	return positionLocal;
 }
 
-const float4x4 cTransform::GetMatrixTransf()
+const float3 cTransform::GetGlobalScale()
+{
+	if (gameObject->parent != nullptr)
+	{
+		cTransform* transformParent = (cTransform*)gameObject->parent->FindComponent(TRANSFORM);
+		if (transformParent != nullptr)
+		{
+			return scaleLocal + transformParent->GetGlobalScale();
+		}
+	}
+	//rotationLocal = rotationLocal * Quat::RotateX(1.0f);
+	return scaleLocal;
+}
+
+const Quat cTransform::GetGlobalRoatation()
+{
+	if (gameObject->parent != nullptr)
+	{
+		cTransform* transformParent = (cTransform*)gameObject->parent->FindComponent(TRANSFORM);
+		if (transformParent != nullptr)
+		{
+			//return rotationLocal + transformParent->GetRoatation();
+		}
+	}
+	//rotationLocal = rotationLocal * Quat::RotateX(1.0f);
+	return rotationLocal;
+}
+
+const float4x4 cTransform::GetLocalMatrixTransf()
 {
 	return float4x4::FromTRS(positionLocal, rotationLocal, scaleLocal);
+}
+
+const float4x4 cTransform::GetGlobalMatrixTransf()
+{
+	return float4x4::FromTRS(GetGlobalPos(), GetGlobalRoatation(), GetGlobalScale());
 }
 
 void cTransform::DrawUI()
 {
 	if (ImGui::CollapsingHeader("Transform"))
 	{
-		if (ImGui::TreeNodeEx("Transformation",ImGuiTreeNodeFlags_DefaultOpen))
+		if (ImGui::TreeNodeEx("Local Information", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			ImGui::Text("Position: %d, %d, %d", positionLocal.x,positionLocal.y, positionLocal.z);
-			ImGui::Text("Scale: %d, %d, %d", scaleLocal.x, scaleLocal.y, scaleLocal.z);
-			ImGui::Text("Rotation: %d, %d, %d, %d ", rotationLocal.x, rotationLocal.y, rotationLocal.z, rotationLocal.w);
+			ImGui::Text("Position: %f, %f, %f", positionLocal.x, positionLocal.y, positionLocal.z);
+			ImGui::Text("Scale: %f, %f, %f", scaleLocal.x, scaleLocal.y, scaleLocal.z);
+			ImGui::Text("Rotation: %f, %f, %f, %f ", rotationLocal.x, rotationLocal.y, rotationLocal.z, rotationLocal.w);
+			ImGui::TreePop();
+		}
+		ImGui::Spacing();
+		if (ImGui::TreeNodeEx("Global Information", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Text("Position: %f, %f, %f", GetGlobalPos().x, GetGlobalPos().y, GetGlobalPos().z);
+			ImGui::Text("Scale: %f, %f, %f", scaleLocal.x, scaleLocal.y, scaleLocal.z);
+			ImGui::Text("Rotation: %f, %f, %f, %f ", rotationLocal.x, rotationLocal.y, rotationLocal.z, rotationLocal.w);
 			ImGui::TreePop();
 		}
 		ImGui::Spacing();

@@ -4,7 +4,9 @@
 #include <gl/GLU.h>
 
 #include "cMesh.h"
+#include "cTransform.h"
 #include "Application.h"
+#include "GameObject.h"
 
 cMesh::cMesh(GameObject* _gameObject) : Component(MESH, _gameObject)
 {
@@ -21,6 +23,15 @@ cMesh::~cMesh()
 
 void cMesh::RealUpdate()
 {
+	if (aabbTransform)
+	{
+	float4x4 matrix = ((cTransform*)this->gameObject->FindComponent(TRANSFORM))->GetGlobalMatrixTransf().Transposed();
+	float4x4 matrix1 = ((cTransform*)this->gameObject->FindComponent(TRANSFORM))->GetLocalMatrixTransf().Transposed();
+	OBB obb = aabbBox.Transform(matrix);
+	aabbBox.Enclose(obb);
+	aabbTransform = false;
+	}
+
 }
 
 void cMesh::DrawUI()
@@ -38,8 +49,17 @@ void cMesh::DrawUI()
 		if (ImGui::Checkbox("AABB box", &aabbActive)){}
 		if (aabbActive)
 		{
+
 			DrawAABB(aabbBox);
 		}
+		if (ImGui::TreeNodeEx("AABB information", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Text("Center Point: %f, %f, %f", aabbBox.CenterPoint().x, aabbBox.CenterPoint().y, aabbBox.CenterPoint().z);
+			//ImGui::Text("Scale: %f, %f, %f", scaleLocal.x, scaleLocal.y, scaleLocal.z);
+			//ImGui::Text("Rotation: %f, %f, %f, %f ", rotationLocal.x, rotationLocal.y, rotationLocal.z, rotationLocal.w);
+			ImGui::TreePop();
+		}
+		ImGui::Spacing();
 
 		//glColor3f(color.r, color.g, color.b);
 	}

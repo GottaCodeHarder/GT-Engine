@@ -26,6 +26,7 @@ public:
 
 	GameObject* CreateGameObject(std::string name = "GameObject", bool active = true, GameObject* parent = nullptr);
 	void CreateFbx(char* path);
+	void ResetScene();
 
 public:
 	GameObject* root;

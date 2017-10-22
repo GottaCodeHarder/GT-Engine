@@ -5,6 +5,7 @@
 #include "GameObject.h"
 #include "cMesh.h"
 #include "cMaterial.h"
+#include "cTransform.h"
 
 
 #include "glew/include/glew.h"

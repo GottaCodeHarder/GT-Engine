@@ -19,7 +19,7 @@ cMaterial::~cMaterial()
 
 void cMaterial::DrawUI()
 {
-	if (ImGui::CollapsingHeader("Material"))
+	if (ImGui::CollapsingHeader("Material"), ImGuiTreeNodeFlags_DefaultOpen);
 	{
 		if (ImGui::Button("Load Texture"))
 		{

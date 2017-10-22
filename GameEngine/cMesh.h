@@ -29,5 +29,6 @@ public:
 private:
 	bool aabbActive = false;
 	bool wireframe = false;
+	bool aabbTransform = true;
 
 };

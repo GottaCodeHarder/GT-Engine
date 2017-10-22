@@ -27,22 +27,7 @@ void GameObject::Update()
 		//Multiply all the matrixTransform with their sons
 		glPushMatrix();
 
-		glMultMatrixf(((cTransform*)FindComponent(TRANSFORM))->GetMatrixTransf().Transposed().ptr());
-
-		if (FindComponent(MESH) != nullptr)
-		{
-			float4x4 matrix = ((cTransform*)FindComponent(TRANSFORM))->GetMatrixTransf().Transposed();
-
-			GLfloat matrix1[16];
-			glGetFloatv(GL_MODELVIEW_MATRIX, matrix1);
-
-			float4x4 matrix2;
-			matrix2.Set(matrix1);
-
-			OBB obb = ((cMesh*)FindComponent(MESH))->aabbBox.Transform(matrix2);
-			//((cMesh*)FindComponent(MESH))->aabbBox.Enclose(obb);
-		}
-
+		glMultMatrixf(((cTransform*)FindComponent(TRANSFORM))->GetLocalMatrixTransf().Transposed().ptr());
 
 		if (!sons.empty())
 
