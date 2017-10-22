@@ -2,6 +2,8 @@
 #include "Application.h"
 #include "PhysBody3D.h"
 #include "ModuleCamera3D.h"
+#include "GameObject.h"
+#include "cMesh.h"
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -77,12 +79,11 @@ update_status ModuleCamera3D::Update(float dt)
 		{
 			if (App->scene->root != nullptr)
 			{
-				std::vector<AABB>::iterator it = App->scene->fbxMaxBoxes.end()-1;
 				
-				Position.x = (*it).maxPoint.x * 2;
-				Position.y = (*it).maxPoint.y * 2;
-				Position.z = (*it).maxPoint.z * 2;
-				LookAt(vec3((*it).CenterPoint().x, (*it).CenterPoint().y, (*it).CenterPoint().z));
+				Position.x = ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.maxPoint.x * 2;
+				Position.y = ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.maxPoint.y * 2;
+				Position.z = ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.maxPoint.z * 2;
+				LookAt(vec3(((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().x, ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().y, ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().z));
 		
 			}
 			
@@ -132,50 +133,46 @@ update_status ModuleCamera3D::Update(float dt)
 				//Reference = Position - (Reference - Position);
 				Reference = Position - Reference;
 			}
+			else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
+			{
+				float Sensitivity = 0.25f;
+
+				if (((cMesh*)App->editor->selected->FindComponent(MESH)) != nullptr && referenceDone)
+				{
+
+					//Reference = vec3((*it)->aabbBox.CenterPoint().x, (*it)->aabbBox.CenterPoint().y, (*it)->aabbBox.CenterPoint().z);
+					Reference = vec3(((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().x, ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().y, ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().z);
+					referenceDone = false;
+				}
+
+				Position -= Reference;
+
+				if (dx != 0)
+				{
+					float DeltaX = (float)dx * Sensitivity;
+
+					X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+					Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+					Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
+				}
+
+				if (dy != 0)
+				{
+					float DeltaY = (float)dy * Sensitivity;
+
+					Y = rotate(Y, DeltaY, X);
+					Z = rotate(Z, DeltaY, X);
+
+					if (Y.y < 0.0f)
+					{
+						Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
+						Y = cross(Z, X);
+					}
+				}
+
+				Position = Reference + Z * length(Position);
+			}
 		}
-
-		//else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
-		//{
-		//	float Sensitivity = 0.25f;
-		//	std::vector<Mesh*>::iterator it = App->renderer3D->meshes.begin();
-		//
-		//	if (!App->renderer3D->meshes.empty() && referenceDone)
-		//	{
-		//
-		//		//Reference = vec3((*it)->aabbBox.CenterPoint().x, (*it)->aabbBox.CenterPoint().y, (*it)->aabbBox.CenterPoint().z);
-		//		Reference = vec3(App->renderer3D->importer.maxBox.CenterPoint().x, App->renderer3D->importer.maxBox.CenterPoint().y, App->renderer3D->importer.maxBox.CenterPoint().z);
-		//		referenceDone = false;
-		//	}
-		//
-		//	Position -= Reference;
-		//
-		//	if (dx != 0)
-		//	{
-		//		float DeltaX = (float)dx * Sensitivity;
-		//
-		//		X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-		//		Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-		//		Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
-		//	}
-		//
-		//	if (dy != 0)
-		//	{
-		//		float DeltaY = (float)dy * Sensitivity;
-		//
-		//		Y = rotate(Y, DeltaY, X);
-		//		Z = rotate(Z, DeltaY, X);
-		//
-		//		if (Y.y < 0.0f)
-		//		{
-		//			Z = vec3(0.0f, Z.y > 0.0f ? 1.0f : -1.0f, 0.0f);
-		//			Y = cross(Z, X);
-		//		}
-		//	}
-		//
-		//	Position = Reference + Z * length(Position);
-		//}
-
-
 	}
 	// Recalculate matrix -------------
 	CalculateViewMatrix();

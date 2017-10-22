@@ -26,7 +26,7 @@ void cMesh::RealUpdate()
 	if (aabbTransform)
 	{
 	float4x4 matrix = ((cTransform*)this->gameObject->FindComponent(TRANSFORM))->GetGlobalMatrixTransf().Transposed();
-	float4x4 matrix1 = ((cTransform*)this->gameObject->FindComponent(TRANSFORM))->GetLocalMatrixTransf().Transposed();
+	float4x4 matrix1 = ((cTransform*)this->gameObject->FindComponent(TRANSFORM))->GetLocalMatrixTransf();
 
 	OBB obb = aabbBox.Transform(matrix);
 	//OBB obb1 = aabbBox.Transform(matrix1);

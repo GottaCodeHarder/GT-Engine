@@ -239,7 +239,6 @@ void ModuleRenderer3D::DrawGameObject(GameObject* go)
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (mesh)->buffIndex);
 			glDrawElements(GL_TRIANGLES, (mesh)->numIndex, GL_UNSIGNED_INT, NULL);
 		}
-
 		// CleanUp
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

@@ -25,10 +25,11 @@ public:
 
 	void DrawUI();
 	void DrawAABB(AABB aabbBox);
+	bool aabbTransform = true;
 
 private:
 	bool aabbActive = false;
 	bool wireframe = false;
-	bool aabbTransform = true;
+
 
 };
