@@ -79,14 +79,18 @@ update_status ModuleCamera3D::Update(float dt)
 		{
 			if (App->scene->root != nullptr)
 			{
-				
-				Position.x = ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.maxPoint.x * 2;
-				Position.y = ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.maxPoint.y * 2;
-				Position.z = ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.maxPoint.z * 2;
-				LookAt(vec3(((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().x, ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().y, ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().z));
-		
-			}
-			
+				if (App->editor->selected != nullptr)
+				{
+					if (((cMesh*)App->editor->selected->FindComponent(MESH)) != nullptr)
+					{
+						Position.x = ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.maxPoint.x * 2;
+						Position.y = ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.maxPoint.y * 2;
+						Position.z = ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.maxPoint.z * 2;
+						LookAt(vec3(((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().x, ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().y, ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().z));
+
+					}
+				}
+			}		
 		}
 
 
@@ -137,12 +141,15 @@ update_status ModuleCamera3D::Update(float dt)
 			{
 				float Sensitivity = 0.25f;
 
-				if (((cMesh*)App->editor->selected->FindComponent(MESH)) != nullptr && referenceDone)
+				if (App->editor->selected != nullptr)
 				{
+					if (((cMesh*)App->editor->selected->FindComponent(MESH)) != nullptr && referenceDone)
+					{
 
-					//Reference = vec3((*it)->aabbBox.CenterPoint().x, (*it)->aabbBox.CenterPoint().y, (*it)->aabbBox.CenterPoint().z);
-					Reference = vec3(((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().x, ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().y, ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().z);
-					referenceDone = false;
+						//Reference = vec3((*it)->aabbBox.CenterPoint().x, (*it)->aabbBox.CenterPoint().y, (*it)->aabbBox.CenterPoint().z);
+						Reference = vec3(((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().x, ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().y, ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().z);
+						referenceDone = false;
+					}
 				}
 
 				Position -= Reference;
