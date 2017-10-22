@@ -90,47 +90,49 @@ void cTransform::DrawUI()
 			ImGui::TreePop();
 		}
 		ImGui::Spacing();
-		if (ImGui::TreeNodeEx("Modify Local Position"))
+		if (((cMesh*)this->gameObject->FindComponent(MESH)) != nullptr)
 		{
-			if (ImGui::DragFloat("x", &positionLocal.x, 0.5f))
-			{ 
-				((cMesh*)this->gameObject->FindComponent(MESH))->aabbTransform = true; 
-			}
-			if (ImGui::DragFloat("y", &positionLocal.y, 0.5f)){ ((cMesh*)this->gameObject->FindComponent(MESH))->aabbTransform = true; }
-			if (ImGui::DragFloat("z", &positionLocal.z, 0.5f)){ ((cMesh*)this->gameObject->FindComponent(MESH))->aabbTransform = true; }
+			if (ImGui::TreeNodeEx("Modify Local Position"))
+			{
+				if (ImGui::DragFloat("x", &positionLocal.x, 0.5f))
+				{
+					((cMesh*)this->gameObject->FindComponent(MESH))->aabbTransform = true;
+				}
+				if (ImGui::DragFloat("y", &positionLocal.y, 0.5f)) { ((cMesh*)this->gameObject->FindComponent(MESH))->aabbTransform = true; }
+				if (ImGui::DragFloat("z", &positionLocal.z, 0.5f)) { ((cMesh*)this->gameObject->FindComponent(MESH))->aabbTransform = true; }
 
-			ImGui::TreePop();
-		}
-		if (ImGui::TreeNodeEx("Modify Local Scale"))
-		{
-			if (ImGui::DragFloat("x", &scaleLocal.x, 0.5f)) { ((cMesh*)this->gameObject->FindComponent(MESH))->aabbTransform = true; }
-			if (ImGui::DragFloat("y", &scaleLocal.y, 0.5f)) { ((cMesh*)this->gameObject->FindComponent(MESH))->aabbTransform = true; }
-			if (ImGui::DragFloat("z", &scaleLocal.z, 0.5f)) { ((cMesh*)this->gameObject->FindComponent(MESH))->aabbTransform = true; }
-			ImGui::TreePop();
-		}
-		if (ImGui::TreeNodeEx("Modify Local Rotation"))
-		{
-			float x = 0.f;
-			if (ImGui::DragFloat("x", &x, 0.00005f)) 
-			{
-				rotationLocal = rotationLocal * Quat::RotateX(x);
-				((cMesh*)this->gameObject->FindComponent(MESH))->aabbTransform = true;
+				ImGui::TreePop();
 			}
-			float y = 0.f;
-			if (ImGui::DragFloat("y", &y, 0.00005f))
+			if (ImGui::TreeNodeEx("Modify Local Scale"))
 			{
-				rotationLocal = rotationLocal * Quat::RotateY(y);
-				((cMesh*)this->gameObject->FindComponent(MESH))->aabbTransform = true;
+				if (ImGui::DragFloat("x", &scaleLocal.x, 0.5f)) { ((cMesh*)this->gameObject->FindComponent(MESH))->aabbTransform = true; }
+				if (ImGui::DragFloat("y", &scaleLocal.y, 0.5f)) { ((cMesh*)this->gameObject->FindComponent(MESH))->aabbTransform = true; }
+				if (ImGui::DragFloat("z", &scaleLocal.z, 0.5f)) { ((cMesh*)this->gameObject->FindComponent(MESH))->aabbTransform = true; }
+				ImGui::TreePop();
 			}
-			float z = 0.f;
-			if (ImGui::DragFloat("z", &z, 0.00005f)) 
+			if (ImGui::TreeNodeEx("Modify Local Rotation"))
 			{
-				rotationLocal = rotationLocal * Quat::RotateZ(z);
-				((cMesh*)this->gameObject->FindComponent(MESH))->aabbTransform = true;
+				float x = 0.f;
+				if (ImGui::DragFloat("x", &x, 0.00005f))
+				{
+					rotationLocal = rotationLocal * Quat::RotateX(x);
+					((cMesh*)this->gameObject->FindComponent(MESH))->aabbTransform = true;
+				}
+				float y = 0.f;
+				if (ImGui::DragFloat("y", &y, 0.00005f))
+				{
+					rotationLocal = rotationLocal * Quat::RotateY(y);
+					((cMesh*)this->gameObject->FindComponent(MESH))->aabbTransform = true;
+				}
+				float z = 0.f;
+				if (ImGui::DragFloat("z", &z, 0.00005f))
+				{
+					rotationLocal = rotationLocal * Quat::RotateZ(z);
+					((cMesh*)this->gameObject->FindComponent(MESH))->aabbTransform = true;
+				}
+				ImGui::TreePop();
 			}
-			ImGui::TreePop();
 		}
-
 	}
 }
 
