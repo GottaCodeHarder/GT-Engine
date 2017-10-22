@@ -89,6 +89,41 @@ void cTransform::DrawUI()
 			ImGui::TreePop();
 		}
 		ImGui::Spacing();
+		if (ImGui::TreeNodeEx("Modify Position"))
+		{
+			if (ImGui::DragFloat("x", &positionLocal.x, 0.5f)){}
+			if (ImGui::DragFloat("y", &positionLocal.y, 0.5f)){}
+			if (ImGui::DragFloat("z", &positionLocal.z, 0.5f)){}
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNodeEx("Modify Scale"))
+		{
+			if (ImGui::DragFloat("x", &scaleLocal.x, 0.5f)) {}
+			if (ImGui::DragFloat("y", &scaleLocal.y, 0.5f)) {}
+			if (ImGui::DragFloat("z", &scaleLocal.z, 0.5f)) {}
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNodeEx("Modify Rotation"))
+		{
+			float x = 0.f;
+			if (ImGui::DragFloat("x", &x, 0.00005f)) 
+			{
+				rotationLocal = rotationLocal * Quat::RotateX(x);
+
+			}
+			float y = 0.f;
+			if (ImGui::DragFloat("y", &y, 0.00005f))
+			{
+				rotationLocal = rotationLocal * Quat::RotateY(y);
+			}
+			float z = 0.f;
+			if (ImGui::DragFloat("z", &z, 0.00005f)) 
+			{
+				rotationLocal = rotationLocal * Quat::RotateZ(z);
+			}
+			ImGui::TreePop();
+		}
+
 	}
 }
 

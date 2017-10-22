@@ -19,7 +19,7 @@ cMaterial::~cMaterial()
 
 void cMaterial::DrawUI()
 {
-	if (ImGui::CollapsingHeader("Material"), ImGuiTreeNodeFlags_DefaultOpen);
+	if (ImGui::CollapsingHeader("Material",nullptr , 0 ,true))
 	{
 		if (ImGui::Button("Load Texture"))
 		{
@@ -42,7 +42,7 @@ void cMaterial::DrawUI()
 				ImGui::BeginTooltip();
 				float focus_sz = 32.0f;
 				float focusX = ImGui::GetMousePos().x - texScreenPos.x - focus_sz * 0.5f; if (focusX < 0.0f) focusX = 0.0f; else if (focusX > texWidth - focus_sz) focusX = texWidth - focus_sz;
-				float focusY = ImGui::GetMousePos().y - texScreenPos.y - focus_sz * 0.5f-34; if (focusY < 0.0f) focusY = 0.0f; else if (focusY > texHeight - focus_sz) focusY = texHeight - focus_sz;
+				float focusY = ImGui::GetMousePos().y - texScreenPos.y - focus_sz * 0.5f - 34; if (focusY < 0.0f) focusY = 0.0f; else if (focusY > texHeight - focus_sz) focusY = texHeight - focus_sz;
 				ImGui::Text("Min: (%.2f, %.2f)", focusX, focusY);
 				ImGui::Text("Max: (%.2f, %.2f)", focusX + focus_sz, focusY + focus_sz);
 				ImVec2 uv0 = ImVec2((focusX) / texWidth, (focusY) / texHeight);
