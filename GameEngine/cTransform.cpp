@@ -18,6 +18,7 @@ cTransform::~cTransform()
 
 const float3 cTransform::GetGlobalPos()
 {
+
 	if (gameObject->parent != nullptr)
 	{
 		cTransform* transformParent = (cTransform*)gameObject->parent->FindComponent(TRANSFORM);
@@ -27,7 +28,7 @@ const float3 cTransform::GetGlobalPos()
 		}
 	}
 	//rotationLocal = rotationLocal * Quat::RotateX(1.0f);
-	return positionLocal;
+	return float3(0.f, 0.f, 0.f);
 }
 
 const float3 cTransform::GetGlobalScale()
@@ -41,7 +42,7 @@ const float3 cTransform::GetGlobalScale()
 		}
 	}
 	//rotationLocal = rotationLocal * Quat::RotateX(1.0f);
-	return scaleLocal;
+	return float3(0.f,0.f,0.f);
 }
 
 const Quat cTransform::GetGlobalRoatation()
@@ -65,7 +66,7 @@ const float4x4 cTransform::GetLocalMatrixTransf()
 
 const float4x4 cTransform::GetGlobalMatrixTransf()
 {
-	return float4x4::FromTRS(GetGlobalPos(), GetGlobalRoatation(), GetGlobalScale());
+	return float4x4::FromTRS(GetGlobalPos(), GetGlobalRoatation(), scaleLocal);
 }
 
 void cTransform::DrawUI()
