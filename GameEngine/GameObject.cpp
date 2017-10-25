@@ -38,6 +38,10 @@ void GameObject::Update()
 			}
 		}
 
+		if (App->renderer3D->bEnableWireframe)
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		else
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		App->renderer3D->DrawGameObject(this);
 

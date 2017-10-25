@@ -29,7 +29,6 @@ public:
 
 private:
 	bool aabbActive = false;
-	bool wireframe = false;
 
 
 };
