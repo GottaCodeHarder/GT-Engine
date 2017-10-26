@@ -33,6 +33,7 @@ public:
 	void FillVertex();
 	void DirectCube();
 	void DrawGameObject(GameObject* go);
+	void DrawFrustum(const math::Frustum);
 	bool bEnableWireframe = false;
 	DebugDrawer* debugDraw = nullptr;
 

@@ -254,6 +254,16 @@ void ModuleRenderer3D::DrawGameObject(GameObject* go)
 		glDisableClientState(GL_TEXTURE_2D);
 }
 
+void ModuleRenderer3D::DrawFrustum(const math::Frustum frustum)
+{
+	math::vec vector[8];
+	frustum.GetCornerPoints(vector);
+
+	debugDraw->drawLine(btVector3(vector[0].x, vector[0].y, vector[0].z), btVector3(vector[1].x, vector[1].y, vector[1].z), btVector3(0, 1, 1));
+	debugDraw->drawLine(btVector3(vector[2].x, vector[2].y, vector[2].z), btVector3(vector[3].x, vector[3].y, vector[3].z), btVector3(0, 1, 0));
+	debugDraw->drawLine(btVector3(vector[4].x, vector[4].y, vector[4].z), btVector3(vector[5].x, vector[5].y, vector[5].z), btVector3(1, 1, 0));
+}
+
 // Called before quitting
 bool ModuleRenderer3D::CleanUp()
 {

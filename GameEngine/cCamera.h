@@ -11,12 +11,11 @@ public:
 	math::Frustum frustum;
 	cTransform* transform;
 
-	void RealUpdate()
-	{
-		int i = 5;
-	};
+	void RealUpdate();
 
 	void DrawUI();
 
 private:
+	int horizontalFOV = 87;
+	int verticalFOV = 60;
 };

@@ -3,6 +3,8 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 
+#include "Application.h"
+#include "GameObject.h"
 #include "cCamera.h"
 #include "cTransform.h"
 
@@ -10,10 +12,11 @@ cCamera::cCamera(GameObject* _gameObject) : Component(CAMERA, _gameObject)
 {
 	transform = new cTransform(_gameObject);
 
-	frustum.SetPos(vec(20, 20, 20));
-	frustum.SetFront(vec(20, 20, 20));
-	frustum.SetUp(vec(20, 20, 20));
-	frustum.SetOrthographic(10, 10);
+	frustum.SetViewPlaneDistances(1, 2);
+	frustum.SetWorldMatrix(((cTransform*)gameObject->FindComponent(TRANSFORM))->GetGlobalMatrixTransf().Float3x4Part());
+	frustum.SetPerspective(horizontalFOV, verticalFOV);
+	
+	//frustum.SetOrthographic(10, 10);
 
 }
 
@@ -22,7 +25,15 @@ cCamera::~cCamera()
 
 }
 
+void cCamera::RealUpdate()
+{
+	App->renderer3D->DrawFrustum(frustum);
+}
+
 void cCamera::DrawUI()
 {
+	if (ImGui::CollapsingHeader("Camera"))
+	{
 
+	}
 }
