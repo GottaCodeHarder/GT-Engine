@@ -4,6 +4,7 @@
 #include "GameObject.h"
 //#include "Importer.h"
 #include "cTransform.h"
+#include "cCamera.h"
 
 #include "glew/include/glew.h"
 #include "SDL/include/SDL_opengl.h"
@@ -29,6 +30,11 @@ bool ModuleScene::Init()
 	root = new GameObject("root", true, nullptr);
 
 	root->AddComponent(new cTransform(root));
+
+	GameObject* tmp = CreateGameObject("Camera");
+	cCamera* c = new cCamera(tmp);
+	tmp->AddComponent(c);
+
 	return ret;
 }
 
@@ -104,6 +110,8 @@ GameObject * ModuleScene::CreateGameObject(std::string name, bool active, GameOb
 		ret = new GameObject(name, active, parent);
 		parent->sons.push_back(ret);
 	}
+	cTransform* trs = new cTransform(ret);
+	ret->AddComponent(trs);
 
 	return ret;
 }
