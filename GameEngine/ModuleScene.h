@@ -28,6 +28,8 @@ public:
 	void CreateFbx(char* path);
 	void ResetScene();
 
+
+
 public:
 	GameObject* root;
 	Importer importer;
