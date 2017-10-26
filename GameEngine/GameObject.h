@@ -8,6 +8,7 @@ class GameObject
 {
 public:
 	GameObject(std::string name, bool active, GameObject* parent);
+	//FALTA DESTRUCTOR QUE DESTRUEIXI ELS FILLS
 	std::string name;
 	GameObject* parent;
 	std::vector<GameObject*> sons;

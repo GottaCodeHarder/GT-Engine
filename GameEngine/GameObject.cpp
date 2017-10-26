@@ -30,6 +30,7 @@ void GameObject::Update()
 
 		glMultMatrixf(((cTransform*)FindComponent(TRANSFORM))->GetLocalMatrixTransf().Transposed().ptr());
 
+		//Update AABB BOX for Game Objects
 		if (((cTransform*)FindComponent(TRANSFORM))->transformChange)
 		{
 			float4x4 matrix = ((cTransform*)FindComponent(TRANSFORM))->GetGlobalMatrixTransf();
@@ -39,6 +40,7 @@ void GameObject::Update()
 				OBB obb = ((cMesh*)FindComponent(MESH))->aabbBox.Transform(matrix);
 
 				aabbBox.Enclose(obb);
+				//SI TE COMPONENT CAMERA CAMBIAR FRUSTUM
 			}
 
 			((cTransform*)FindComponent(TRANSFORM))->transformChange = false;
@@ -103,7 +105,10 @@ void GameObject::DrawHeriarchy(GameObject* son)
 		{
 			node_clicked = 7;
 			this->clicked = true;
+			if (App->editor->selected != nullptr)
+			{
 			App->editor->selected->clicked = false;
+			}
 			App->editor->selected = this;
 		}
 
@@ -132,7 +137,10 @@ void GameObject::DrawHeriarchy(GameObject* son)
 		{
 			node_clicked = 7;
 			this->clicked = true;
-			App->editor->selected->clicked = false;
+			if (App->editor->selected != nullptr)
+			{
+				App->editor->selected->clicked = false;
+			}
 			App->editor->selected = this;
 		}
 	}
