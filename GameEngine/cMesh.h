@@ -25,7 +25,7 @@ public:
 
 	void DrawUI();
 	void DrawAABB(AABB aabbBox);
-	bool aabbTransform = true;
+	bool aabbTransform = false;
 
 private:
 	bool aabbActive = false;

@@ -3,6 +3,7 @@
 #include "ModuleRenderer3D.h"
 #include "cTransform.h"
 #include "cMesh.h"
+#include "MathGeoLib/MathGeoLib.h"
 
 #include "glew/include/glew.h"
 #include "SDL/include/SDL_opengl.h"
@@ -12,7 +13,7 @@
 class cTransform;
 GameObject::GameObject(std::string _name, bool _active, GameObject * _parent) : name(_name) , active(_active) , parent(_parent)
 {
-	
+	aabbBox.SetNegativeInfinity();
 }
 
 void GameObject::Update()
@@ -28,6 +29,22 @@ void GameObject::Update()
 		glPushMatrix();
 
 		glMultMatrixf(((cTransform*)FindComponent(TRANSFORM))->GetLocalMatrixTransf().Transposed().ptr());
+
+		if (((cTransform*)FindComponent(TRANSFORM))->transformChange)
+		{
+			float4x4 matrix = ((cTransform*)FindComponent(TRANSFORM))->GetGlobalMatrixTransf();
+			if (((cMesh*)FindComponent(MESH)) != nullptr)
+			{
+				aabbBox.SetNegativeInfinity();
+				OBB obb = ((cMesh*)FindComponent(MESH))->aabbBox.Transform(matrix);
+
+				aabbBox.Enclose(obb);
+			}
+
+			((cTransform*)FindComponent(TRANSFORM))->transformChange = false;
+		}
+
+
 
 		if (!sons.empty())
 
@@ -46,9 +63,7 @@ void GameObject::Update()
 		App->renderer3D->DrawGameObject(this);
 
 		glPopMatrix();
-
 	}
-
 }
 
 Component * GameObject::FindComponent(componentType type)
@@ -81,8 +96,8 @@ void GameObject::DrawHeriarchy(GameObject* son)
 	int node_clicked = -1;
 	ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
 	//| ImGuiTreeNodeFlags_Selected;
-
-	if (bool node_open = ImGui::TreeNodeEx(name.data(), node_flags))
+	bool node_open;
+	if (node_open = ImGui::TreeNodeEx(name.data(), node_flags))
 	{
 		if (ImGui::IsItemClicked())
 		{
@@ -100,6 +115,7 @@ void GameObject::DrawHeriarchy(GameObject* son)
 			}
 		}
 	
+
 		//if (clicked)
 		//{
 		//	// Update selection state. Process outside of tree loop to avoid visual inconsistencies during the clicking-frame.
@@ -110,6 +126,18 @@ void GameObject::DrawHeriarchy(GameObject* son)
 		//}
 		ImGui::TreePop();
 	}
+	else
+	{
+		if (ImGui::IsItemClicked())
+		{
+			node_clicked = 7;
+			this->clicked = true;
+			App->editor->selected->clicked = false;
+			App->editor->selected = this;
+		}
+	}
+
+
 }
 
 void GameObject::DrawProperties()

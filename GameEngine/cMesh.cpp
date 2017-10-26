@@ -23,17 +23,14 @@ cMesh::~cMesh()
 
 void cMesh::RealUpdate()
 {
-	if (aabbTransform)
-	{
-	float4x4 matrix = ((cTransform*)this->gameObject->FindComponent(TRANSFORM))->GetGlobalMatrixTransf().Transposed();
-	float4x4 matrix1 = ((cTransform*)this->gameObject->FindComponent(TRANSFORM))->GetLocalMatrixTransf();
 
-	OBB obb = aabbBox.Transform(matrix);
-	//OBB obb1 = aabbBox.Transform(matrix1);
-
-	aabbBox.Enclose(obb);
-	aabbTransform = false;
-	}
+	//float4x4 matrix = ((cTransform*)this->gameObject->FindComponent(TRANSFORM))->GetGlobalMatrixTransf().Transposed();
+	//float4x4 matrix1 = ((cTransform*)this->gameObject->FindComponent(TRANSFORM))->GetLocalMatrixTransf();
+	//
+	//OBB obb = aabbBox.Transform(matrix);
+	////OBB obb1 = aabbBox.Transform(matrix1);
+	//
+	//aabbBox.Enclose(obb);
 
 }
 
@@ -52,12 +49,11 @@ void cMesh::DrawUI()
 		if (ImGui::Checkbox("AABB box", &aabbActive)){}
 		if (aabbActive)
 		{
-
-			DrawAABB(aabbBox);
+			DrawAABB(gameObject->aabbBox);
 		}
 		if (ImGui::TreeNodeEx("AABB information", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			ImGui::Text("Center Point: %f, %f, %f", aabbBox.CenterPoint().x, aabbBox.CenterPoint().y, aabbBox.CenterPoint().z);
+			ImGui::Text("Center Point: %f, %f, %f", gameObject->aabbBox.CenterPoint().x, gameObject->aabbBox.CenterPoint().y, gameObject->aabbBox.CenterPoint().z);
 			//ImGui::Text("Scale: %f, %f, %f", scaleLocal.x, scaleLocal.y, scaleLocal.z);
 			//ImGui::Text("Rotation: %f, %f, %f, %f ", rotationLocal.x, rotationLocal.y, rotationLocal.z, rotationLocal.w);
 			ImGui::TreePop();

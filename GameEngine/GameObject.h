@@ -2,8 +2,7 @@
 #include "Component.h"
 #include <vector>
 #include <map>
-
-
+#include "MathGeoLib/MathGeoLib.h"
 
 class GameObject 
 {
@@ -15,6 +14,8 @@ public:
 	bool active = true;
 	bool collapsedHierarchy = false;
 	bool clicked = false;
+
+	AABB aabbBox;
 
 	std::map<componentType, Component*> components;
 
