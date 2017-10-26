@@ -1,26 +1,53 @@
+#ifndef __QUADTREE__
+#define __QUADTREE__
+
+
 #include "Globals.h"
 #include "MathGeoLib/MathGeoLib.h"
 #include "GameObject.h"
 
 #define MAX_OBJECTS_NODE 4
+#define MIN_WORLD_POINT float3(-500,-500,-500)
+#define MAX_WORLD_POINT float3(1000,1000,1000)
 
 
 class QuadNode 
 {
 public:
+	
+	QuadNode(float3 minPoint,  float3 maxPoint);
+	
 	AABB quadBox;
 
 	std::vector<GameObject*> gameObjects;
 	std::vector<QuadNode*> sons;
 
-	void AddGameObject(GameObject* gameObject) {};
+	void Draw();
+	void DrawAABB(AABB aabbBox);
+
+	void AddGameObject(GameObject* gameObject);
+
+private:
+	void AddGameObjectToChild(GameObject* gameObject);
 };
 
 
-class Quadtree 
+class myQuadTree 
 {
-
 public:
-	QuadNode root;
+	myQuadTree();
 
+	void AddGameObject(GameObject* gameObject);
+
+	void Draw();
+private:
+	QuadNode root;
 };
+#endif // !__QUADTREE__
+
+//AFEGIR OBJECTE
+//RETORNAR COLISIONS
+//UN OBJECTE AL MIG DE VARIES AABB
+//OBJECTE FORA QUADTREE
+//MOC UN OBJECTE
+//BORRAR UN OBJECTE

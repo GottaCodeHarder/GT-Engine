@@ -7,6 +7,7 @@
 #include "cTransform.h"
 #include "cMaterial.h"
 #include "GameObject.h"
+#include "Application.h"
 #include <queue>
 
 #pragma comment (lib, "Devil/libx86/DevIL.lib")
@@ -50,7 +51,7 @@ GameObject* Importer::LoadFbx(const char * path)
 						numMeshes++;
 					}
 					me = gameObject;
-					//App;
+					//App->scene->quad.AddGameObject(me);
 					if (bCalcRet)
 					{
 						ret = me;

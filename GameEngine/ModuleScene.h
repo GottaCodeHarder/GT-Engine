@@ -4,9 +4,11 @@
 #include "Module.h"
 #include "Importer.h"
 #include "SDL/include/SDL.h"
+#include "QuadTree.h"
 
 class Application;
 class GameObject;
+//class myQuadTree;
 //class Importer;
 
 class ModuleScene : public Module
@@ -28,7 +30,7 @@ public:
 	void CreateFbx(char* path);
 	void ResetScene();
 
-
+	myQuadTree quad;
 
 public:
 	GameObject* root;

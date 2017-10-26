@@ -1,3 +1,6 @@
+#ifndef __IMPORTER__
+#define __IMPORTER__
+
 #include "Globals.h"
 #include "MathGeoLib/MathGeoLib.h"
 
@@ -43,3 +46,4 @@ private:
 	std::vector<AABB> meshesBoxes;
 	
 };
+#endif // !__IMPORTER__

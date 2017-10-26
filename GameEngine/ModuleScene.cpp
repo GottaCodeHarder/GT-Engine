@@ -5,6 +5,7 @@
 //#include "Importer.h"
 #include "cTransform.h"
 #include "cCamera.h"
+#include "QuadTree.h"
 
 #include "glew/include/glew.h"
 #include "SDL/include/SDL_opengl.h"
@@ -94,6 +95,7 @@ update_status ModuleScene::Update(float dt)
 		App->input->has_dropped = false;
 	}
 
+	quad.Draw();
 	return UPDATE_CONTINUE;
 }
 

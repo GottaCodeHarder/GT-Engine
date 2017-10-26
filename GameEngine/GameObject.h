@@ -1,6 +1,8 @@
+#ifndef  __GAMEOBJECT__
+#define __GAMEOBJECT__
+
 #include "Globals.h"
 #include "Component.h"
-#include <vector>
 #include <map>
 #include "MathGeoLib/MathGeoLib.h"
 
@@ -38,3 +40,5 @@ public:
 private:
 
 };
+
+#endif // ! __GAMEOBJECT__
