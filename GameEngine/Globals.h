@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <list>
+#include <vector>
 #include <string>
 #include "ImGui\imgui.h"
 #include "MathGeoLib\MathGeoLibFwd.h"

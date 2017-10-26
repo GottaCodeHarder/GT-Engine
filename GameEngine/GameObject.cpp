@@ -46,8 +46,6 @@ void GameObject::Update()
 			((cTransform*)FindComponent(TRANSFORM))->transformChange = false;
 		}
 
-
-
 		if (!sons.empty())
 
 		{
