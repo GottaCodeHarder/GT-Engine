@@ -26,6 +26,7 @@ public:
 	void DrawAABB(AABB aabbBox);
 
 	void AddGameObject(GameObject* gameObject);
+	void DeleteGameObject(GameObject* gameObject);
 	void ObjectMoved(GameObject* gameObject);
 
 
@@ -42,6 +43,8 @@ public:
 	void AddGameObject(GameObject* gameObject);
 
 	void Draw();
+
+	bool draw = true;
 private:
 	QuadNode root;
 };
