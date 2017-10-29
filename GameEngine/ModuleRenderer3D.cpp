@@ -262,9 +262,23 @@ void ModuleRenderer3D::DrawFrustum(const math::Frustum frustum)
 	math::vec vector[8];
 	frustum.GetCornerPoints(vector);
 
-	debugDraw->drawLine(btVector3(vector[0].x, vector[0].y, vector[0].z), btVector3(vector[1].x, vector[1].y, vector[1].z), btVector3(0, 1, 1));
-	debugDraw->drawLine(btVector3(vector[2].x, vector[2].y, vector[2].z), btVector3(vector[3].x, vector[3].y, vector[3].z), btVector3(0, 1, 0));
-	debugDraw->drawLine(btVector3(vector[4].x, vector[4].y, vector[4].z), btVector3(vector[5].x, vector[5].y, vector[5].z), btVector3(1, 1, 0));
+	btVector3 nearPlaneColor = btVector3(0, 1, 1);
+	btVector3 frustumColor = btVector3(1, 1, 1);
+
+	debugDraw->drawLine(btVector3(vector[0].x, vector[0].y, vector[0].z), btVector3(vector[1].x, vector[1].y, vector[1].z), nearPlaneColor);
+	debugDraw->drawLine(btVector3(vector[2].x, vector[2].y, vector[2].z), btVector3(vector[3].x, vector[3].y, vector[3].z), nearPlaneColor);
+	debugDraw->drawLine(btVector3(vector[0].x, vector[0].y, vector[0].z), btVector3(vector[2].x, vector[2].y, vector[2].z), nearPlaneColor);
+	debugDraw->drawLine(btVector3(vector[1].x, vector[1].y, vector[1].z), btVector3(vector[3].x, vector[3].y, vector[3].z), nearPlaneColor);
+
+	debugDraw->drawLine(btVector3(vector[4].x, vector[4].y, vector[4].z), btVector3(vector[5].x, vector[5].y, vector[5].z), frustumColor);
+	debugDraw->drawLine(btVector3(vector[6].x, vector[6].y, vector[6].z), btVector3(vector[7].x, vector[7].y, vector[7].z), frustumColor);
+	debugDraw->drawLine(btVector3(vector[4].x, vector[4].y, vector[4].z), btVector3(vector[6].x, vector[6].y, vector[6].z), frustumColor);
+	debugDraw->drawLine(btVector3(vector[5].x, vector[5].y, vector[5].z), btVector3(vector[7].x, vector[7].y, vector[7].z), frustumColor);
+
+	debugDraw->drawLine(btVector3(vector[0].x, vector[0].y, vector[0].z), btVector3(vector[4].x, vector[4].y, vector[4].z), frustumColor);
+	debugDraw->drawLine(btVector3(vector[1].x, vector[1].y, vector[1].z), btVector3(vector[5].x, vector[5].y, vector[5].z), frustumColor);
+	debugDraw->drawLine(btVector3(vector[2].x, vector[2].y, vector[2].z), btVector3(vector[6].x, vector[6].y, vector[6].z), frustumColor);
+	debugDraw->drawLine(btVector3(vector[3].x, vector[3].y, vector[3].z), btVector3(vector[7].x, vector[7].y, vector[7].z), frustumColor);
 }
 
 // Called before quitting
