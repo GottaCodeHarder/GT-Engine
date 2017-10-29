@@ -26,6 +26,8 @@ public:
 	void DrawAABB(AABB aabbBox);
 
 	void AddGameObject(GameObject* gameObject);
+	void ObjectMoved(GameObject* gameObject);
+
 
 private:
 	void AddGameObjectToChild(GameObject* gameObject);

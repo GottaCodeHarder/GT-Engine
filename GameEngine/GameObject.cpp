@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleRenderer3D.h"
 #include "ModuleEditor.h"
+#include "ModuleScene.h"
 #include "cTransform.h"
 #include "cMesh.h"
 #include "MathGeoLib/MathGeoLib.h"
@@ -41,6 +42,7 @@ void GameObject::Update()
 				OBB obb = ((cMesh*)FindComponent(MESH))->aabbBox.Transform(matrix);
 
 				aabbBox.Enclose(obb);
+				App->scene->quad;
 				//SI TE COMPONENT CAMERA CAMBIAR FRUSTUM
 			}
 

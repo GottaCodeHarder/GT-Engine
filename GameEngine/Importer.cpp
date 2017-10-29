@@ -53,9 +53,6 @@ GameObject* Importer::LoadFbx(const char * path)
 					}
 					me = gameObject;
 
-					//QUADTREE
-					App->scene->quad.AddGameObject(me);
-
 					if (bCalcRet)
 					{
 						ret = me;
@@ -152,14 +149,14 @@ GameObject* Importer::LoadFbx(const char * path)
 					meshesBoxes.push_back(mesh->aabbBox);
 
 					float4x4 matrix = transform->GetGlobalMatrixTransf();
-						if (mesh != nullptr)
-						{
-							gameObject->aabbBox.SetNegativeInfinity();
-							OBB obb = mesh->aabbBox.Transform(matrix);
+					if (mesh != nullptr)
+					{
+						gameObject->aabbBox.SetNegativeInfinity();
+						OBB obb = mesh->aabbBox.Transform(matrix);
 
-							gameObject->aabbBox.Enclose(obb);
-							//SI TE COMPONENT CAMERA CAMBIAR FRUSTUM
-						}
+						gameObject->aabbBox.Enclose(obb);
+						//SI TE COMPONENT CAMERA CAMBIAR FRUSTUM
+					}
 
 					if (scene->HasMaterials())
 					{
@@ -198,6 +195,10 @@ GameObject* Importer::LoadFbx(const char * path)
 							}
 						}
 					}
+
+					//QUADTREE
+					App->scene->quad.AddGameObject(me);
+
 				}
 			}
 			else
