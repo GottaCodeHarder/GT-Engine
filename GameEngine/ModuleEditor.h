@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __MODULEEDITOR__
+#define __MODULEEDITOR__
+
 #include "Module.h"
 #include "MathGeoLib/MathGeoLib.h"
 #include <map>
@@ -85,3 +87,4 @@ private:
 	float fps = 60.0f;
 	bool bFreeze = false;
 };
+#endif 

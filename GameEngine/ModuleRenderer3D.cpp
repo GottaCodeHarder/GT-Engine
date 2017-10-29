@@ -2,6 +2,9 @@
 
 #include "Application.h"
 #include "ModuleRenderer3D.h"
+#include "ModuleWindow.h"
+#include "ModuleCamera3D.h"
+#include "ModuleEditor.h"
 #include "GameObject.h"
 #include "cMesh.h"
 #include "cMaterial.h"

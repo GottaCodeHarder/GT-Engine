@@ -1,6 +1,7 @@
 #include "GameObject.h"
 #include "Application.h"
 #include "ModuleRenderer3D.h"
+#include "ModuleEditor.h"
 #include "cTransform.h"
 #include "cMesh.h"
 #include "MathGeoLib/MathGeoLib.h"

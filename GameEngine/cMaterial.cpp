@@ -4,6 +4,7 @@
 #include <gl/GLU.h>
 #include <commdlg.h>
 #include "Application.h"
+#include "ModuleScene.h"
 
 #include "cMaterial.h"
 

@@ -7,8 +7,8 @@
 #include "GameObject.h"
 
 #define MAX_OBJECTS_NODE 4
-#define MIN_WORLD_POINT float3(-500,-500,-500)
-#define MAX_WORLD_POINT float3(1000,1000,1000)
+#define MIN_WORLD_POINT float3(-20,-20,-20)
+#define MAX_WORLD_POINT float3(40,40,40)
 
 
 class QuadNode 

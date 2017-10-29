@@ -8,6 +8,7 @@
 
 #define MAX_LIGHTS 8
 class DebugDrawer;
+class GameObject;
 
 class ModuleRenderer3D : public Module
 {

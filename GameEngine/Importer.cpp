@@ -8,6 +8,7 @@
 #include "cMaterial.h"
 #include "GameObject.h"
 #include "Application.h"
+#include "ModuleScene.h"
 #include <queue>
 
 #pragma comment (lib, "Devil/libx86/DevIL.lib")
@@ -51,7 +52,10 @@ GameObject* Importer::LoadFbx(const char * path)
 						numMeshes++;
 					}
 					me = gameObject;
-					//App->scene->quad.AddGameObject(me);
+
+					//QUADTREE
+					App->scene->quad.AddGameObject(me);
+
 					if (bCalcRet)
 					{
 						ret = me;
@@ -146,6 +150,16 @@ GameObject* Importer::LoadFbx(const char * path)
 					mesh->aabbBox.Enclose(mesh->vertex.data(), scene->mMeshes[i]->mNumVertices);
 					mesh->numVertex = scene->mMeshes[i]->mNumVertices;
 					meshesBoxes.push_back(mesh->aabbBox);
+
+					float4x4 matrix = transform->GetGlobalMatrixTransf();
+						if (mesh != nullptr)
+						{
+							gameObject->aabbBox.SetNegativeInfinity();
+							OBB obb = mesh->aabbBox.Transform(matrix);
+
+							gameObject->aabbBox.Enclose(obb);
+							//SI TE COMPONENT CAMERA CAMBIAR FRUSTUM
+						}
 
 					if (scene->HasMaterials())
 					{

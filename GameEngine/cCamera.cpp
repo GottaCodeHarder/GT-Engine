@@ -4,6 +4,7 @@
 #include <gl/GLU.h>
 
 #include "Application.h"
+#include "ModuleRenderer3D.h"
 #include "GameObject.h"
 #include "cCamera.h"
 #include "cTransform.h"

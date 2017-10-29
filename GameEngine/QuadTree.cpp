@@ -1,5 +1,6 @@
 #include "QuadTree.h"
 #include "Application.h"
+#include "ModuleRenderer3D.h"
 
 QuadNode::QuadNode(float3 minPoint, float3 maxPoint)
 {

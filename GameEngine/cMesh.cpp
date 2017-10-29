@@ -6,6 +6,7 @@
 #include "cMesh.h"
 #include "cTransform.h"
 #include "Application.h"
+#include "ModuleRenderer3D.h"
 #include "GameObject.h"
 
 cMesh::cMesh(GameObject* _gameObject) : Component(MESH, _gameObject)
@@ -23,14 +24,6 @@ cMesh::~cMesh()
 
 void cMesh::RealUpdate()
 {
-
-	//float4x4 matrix = ((cTransform*)this->gameObject->FindComponent(TRANSFORM))->GetGlobalMatrixTransf().Transposed();
-	//float4x4 matrix1 = ((cTransform*)this->gameObject->FindComponent(TRANSFORM))->GetLocalMatrixTransf();
-	//
-	//OBB obb = aabbBox.Transform(matrix);
-	////OBB obb1 = aabbBox.Transform(matrix1);
-	//
-	//aabbBox.Enclose(obb);
 
 }
 

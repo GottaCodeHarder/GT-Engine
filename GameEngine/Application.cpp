@@ -3,6 +3,17 @@
 #include "glew\include\glew.h"
 #include "JSON\parson.h"
 
+#include "ModuleWindow.h"
+#include "ModuleInput.h"
+#include "ModuleAudio.h"
+#include "ModuleEditor.h"
+#include "ModuleRenderer3D.h"
+#include "ModuleCamera3D.h"
+#include "ModulePhysics3D.h"
+#include "ModuleFileSystem.h"
+#include "ModuleHardware.h"
+#include "ModuleScene.h"
+
 Application::Application()
 {
 	window = new ModuleWindow(this);

@@ -1,5 +1,8 @@
 #include "Globals.h"
 #include "Application.h"
+#include "ModuleCamera3D.h"
+#include "ModuleInput.h"
+#include "ModuleEditor.h"
 #include "ModuleScene.h"
 #include "GameObject.h"
 //#include "Importer.h"

@@ -1,5 +1,8 @@
 #include "Globals.h"
 #include "Application.h"
+#include "ModuleEditor.h"
+#include "ModuleWindow.h"
+#include "ModuleScene.h"
 
 #include "ImGui/imgui_impl_sdl_gl3.h"
 #include "glew/include/glew.h"

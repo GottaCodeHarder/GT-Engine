@@ -3,16 +3,18 @@
 #include "Globals.h"
 #include "Timer.h"
 #include "Module.h"
-#include "ModuleWindow.h"
-#include "ModuleInput.h"
-#include "ModuleAudio.h"
-#include "ModuleEditor.h"
-#include "ModuleRenderer3D.h"
-#include "ModuleCamera3D.h"
-#include "ModulePhysics3D.h"
-#include "ModuleFileSystem.h"
-#include "ModuleHardware.h"
-#include "ModuleScene.h"
+
+
+class ModuleWindow;
+class ModuleInput;
+class ModuleAudio;
+class ModuleRenderer3D;
+class ModuleCamera3D;
+class ModulePhysics3D;
+class ModuleEditor;
+class ModuleFileSystem;
+class ModuleHardware;
+class ModuleScene;
 
 class Application
 {
