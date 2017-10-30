@@ -18,7 +18,10 @@ public:
 private:
 
 	bool bCulling = true;
+	bool drawFrustum = true;
 
-	int horizontalFOV = 87;
-	int verticalFOV = 60;
+	float horizontalFOV = 2;
+	float verticalFOV = 1;
+	float nearPlane = 1;
+	float farPlane = 100;
 };

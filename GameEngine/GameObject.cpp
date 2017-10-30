@@ -5,6 +5,7 @@
 #include "ModuleScene.h"
 #include "cTransform.h"
 #include "cMesh.h"
+#include "cCamera.h"
 #include "MathGeoLib/MathGeoLib.h"
 
 #include "glew/include/glew.h"
@@ -36,6 +37,9 @@ void GameObject::Update()
 		if (((cTransform*)FindComponent(TRANSFORM))->transformChange)
 		{
 			float4x4 matrix = ((cTransform*)FindComponent(TRANSFORM))->GetGlobalMatrixTransf();
+			float4x4 matrix1 = ((cTransform*)FindComponent(TRANSFORM))->GetLocalMatrixTransf();
+
+			//if has a mesh it is modified
 			if (((cMesh*)FindComponent(MESH)) != nullptr)
 			{
 				aabbBox.SetNegativeInfinity();
@@ -43,7 +47,17 @@ void GameObject::Update()
 
 				aabbBox.Enclose(obb);
 				App->scene->quad;
-				//SI TE COMPONENT CAMERA CAMBIAR FRUSTUM
+
+			}
+			//IF has frustum it is modified
+			if (((cCamera*)FindComponent(CAMERA)) != nullptr)
+			{
+				((cCamera*)FindComponent(CAMERA))->frustum.Transform(matrix1);
+				//AABB aabbFrustumBox = ((cCamera*)FindComponent(CAMERA))->frustum.MinimalEnclosingAABB();
+				//aabbFrustumBox.SetNegativeInfinity();
+				//OBB obb = aabbFrustumBox.Transform(matrix);
+				//aabbFrustumBox.Enclose(obb);
+				//((cCamera*)FindComponent(CAMERA))->frustum.
 			}
 
 			((cTransform*)FindComponent(TRANSFORM))->transformChange = false;
