@@ -91,7 +91,7 @@ void cTransform::DrawUI()
 			ImGui::TreePop();
 		}
 		ImGui::Spacing();
-		if (((cMesh*)this->gameObject->FindComponent(MESH)) != nullptr)
+		//if (((cMesh*)this->gameObject->FindComponent(MESH)) != nullptr)
 		{
 			if (ImGui::TreeNodeEx("Modify Local Position"))
 			{

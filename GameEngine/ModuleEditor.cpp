@@ -529,14 +529,6 @@ void ModuleEditor::LoadFile()
 	}
 
 	file_menu["Load File"] = false;
-
-	//for (auto itFile : file_menu) 
-	//{
-	//	if (file_menu["Load File"])
-	//	{
-	//
-	//	}
-	//}
 }
 
 void ModuleEditor::StyleEditor()
