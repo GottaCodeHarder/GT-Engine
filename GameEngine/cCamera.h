@@ -16,6 +16,9 @@ public:
 	void DrawUI();
 
 private:
+
+	bool bCulling = true;
+
 	int horizontalFOV = 87;
 	int verticalFOV = 60;
 };

@@ -589,9 +589,25 @@ bool Frustum::Contains(const Polygon &polygon) const
 
 bool Frustum::Contains(const AABB &aabb) const
 {
-	for(int i = 0; i < 8; ++i)
-		if (!Contains(aabb.CornerPoint(i)))
+	float3 vCorner[8];
+	aabb.GetCornerPoints(vCorner); 
+
+	for (int y = 0; y < 6; ++y)
+	{
+		int out = 0;
+
+		for (int i = 0; i < 8; ++i)
+		{
+			if (GetPlane(y).IsOnPositiveSide(vCorner[i]))
+			{
+				out++;
+			}
+		}
+		if (out == 8)
+		{
 			return false;
+		}
+	}
 
 	return true;
 }
