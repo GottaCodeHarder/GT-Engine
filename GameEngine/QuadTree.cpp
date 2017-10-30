@@ -52,7 +52,6 @@ void QuadNode::AddGameObject(GameObject * gameObject)
 		gameObjects.push_back(gameObject);
 		if (gameObjects.size() > MAX_OBJECTS_NODE)
 		{
-
 			float3 centerPoint = quadBox.CenterPoint();
 
 			QuadNode* node1 = new QuadNode(quadBox.minPoint, float3(centerPoint.x, quadBox.maxPoint.y, centerPoint.z));
@@ -81,20 +80,39 @@ void QuadNode::AddGameObject(GameObject * gameObject)
 	}
 }
 
+void QuadNode::DeleteGameObject(GameObject * gameObject)
+{
+	
+}
+
+void QuadNode::ObjectMoved(GameObject* gameObject)
+{
+	if (!quadBox.Contains(gameObject->aabbBox.CenterPoint()))
+	{
+		for (int i = 0; i < gameObjects.size(); i++)
+		{
+			if (gameObjects[i] == gameObject)
+			{
+				gameObjects[i];
+			}
+		}
+	}
+
+}
+
 void QuadNode::AddGameObjectToChild(GameObject * gameObject)
 {
 	if (!sons.empty())
 	{
 		for (int i = 0; i < sons.size(); i++)
 		{
-			if (sons[i]->quadBox.Contains(gameObject->aabbBox))
+			if (sons[i]->quadBox.Contains(gameObject->aabbBox.CenterPoint()))
 			{
 				sons[i]->AddGameObject(gameObject);
 				break;
 			}
 		}
 	}
-
 }
 
 myQuadTree::myQuadTree() : root(MIN_WORLD_POINT, MAX_WORLD_POINT)
@@ -108,5 +126,8 @@ void myQuadTree::AddGameObject(GameObject * gameObject)
 
 void myQuadTree::Draw()
 {
-	root.Draw();
+	if (draw)
+	{
+		root.Draw();
+	}
 }

@@ -5,6 +5,7 @@
 #include "ModuleWindow.h"
 #include "ModuleCamera3D.h"
 #include "ModuleEditor.h"
+#include "ModuleScene.h"
 #include "GameObject.h"
 #include "cMesh.h"
 #include "cMaterial.h"
@@ -333,6 +334,11 @@ void ModuleRenderer3D::AddImGui()
 		}
 		if (ImGui::Checkbox("Wireframe Mode", &bEnableWireframe))
 		{
+		}
+
+		if (ImGui::Checkbox("Draw QuadTree", &App->scene->quad.draw))
+		{
+
 		}
 	}
 }
