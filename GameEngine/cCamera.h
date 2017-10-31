@@ -15,6 +15,8 @@ public:
 
 	void DrawUI();
 
+	bool transformFrustum = false;
+
 private:
 
 	bool bCulling = true;

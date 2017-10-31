@@ -34,6 +34,12 @@ void cCamera::RealUpdate()
 	frustum.SetPerspective(horizontalFOV, verticalFOV);
 	frustum.SetViewPlaneDistances(nearPlane, farPlane);
 
+	if (transformFrustum)
+	{
+		frustum.pos = ((cTransform*)gameObject->FindComponent(TRANSFORM))->positionLocal;
+		frustum.front = ((cTransform*)gameObject->FindComponent(TRANSFORM))->GetLocalMatrixTransf().Row3(2);
+		frustum.up = ((cTransform*)gameObject->FindComponent(TRANSFORM))->GetLocalMatrixTransf().Row3(1);
+	}
 }
 
 void cCamera::DrawUI()

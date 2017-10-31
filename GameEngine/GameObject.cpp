@@ -47,12 +47,7 @@ void GameObject::Update()
 			//IF has frustum it is modified
 			if (((cCamera*)FindComponent(CAMERA)) != nullptr)
 			{
-				((cCamera*)FindComponent(CAMERA))->frustum.Transform(matrix1);
-				//AABB aabbFrustumBox = ((cCamera*)FindComponent(CAMERA))->frustum.MinimalEnclosingAABB();
-				//aabbFrustumBox.SetNegativeInfinity();
-				//OBB obb = aabbFrustumBox.Transform(matrix);
-				//aabbFrustumBox.Enclose(obb);
-				//((cCamera*)FindComponent(CAMERA))->frustum.
+				((cCamera*)FindComponent(CAMERA))->transformFrustum = true;
 			}
 
 			((cTransform*)FindComponent(TRANSFORM))->transformChange = false;
