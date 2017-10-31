@@ -27,7 +27,7 @@ public:
 
 	void DrawUI();
 
-	bool transformChange = true;
+	bool transformChange = false;
 private:
 
 };

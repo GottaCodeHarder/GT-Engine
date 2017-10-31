@@ -49,7 +49,10 @@ void QuadNode::AddGameObject(GameObject * gameObject)
 {
 	if (sons.empty())
 	{
-		gameObjects.push_back(gameObject);
+		if (quadBox.Contains(gameObject->aabbBox.CenterPoint()))
+		{
+			gameObjects.push_back(gameObject);
+		}
 		if (gameObjects.size() > MAX_OBJECTS_NODE)
 		{
 			float3 centerPoint = quadBox.CenterPoint();
@@ -78,21 +81,6 @@ void QuadNode::AddGameObject(GameObject * gameObject)
 	{
 		AddGameObjectToChild(gameObject);
 	}
-}
-
-void QuadNode::ObjectMoved(GameObject* gameObject)
-{
-	if (!quadBox.Contains(gameObject->aabbBox.CenterPoint()))
-	{
-		for (int i = 0; i < gameObjects.size(); i++)
-		{
-			if (gameObjects[i] == gameObject)
-			{
-				gameObjects[i];
-			}
-		}
-	}
-
 }
 
 void QuadNode::DeleteGameObjects()

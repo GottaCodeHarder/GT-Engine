@@ -40,14 +40,9 @@ void GameObject::Update()
 			float4x4 matrix1 = ((cTransform*)FindComponent(TRANSFORM))->GetLocalMatrixTransf();
 
 			//if has a mesh it is modified
-			if (((cMesh*)FindComponent(MESH)) != nullptr)
+			if (SonHasMesh())
 			{
-				aabbBox.SetNegativeInfinity();
-				OBB obb = ((cMesh*)FindComponent(MESH))->aabbBox.Transform(matrix);
-
-				aabbBox.Enclose(obb);
-				App->scene->quad;
-
+				UpdateAABB(matrix);
 			}
 			//IF has frustum it is modified
 			if (((cCamera*)FindComponent(CAMERA)) != nullptr)
@@ -103,6 +98,21 @@ void GameObject::DrawUI()
 		{
 			itComp.second->DrawUI();
 		}
+	}
+}
+
+void GameObject::UpdateAABB(float4x4 matrix)
+{
+	for (auto sonsGO : sons)
+	{
+		sonsGO->UpdateAABB(matrix);
+	}
+	if (FindComponent(MESH) != nullptr)
+	{
+		aabbBox.SetNegativeInfinity();
+		OBB obb = ((cMesh*)FindComponent(MESH))->aabbBox.Transform(matrix);
+
+		aabbBox.Enclose(obb);
 	}
 }
 
@@ -175,6 +185,24 @@ void GameObject::DrawProperties()
 			}
 		}
 	}
+}
+
+bool GameObject::SonHasMesh()
+{
+	bool ret = false;
+	if (FindComponent(MESH) != nullptr)
+	{
+		ret = true;
+	}
+	for (auto sonsGO : sons)
+	{
+		ret = sonsGO->SonHasMesh();
+		if (ret)
+		{
+			break;
+		}
+	}
+	return ret;
 }
 
 void GameObject::AddComponent(Component* addComponent)

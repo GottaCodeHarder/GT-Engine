@@ -11,14 +11,8 @@ class GameObject
 public:
 	GameObject(std::string name, bool active, GameObject* parent);
 	//FALTA DESTRUCTOR QUE DESTRUEIXI ELS FILLS
-	std::string name;
-	GameObject* parent;
-	std::vector<GameObject*> sons;
-	bool active = true;
-	bool collapsedHierarchy = false;
-	bool clicked = false;
+	
 
-	AABB aabbBox;
 
 	std::map<componentType, Component*> components;
 
@@ -26,17 +20,24 @@ public:
 	Component* FindComponent(componentType);
 
 	void DrawUI();
+	void UpdateAABB(float4x4 matrix);
 
 	void DrawHeriarchy(GameObject* son);
 	void DrawProperties();
+	bool SonHasMesh();
 
 	void AddComponent(Component*);
-	//FUNCIO ACTIVAR I DESACTIVAR
 
 	void Enable();
 	void Disable();
 
-
+std::string name;
+	GameObject* parent;
+	std::vector<GameObject*> sons;
+	bool active = true;
+	bool collapsedHierarchy = false;
+	bool clicked = false;
+	AABB aabbBox;
 private:
 
 };

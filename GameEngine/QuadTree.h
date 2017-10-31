@@ -26,7 +26,6 @@ public:
 	void DrawAABB(AABB aabbBox);
 
 	void AddGameObject(GameObject* gameObject);
-	void ObjectMoved(GameObject* gameObject);
 	void DeleteGameObjects();
 
 
