@@ -80,11 +80,6 @@ void QuadNode::AddGameObject(GameObject * gameObject)
 	}
 }
 
-void QuadNode::DeleteGameObject(GameObject * gameObject)
-{
-	
-}
-
 void QuadNode::ObjectMoved(GameObject* gameObject)
 {
 	if (!quadBox.Contains(gameObject->aabbBox.CenterPoint()))
@@ -98,6 +93,19 @@ void QuadNode::ObjectMoved(GameObject* gameObject)
 		}
 	}
 
+}
+
+void QuadNode::DeleteGameObjects()
+{
+	if (!sons.empty())
+	{
+		for (auto mySons : sons)
+		{
+			mySons->DeleteGameObjects();
+		}
+	}
+	gameObjects.clear();
+	sons.clear();
 }
 
 void QuadNode::AddGameObjectToChild(GameObject * gameObject)
@@ -130,4 +138,18 @@ void myQuadTree::Draw()
 	{
 		root.Draw();
 	}
+}
+
+void myQuadTree::EmtpyQuad()
+{
+	root.DeleteGameObjects();
+}
+
+void myQuadTree::RecalculateQuad(GameObject* rootScene)
+{
+	for (auto rootSons : rootScene->sons)
+	{
+		RecalculateQuad(rootSons);
+	}
+	AddGameObject(rootScene);
 }

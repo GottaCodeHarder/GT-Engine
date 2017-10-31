@@ -44,6 +44,11 @@ bool ModuleScene::Init()
 
 void ModuleScene::AddHeriarchyGui()
 {
+	if (ImGui::Button("Recalculate QuadTree"))
+	{
+		quad.EmtpyQuad();
+		quad.RecalculateQuad(root);
+	}
 	for (auto sonsRoot : root->sons)
 	{
 		sonsRoot->DrawHeriarchy(sonsRoot);

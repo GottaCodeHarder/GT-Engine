@@ -26,8 +26,8 @@ public:
 	void DrawAABB(AABB aabbBox);
 
 	void AddGameObject(GameObject* gameObject);
-	void DeleteGameObject(GameObject* gameObject);
 	void ObjectMoved(GameObject* gameObject);
+	void DeleteGameObjects();
 
 
 private:
@@ -43,6 +43,9 @@ public:
 	void AddGameObject(GameObject* gameObject);
 
 	void Draw();
+
+	void EmtpyQuad();
+	void RecalculateQuad(GameObject* rootScene);
 
 	bool draw = true;
 private:

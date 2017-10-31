@@ -7,6 +7,7 @@
 #include "ModuleScene.h"
 #include "GameObject.h"
 #include "cMesh.h"
+#include "cTransform.h"
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -86,10 +87,18 @@ update_status ModuleCamera3D::Update(float dt)
 				{
 					if (((cMesh*)App->editor->selected->FindComponent(MESH)) != nullptr)
 					{
-						Position.x = ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.maxPoint.x * 2;
-						Position.y = ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.maxPoint.y * 2;
-						Position.z = ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.maxPoint.z * 2;
-						LookAt(vec3(((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().x, ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().y, ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().z));
+						Position.x = App->editor->selected->aabbBox.maxPoint.x * 2;
+						Position.y = App->editor->selected->aabbBox.maxPoint.y * 2;
+						Position.z = App->editor->selected->aabbBox.maxPoint.z * 2;
+						LookAt(vec3(App->editor->selected->aabbBox.CenterPoint().x, App->editor->selected->aabbBox.CenterPoint().y, App->editor->selected->aabbBox.CenterPoint().z));
+
+					}
+					else if (((cTransform*)App->editor->selected->FindComponent(TRANSFORM)) != nullptr)
+					{
+						Position.x = ((cTransform*)App->editor->selected->FindComponent(TRANSFORM))->GetGlobalPos().x + 2;
+						Position.y = ((cTransform*)App->editor->selected->FindComponent(TRANSFORM))->GetGlobalPos().y + 2;
+						Position.z = ((cTransform*)App->editor->selected->FindComponent(TRANSFORM))->GetGlobalPos().z + 2;
+						LookAt(vec3(((cTransform*)App->editor->selected->FindComponent(TRANSFORM))->GetGlobalPos().x, ((cTransform*)App->editor->selected->FindComponent(TRANSFORM))->GetGlobalPos().y, ((cTransform*)App->editor->selected->FindComponent(TRANSFORM))->GetGlobalPos().z));
 
 					}
 				}
@@ -146,11 +155,12 @@ update_status ModuleCamera3D::Update(float dt)
 
 				if (App->editor->selected != nullptr)
 				{
-					if (((cMesh*)App->editor->selected->FindComponent(MESH)) != nullptr && referenceDone)
+					if (((cTransform*)App->editor->selected->FindComponent(TRANSFORM)) != nullptr && referenceDone)
 					{
 
-						//Reference = vec3((*it)->aabbBox.CenterPoint().x, (*it)->aabbBox.CenterPoint().y, (*it)->aabbBox.CenterPoint().z);
-						Reference = vec3(((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().x, ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().y, ((cMesh*)App->editor->selected->FindComponent(MESH))->aabbBox.CenterPoint().z);
+						Reference = vec3(((cTransform*)App->editor->selected->FindComponent(TRANSFORM))->GetGlobalPos().x, ((cTransform*)App->editor->selected->FindComponent(TRANSFORM))->GetGlobalPos().y, ((cTransform*)App->editor->selected->FindComponent(TRANSFORM))->GetGlobalPos().z);
+						if(((cMesh*)App->editor->selected->FindComponent(MESH)) != nullptr)
+							Reference = vec3(App->editor->selected->aabbBox.CenterPoint().x, App->editor->selected->aabbBox.CenterPoint().y, App->editor->selected->aabbBox.CenterPoint().z);
 						referenceDone = false;
 					}
 				}

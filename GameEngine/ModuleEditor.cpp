@@ -122,6 +122,7 @@ update_status ModuleEditor::Update(float dt)
 		{
 			it->second = false;
 		}
+		App->scene->quad.EmtpyQuad();
 	}
 
 	if (file_menu["Exit(esc)"])
@@ -538,12 +539,6 @@ void ModuleEditor::StyleEditor()
 		ImGui::ShowStyleEditor();
 	}
 	ImGui::End();
-
-	//ImGui::Begin("Heriarchy", 0, ImVec2(500, 1000), 0.8f, flag);
-	//{
-	//	App->scene->AddHeriarchyGui();
-	//}
-
 }
 
 
