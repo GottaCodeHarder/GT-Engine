@@ -37,7 +37,9 @@ std::string name;
 	bool active = true;
 	bool collapsedHierarchy = false;
 	bool clicked = false;
+	bool insideFrustum = false;
 	AABB aabbBox;
+
 private:
 
 };

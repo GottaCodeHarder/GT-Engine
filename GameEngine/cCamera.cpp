@@ -5,6 +5,7 @@
 
 #include "Application.h"
 #include "ModuleRenderer3D.h"
+#include "ModuleScene.h"
 #include "GameObject.h"
 #include "cCamera.h"
 #include "cTransform.h"
@@ -40,6 +41,12 @@ void cCamera::RealUpdate()
 		frustum.front = ((cTransform*)gameObject->FindComponent(TRANSFORM))->GetLocalMatrixTransf().Row3(2);
 		frustum.up = ((cTransform*)gameObject->FindComponent(TRANSFORM))->GetLocalMatrixTransf().Row3(1);
 	}
+
+	if (activeCamera)
+	{
+		FrustumCulling(App->scene->root);
+	}
+
 }
 
 void cCamera::DrawUI()
@@ -47,6 +54,8 @@ void cCamera::DrawUI()
 	if (ImGui::CollapsingHeader("Camera"))
 	{
 		ImGui::Checkbox("Draw Frustum", &drawFrustum);
+		ImGui::SameLine();
+		ImGui::Checkbox("Active Camera", &activeCamera);
 
 		if (ImGui::DragFloat("Horizontal FOV", &horizontalFOV, 0.05f)){}
 		if (ImGui::DragFloat("Vertical FOV", &verticalFOV, 0.05f)){}
@@ -54,4 +63,13 @@ void cCamera::DrawUI()
 		if (ImGui::DragFloat("Far Plane", &farPlane, 0.05f)){}
 
 	}
+}
+
+void cCamera::FrustumCulling(GameObject* gameObject)
+{
+	for (auto sonsGO : gameObject->sons)
+	{
+		FrustumCulling(sonsGO);
+	}
+	gameObject->insideFrustum = frustum.Contains(gameObject->aabbBox);
 }

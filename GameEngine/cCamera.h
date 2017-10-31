@@ -16,11 +16,13 @@ public:
 	void DrawUI();
 
 	bool transformFrustum = false;
+	void FrustumCulling(GameObject* gameObject);
 
 private:
 
 	bool bCulling = true;
 	bool drawFrustum = true;
+	bool activeCamera = true;
 
 	float horizontalFOV = 2;
 	float verticalFOV = 1;

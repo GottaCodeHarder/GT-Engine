@@ -67,7 +67,9 @@ void GameObject::Update()
 		else
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-		App->renderer3D->DrawGameObject(this);
+		if(insideFrustum)
+			App->renderer3D->DrawGameObject(this);
+
 
 		glPopMatrix();
 	}
