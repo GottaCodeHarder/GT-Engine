@@ -47,7 +47,7 @@ void cCamera::RealUpdate()
 		FrustumCulling(App->scene->root);
 	}
 
-	if (cameraGlobal)
+	if (cameraAttached)
 	{
 		TransformCamera();
 	}
@@ -60,13 +60,13 @@ void cCamera::DrawUI()
 	{
 		if (ImGui::Button("Attach Camera"))
 		{
-			DesactivateCameraGlobal(App->scene->root);
-			cameraGlobal = true;
+			DesactivateCameraAttached(App->scene->root);
+			cameraAttached = true;
 			AttachCamera();
 		}
 		if (ImGui::Button("Detach Camera"))
 		{
-			cameraGlobal = false;
+			cameraAttached = false;
 		}
 		ImGui::Checkbox("Draw Frustum", &drawFrustum);
 		ImGui::SameLine();
@@ -79,14 +79,14 @@ void cCamera::DrawUI()
 	}
 }
 
-void cCamera::DesactivateCameraGlobal(GameObject * GO)
+void cCamera::DesactivateCameraAttached(GameObject * GO)
 {
 	for (auto sonsGO : GO->sons)
 	{
 		cCamera* cameraTMP = ((cCamera*)sonsGO->FindComponent(CAMERA));
-		if (cameraTMP->cameraGlobal)
+		if (cameraTMP->cameraAttached)
 		{
-			cameraTMP->cameraGlobal = false;
+			cameraTMP->cameraAttached = false;
 		}
 	}
 }
@@ -94,7 +94,7 @@ void cCamera::DesactivateCameraGlobal(GameObject * GO)
 void cCamera::AttachCamera()
 {
 	cTransform* transformTMP = ((cTransform*)gameObject->FindComponent(TRANSFORM));
-	App->camera->Position = vec3(transformTMP->GetGlobalPos().x, transformTMP->GetGlobalPos().y, transformTMP->GetGlobalPos().z);
+	App->camera->Position = vec(transformTMP->GetGlobalPos().x, transformTMP->GetGlobalPos().y, transformTMP->GetGlobalPos().z);
 	//App->camera->LookAt(frustum.front);
 
 }

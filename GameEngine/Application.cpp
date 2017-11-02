@@ -20,12 +20,12 @@ Application::Application()
 	input = new ModuleInput(this);
 	audio = new ModuleAudio(this, true);
 	renderer3D = new ModuleRenderer3D(this);
-	camera = new ModuleCamera3D(this);
 	physics = new ModulePhysics3D(this);
 	editor = new ModuleEditor(this);
 	fileSystem = new ModuleFileSystem(this);
 	hardware = new ModuleHardware(this);
 	scene = new ModuleScene(this);
+	camera = new ModuleCamera3D(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -33,7 +33,6 @@ Application::Application()
 
 	// Main Modules
 	AddModule(window);
-	AddModule(camera);
 	AddModule(input);
 	AddModule(audio);
 	AddModule(physics);
@@ -41,6 +40,7 @@ Application::Application()
 	AddModule(hardware);
 	AddModule(editor);
 	AddModule(scene);
+	AddModule(camera);
 
 	// Renderer last!
 	AddModule(renderer3D);

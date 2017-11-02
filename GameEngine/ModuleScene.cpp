@@ -18,7 +18,9 @@
 
 ModuleScene::ModuleScene(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	
+	root = new GameObject("root", true, nullptr);
+
+	root->AddComponent(new cTransform(root));
 }
 
 // Destructor
@@ -32,9 +34,7 @@ bool ModuleScene::Init()
 {
 	MYLOG("Init SDL window & surface");
 	bool ret = true;
-	root = new GameObject("root", true, nullptr);
 
-	root->AddComponent(new cTransform(root));
 
 	GameObject* tmp = CreateGameObject("Camera");
 	cCamera* c = new cCamera(tmp);
@@ -146,7 +146,7 @@ void ModuleScene::CreateFbx(char* path)
 		App->camera->Position.x = importer.maxBox.maxPoint.x * 2;
 		App->camera->Position.y = importer.maxBox.maxPoint.y * 2;
 		App->camera->Position.z = importer.maxBox.maxPoint.z * 2;
-		App->camera->LookAt(vec3(importer.maxBox.CenterPoint().x, importer.maxBox.CenterPoint().y, importer.maxBox.CenterPoint().z));
+		App->camera->LookAt(vec(importer.maxBox.CenterPoint().x, importer.maxBox.CenterPoint().y, importer.maxBox.CenterPoint().z));
 		tmp = nullptr;
 		delete tmp;
 	}

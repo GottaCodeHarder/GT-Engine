@@ -15,14 +15,14 @@ public:
 
 	void DrawUI();
 
-	void DesactivateCameraGlobal(GameObject* GO);
+	void DesactivateCameraAttached(GameObject* GO);
 	void AttachCamera();
 	void TransformCamera();
 	bool transformFrustum = false;
 	void FrustumCulling(GameObject* gameObject);
 
 
-	bool cameraGlobal = false;
+	bool cameraAttached = false;
 
 private:
 

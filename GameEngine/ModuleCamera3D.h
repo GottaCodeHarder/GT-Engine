@@ -2,7 +2,6 @@
 #include "Module.h"
 #include "Globals.h"
 #include "MathGeoLib/MathGeoLib.h"
-#include "glmath.h"
 
 class cCamera;
 
@@ -16,20 +15,21 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
-	void Look(vec3 Position, const vec3 &Reference, bool RotateAroundReference = false);
-	void LookAt(const vec3 &Spot);
-	void Move(const vec3 &Movement);
+	void Look(vec Position, const vec &Reference, bool RotateAroundReference = false);
+	void LookAt(const vec &Spot);
+	void Move(const vec &Movement);
 	bool referenceDone = false;
 	float* GetViewMatrixFloat();
 	const float4x4 GetViewMatrix();
 	const float4x4 GetViewMatrixInverse();
+	const cCamera* GetDefaultCamera();
 private:
 
 	void CalculateViewMatrix();
 
 public:
 
-	vec3 X, Y, Z, Position, Reference, cameraSpeed, cameraDistance;
+	vec X, Y, Z, Position, Reference, cameraSpeed, cameraDistance;
 
 private:
 
