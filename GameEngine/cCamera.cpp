@@ -16,9 +16,7 @@ cCamera::cCamera(GameObject* _gameObject) : Component(CAMERA, _gameObject)
 
 	frustum.SetViewPlaneDistances(nearPlane, farPlane);
 	frustum.SetWorldMatrix(((cTransform*)gameObject->FindComponent(TRANSFORM))->GetGlobalMatrixTransf().Float3x4Part());
-	frustum.SetPerspective(horizontalFOV,verticalFOV);//horizontalFOV, verticalFOV);
-	
-	//frustum.SetOrthographic(10, 10);
+	frustum.SetPerspective(horizontalFOV,verticalFOV);
 
 }
 

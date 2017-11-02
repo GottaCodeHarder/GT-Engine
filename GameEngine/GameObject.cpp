@@ -19,6 +19,18 @@ GameObject::GameObject(std::string _name, bool _active, GameObject * _parent) : 
 	aabbBox.SetNegativeInfinity();
 }
 
+void GameObject::PreUpdate()
+{
+	if (active)
+	{
+		for (auto itSons : sons)
+		{
+			itSons->PreUpdate();
+		}
+		insideFrustum = false;
+	}
+}
+
 void GameObject::Update()
 {
 	if (active)

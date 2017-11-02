@@ -76,6 +76,7 @@ update_status ModuleScene::PreUpdate(float dt)
 update_status ModuleScene::Update(float dt)
 {
 	glMatrixMode(GL_MODELVIEW);
+	root->PreUpdate();
 	root->Update();
 
 	if (App->input->has_dropped)

@@ -50,7 +50,10 @@ void QuadNode::AddGameObject(GameObject * gameObject)
 	if (sons.empty())
 	{
 
-		gameObjects.push_back(gameObject);
+		if (quadBox.Contains(gameObject->aabbBox.CenterPoint()))
+		{
+			gameObjects.push_back(gameObject);
+		}
 
 		if (gameObjects.size() > MAX_OBJECTS_NODE)
 		{
@@ -66,19 +69,29 @@ void QuadNode::AddGameObject(GameObject * gameObject)
 			sons.push_back(node3);
 			sons.push_back(node4);
 
-
+			std::vector<GameObject*> tmpGO;
+			GameObject* tmp;
 			for (int i = 0; i < gameObjects.size(); i++)
 			{
-				AddGameObjectToChild(gameObjects[i]);
+				tmp=AddGameObjectToChild(gameObjects[i]);
+				if (tmp != nullptr)
+				{
+					tmpGO.push_back(tmp);
+				}
 			}
 
-
 			gameObjects.clear();
+			for (auto tmpGO1 : tmpGO)
+			{
+				gameObjects.push_back(tmpGO1);
+			}
+			tmpGO.clear();
+
 		}
 	}
 	else
 	{
-		AddGameObjectToChild(gameObject);
+		gameObjects.push_back(AddGameObjectToChild(gameObject));
 	}
 }
 
@@ -95,7 +108,7 @@ void QuadNode::DeleteGameObjects()
 	sons.clear();
 }
 
-void QuadNode::AddGameObjectToChild(GameObject * gameObject)
+GameObject* QuadNode::AddGameObjectToChild(GameObject * gameObject)
 {
 	if (!sons.empty())
 	{
@@ -106,12 +119,13 @@ void QuadNode::AddGameObjectToChild(GameObject * gameObject)
 			{
 				sons[i]->AddGameObject(gameObject);
 				sonAssigned = true;
+				return nullptr;
 				break;
 			}
 		}
 		if (!sonAssigned)
 		{
-			gameObjects.push_back(gameObject);
+			return gameObject;
 		}
 	}
 }

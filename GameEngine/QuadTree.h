@@ -33,7 +33,7 @@ public:
 
 
 private:
-	void AddGameObjectToChild(GameObject* gameObject);
+	GameObject* AddGameObjectToChild(GameObject* gameObject);
 };
 
 
@@ -66,14 +66,17 @@ inline std::vector<GameObject*> QuadNode::Collide(const Col colision)
 	{
 		for (auto itGameObjects : gameObjects)
 		{
-			if (colision.Intersects(itGameObjects->aabbBox))
+			if (itGameObjects->aabbBox.Intersects(colision) || itGameObjects->aabbBox.Contains(colision))
 			{
 				ret.push_back(itGameObjects);
 			}
 		}
 		for (auto itSons : sons)
 		{
-			itSons->Collide(colision);
+			for (auto retGO : itSons->Collide(colision))
+			{
+				ret.push_back(retGO);
+			}
 		}
 	}
 

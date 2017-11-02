@@ -12,10 +12,9 @@ public:
 	GameObject(std::string name, bool active, GameObject* parent);
 	//FALTA DESTRUCTOR QUE DESTRUEIXI ELS FILLS
 	
-
-
 	std::map<componentType, Component*> components;
 
+	void PreUpdate();
 	void Update();
 	Component* FindComponent(componentType);
 

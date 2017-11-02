@@ -126,7 +126,7 @@ GameObject* Importer::LoadFbx(const char * path)
 					mesh->index.reserve(scene->mMeshes[i]->mNumFaces * 3);
 
 
-					//uint* index = new uint[scene->mMeshes[i]->mNumFaces * 3];
+					uint* index = new uint[scene->mMeshes[i]->mNumFaces * 3];
 					mesh->numIndex = scene->mMeshes[i]->mNumFaces * 3;
 					for (uint j = 0; j < scene->mMeshes[i]->mNumFaces; j++)
 					{
@@ -136,19 +136,19 @@ GameObject* Importer::LoadFbx(const char * path)
 						}
 						else
 						{
-							//memcpy(&index[j * 3], scene->mMeshes[i]->mFaces[j].mIndices, sizeof(uint) * 3);
-							unsigned int * it = scene->mMeshes[i]->mFaces[j].mIndices;
-							mesh->index.push_back(*it);
-							it++;
-							mesh->index.push_back(*it);
-							it++;
-							mesh->index.push_back(*it);
+							memcpy(&index[j * 3], scene->mMeshes[i]->mFaces[j].mIndices, sizeof(uint) * 3);
+							//unsigned int * it = scene->mMeshes[i]->mFaces[j].mIndices;
+							//mesh->index.push_back(*it);
+							//it++;
+							//mesh->index.push_back(*it);
+							//it++;
+							//mesh->index.push_back(*it);
 						}
 					}
 
 					glGenBuffers(1, (GLuint*) &(mesh->buffIndex));
 					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->buffIndex);
-					glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * scene->mMeshes[i]->mNumFaces * 3, mesh->index.data(), GL_STATIC_DRAW);
+					glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * scene->mMeshes[i]->mNumFaces * 3, index, GL_STATIC_DRAW);
 					MYLOG("Importer - Loading %i index succesful!", (uint)scene->mMeshes[i]->mNumFaces * 3);
 
 					mesh->aabbBox.SetNegativeInfinity();
