@@ -49,10 +49,9 @@ void QuadNode::AddGameObject(GameObject * gameObject)
 {
 	if (sons.empty())
 	{
-		if (quadBox.Contains(gameObject->aabbBox.CenterPoint()))
-		{
-			gameObjects.push_back(gameObject);
-		}
+
+		gameObjects.push_back(gameObject);
+
 		if (gameObjects.size() > MAX_OBJECTS_NODE)
 		{
 			float3 centerPoint = quadBox.CenterPoint();
@@ -100,13 +99,19 @@ void QuadNode::AddGameObjectToChild(GameObject * gameObject)
 {
 	if (!sons.empty())
 	{
+		bool sonAssigned = false;
 		for (int i = 0; i < sons.size(); i++)
 		{
-			if (sons[i]->quadBox.Contains(gameObject->aabbBox.CenterPoint()))
+			if (sons[i]->quadBox.Contains(gameObject->aabbBox))
 			{
 				sons[i]->AddGameObject(gameObject);
+				sonAssigned = true;
 				break;
 			}
+		}
+		if (!sonAssigned)
+		{
+			gameObjects.push_back(gameObject);
 		}
 	}
 }
@@ -140,4 +145,9 @@ void myQuadTree::RecalculateQuad(GameObject* rootScene)
 		RecalculateQuad(rootSons);
 	}
 	AddGameObject(rootScene);
+}
+
+QuadNode myQuadTree::GetRoot()
+{
+	return root;
 }

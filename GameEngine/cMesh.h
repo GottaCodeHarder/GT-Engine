@@ -11,6 +11,7 @@ public:
 
 	std::vector<float3> normals;
 	std::vector<float3> vertex;
+	std::vector<uint> index;
 
 	uint buffNormals = 0;
 	uint buffUv = 0;
@@ -18,6 +19,7 @@ public:
 	uint buffIndex = 0;
 	uint numIndex = 0;
 	uint numVertex = 0;
+
 
 	AABB aabbBox;
 
