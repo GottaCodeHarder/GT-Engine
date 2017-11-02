@@ -1,7 +1,10 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "MathGeoLib/MathGeoLib.h"
 #include "glmath.h"
+
+class cCamera;
 
 class ModuleCamera3D : public Module
 {
@@ -13,14 +16,13 @@ public:
 	update_status Update(float dt);
 	bool CleanUp();
 
-	void Follow(PhysBody3D* body, float min, float max, float height);
-	void UnFollow();
 	void Look(vec3 Position, const vec3 &Reference, bool RotateAroundReference = false);
 	void LookAt(const vec3 &Spot);
 	void Move(const vec3 &Movement);
-	float* GetViewMatrix();
 	bool referenceDone = false;
-
+	float* GetViewMatrixFloat();
+	const float4x4 GetViewMatrix();
+	const float4x4 GetViewMatrixInverse();
 private:
 
 	void CalculateViewMatrix();
@@ -31,11 +33,9 @@ public:
 
 private:
 
-	mat4x4 ViewMatrix, ViewMatrixInverse;
-	PhysBody3D* following;
-	float minFollowingDist;
-	float maxFollowingDist;
-	float followingHeight;
+	cCamera* defaultCamera;
+
+	float4x4 ViewMatrix, ViewMatrixInverse;
 	bool camera;
 	
 };

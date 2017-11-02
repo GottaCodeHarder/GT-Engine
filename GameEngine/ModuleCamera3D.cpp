@@ -7,11 +7,18 @@
 #include "ModuleScene.h"
 #include "GameObject.h"
 #include "cMesh.h"
+#include "cCamera.h"
 #include "cTransform.h"
+#include "glmath.h"
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	CalculateViewMatrix();
+	GameObject* tmp = App->scene->CreateGameObject("DefaultCamera");
+	defaultCamera = new cCamera(tmp);
+	tmp->AddComponent(defaultCamera);
+
+	((cTransform*)defaultCamera->gameObject->FindComponent(TRANSFORM))->positionLocal = { 0.f,0.f,5.f };
 
 	X = vec3(1.0f, 0.0f, 0.0f);
 	Y = vec3(0.0f, 1.0f, 0.0f);
@@ -19,8 +26,6 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 
 	Position = vec3(0.0f, 0.0f, 5.0f);
 	Reference = vec3(0.0f, 0.0f, 0.0f);
-
-	following = NULL;
 }
 
 ModuleCamera3D::~ModuleCamera3D()
@@ -126,7 +131,7 @@ update_status ModuleCamera3D::Update(float dt)
 				if (dx != 0)
 				{
 					float DeltaX = (float)dx * Sensitivity;
-
+					
 					X = rotate(X, DeltaX, vec3(0.0f, 1.0f, 0.0f));
 					Y = rotate(Y, DeltaX, vec3(0.0f, 1.0f, 0.0f));
 					Z = rotate(Z, DeltaX, vec3(0.0f, 1.0f, 0.0f));
@@ -146,7 +151,6 @@ update_status ModuleCamera3D::Update(float dt)
 					}
 				}
 
-				//Reference = Position - (Reference - Position);
 				Reference = Position - Reference;
 			}
 			else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
@@ -241,30 +245,26 @@ void ModuleCamera3D::Move(const vec3 &Movement)
 	CalculateViewMatrix();
 }
 
-// -----------------------------------------------------------------
-float* ModuleCamera3D::GetViewMatrix()
+// ----------------------------------------------------------------
+
+float * ModuleCamera3D::GetViewMatrixFloat()
 {
-	return &ViewMatrix;
+	return (float*)ViewMatrix.v;
+}
+
+const float4x4 ModuleCamera3D::GetViewMatrix()
+{
+	return ViewMatrix;
+}
+
+const float4x4 ModuleCamera3D::GetViewMatrixInverse()
+{
+	return ViewMatrixInverse;
 }
 
 // -----------------------------------------------------------------
 void ModuleCamera3D::CalculateViewMatrix()
 {
-	ViewMatrix = mat4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, Position), -dot(Y, Position), -dot(Z, Position), 1.0f);
-	ViewMatrixInverse = inverse(ViewMatrix);
-}
-
-// -----------------------------------------------------------------
-void ModuleCamera3D::Follow(PhysBody3D* body, float min, float max, float height)
-{
-	minFollowingDist = min;
-	maxFollowingDist = max;
-	followingHeight = height;
-	following = body;
-}
-
-// -----------------------------------------------------------------
-void ModuleCamera3D::UnFollow()
-{
-	following = NULL;
+	ViewMatrix = float4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, Position), -dot(Y, Position), -dot(Z, Position), 1.0f);
+	ViewMatrixInverse = ViewMatrix.Inverted();
 }

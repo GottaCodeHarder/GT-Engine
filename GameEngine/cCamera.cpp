@@ -6,6 +6,7 @@
 #include "Application.h"
 #include "ModuleRenderer3D.h"
 #include "ModuleScene.h"
+#include "ModuleCamera3D.h"
 #include "GameObject.h"
 #include "cCamera.h"
 #include "cTransform.h"
@@ -46,12 +47,27 @@ void cCamera::RealUpdate()
 		FrustumCulling(App->scene->root);
 	}
 
+	if (cameraGlobal)
+	{
+		TransformCamera();
+	}
+
 }
 
 void cCamera::DrawUI()
 {
 	if (ImGui::CollapsingHeader("Camera"))
 	{
+		if (ImGui::Button("Attach Camera"))
+		{
+			DesactivateCameraGlobal(App->scene->root);
+			cameraGlobal = true;
+			AttachCamera();
+		}
+		if (ImGui::Button("Detach Camera"))
+		{
+			cameraGlobal = false;
+		}
 		ImGui::Checkbox("Draw Frustum", &drawFrustum);
 		ImGui::SameLine();
 		ImGui::Checkbox("Active Camera", &activeCamera);
@@ -60,8 +76,39 @@ void cCamera::DrawUI()
 		if (ImGui::DragFloat("Vertical FOV", &verticalFOV, 0.05f)){}
 		if (ImGui::DragFloat("Near Plane", &nearPlane, 0.05f)){}
 		if (ImGui::DragFloat("Far Plane", &farPlane, 0.05f)){}
-
 	}
+}
+
+void cCamera::DesactivateCameraGlobal(GameObject * GO)
+{
+	for (auto sonsGO : GO->sons)
+	{
+		cCamera* cameraTMP = ((cCamera*)sonsGO->FindComponent(CAMERA));
+		if (cameraTMP->cameraGlobal)
+		{
+			cameraTMP->cameraGlobal = false;
+		}
+	}
+}
+
+void cCamera::AttachCamera()
+{
+	cTransform* transformTMP = ((cTransform*)gameObject->FindComponent(TRANSFORM));
+	App->camera->Position = vec3(transformTMP->GetGlobalPos().x, transformTMP->GetGlobalPos().y, transformTMP->GetGlobalPos().z);
+	//App->camera->LookAt(frustum.front);
+
+}
+
+void cCamera::TransformCamera()
+{	
+	cTransform* transformTMP = ((cTransform*)gameObject->FindComponent(TRANSFORM));
+	transformTMP->positionLocal = float3(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
+	frustum.SetPos(float3(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z));
+
+	frustum.front = ((cTransform*)gameObject->FindComponent(TRANSFORM))->GetLocalMatrixTransf().Row3(2);
+	frustum.up = ((cTransform*)gameObject->FindComponent(TRANSFORM))->GetLocalMatrixTransf().Row3(1);
+
+	//frustum.Transform(App->camera->GetViewMatrix());
 }
 
 void cCamera::FrustumCulling(GameObject* gameObject)
@@ -72,10 +119,7 @@ void cCamera::FrustumCulling(GameObject* gameObject)
 	{
 		itGameObjects->insideFrustum = true;
 	}
-	//QUAN HI HAGI GAME OBJECTS DINAMICS COMPROBARLOS TAMBE
 	dynamicFrustum(App->scene->root);
-	//SI ES ESTATIC NO ES POT MOURE
-
 }
 
 void cCamera::dynamicFrustum(GameObject * gameObject)

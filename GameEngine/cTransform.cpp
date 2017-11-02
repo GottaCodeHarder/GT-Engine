@@ -91,6 +91,7 @@ void cTransform::DrawUI()
 			ImGui::TreePop();
 		}
 		ImGui::Spacing();
+		if(!gameObject->statiC)
 		{
 			if (ImGui::TreeNodeEx("Modify Local Position"))
 			{
