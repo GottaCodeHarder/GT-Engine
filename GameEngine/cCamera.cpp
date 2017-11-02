@@ -9,6 +9,7 @@
 #include "GameObject.h"
 #include "cCamera.h"
 #include "cTransform.h"
+#include "cMesh.h"
 
 cCamera::cCamera(GameObject* _gameObject) : Component(CAMERA, _gameObject)
 {
@@ -69,9 +70,25 @@ void cCamera::FrustumCulling(GameObject* gameObject)
 	
 	for (auto itGameObjects : gameObjectColisions)
 	{
-		itGameObjects->insideFrustum = true; //FER UN PRE UPDATE I POSAR TOTS ELS COMPONENTS A FALS
+		itGameObjects->insideFrustum = true;
 	}
 	//QUAN HI HAGI GAME OBJECTS DINAMICS COMPROBARLOS TAMBE
+	dynamicFrustum(App->scene->root);
 	//SI ES ESTATIC NO ES POT MOURE
 
+}
+
+void cCamera::dynamicFrustum(GameObject * gameObject)
+{
+	for (auto staticGO : gameObject->sons)
+	{
+		if (((cMesh*)staticGO->FindComponent(MESH)) != nullptr)
+		{
+			if (staticGO->aabbBox.Contains(frustum) || staticGO->aabbBox.Intersects(frustum))
+			{
+				staticGO->insideFrustum = true;
+			}
+		}
+		dynamicFrustum(staticGO);
+	}
 }

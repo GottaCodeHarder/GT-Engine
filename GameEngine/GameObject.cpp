@@ -82,6 +82,12 @@ void GameObject::Update()
 		if(insideFrustum)
 			App->renderer3D->DrawGameObject(this);
 
+		if (!isInsideQuad && statiC)
+		{
+			//QUADTREE
+			App->scene->quad.AddGameObject(this);
+			isInsideQuad = true;
+		}
 
 		glPopMatrix();
 	}
@@ -184,6 +190,9 @@ void GameObject::DrawHeriarchy(GameObject* son)
 
 void GameObject::DrawProperties()
 {
+	
+	ImGui::Checkbox("Static", &statiC);
+	ImGui::SameLine();
 	if (!ImGui::Checkbox("Enable/Disable", &active))
 	{
 		if (active)
@@ -194,6 +203,7 @@ void GameObject::DrawProperties()
 			}
 		}
 	}
+
 }
 
 bool GameObject::SonHasMesh()

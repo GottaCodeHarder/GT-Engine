@@ -204,9 +204,11 @@ GameObject* Importer::LoadFbx(const char * path)
 						}
 					}
 
-					//QUADTREE
-					App->scene->quad.AddGameObject(me);
-
+					if (gameObject->statiC)
+					{
+						//QUADTREE
+						App->scene->quad.AddGameObject(me);
+					}
 				}
 			}
 			else

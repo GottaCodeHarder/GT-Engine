@@ -20,6 +20,8 @@ public:
 
 private:
 
+	void dynamicFrustum(GameObject* gameObject);
+
 	bool bCulling = true;
 	bool drawFrustum = true;
 	bool activeCamera = true;

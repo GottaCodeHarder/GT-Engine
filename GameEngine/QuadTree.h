@@ -27,6 +27,7 @@ public:
 
 	void AddGameObject(GameObject* gameObject);
 	void DeleteGameObjects();
+	//HACE FALTA DELETE DE GAMEOBJECT AL QUITAR EL ESTATICO
 
 	template <typename Col>
 	std::vector<GameObject*> Collide(const Col colision);

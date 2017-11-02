@@ -38,6 +38,8 @@ std::string name;
 	bool clicked = false;
 	bool insideFrustum = false;
 	AABB aabbBox;
+	bool statiC = false;
+	bool isInsideQuad = false;
 
 private:
 
