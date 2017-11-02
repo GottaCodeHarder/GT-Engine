@@ -8,7 +8,6 @@
 //#include "Importer.h"
 #include "cTransform.h"
 #include "cCamera.h"
-#include "cMesh.h"
 #include "QuadTree.h"
 
 #include "glew/include/glew.h"
@@ -163,50 +162,4 @@ void ModuleScene::ResetScene()
 	root->AddComponent(new cTransform(root));
 	App->editor->selected = nullptr;
 
-}
-
-RayCastHit ModuleScene::RayCast(const float3 & position, const float3 & direction)
-{
-	LineSegment ray(position , position+direction*500);
-	std::map<float, GameObject*> gameObjectsOrdered;
-
-	{
-		std::vector<GameObject*> posibleColisions = quad.GetRoot().Collide(ray);
-		//COMPROVAR TOTS ELS DINAMICS
-
-
-		for (auto itGO : posibleColisions)
-		{
-			float3 distance = position - itGO->aabbBox.CenterPoint();
-			float distance1 = distance.LengthSq();
-			gameObjectsOrdered.insert(std::pair<float, GameObject*>(distance1, itGO));
-		}
-	}
-
-	RayCastHit ret;
-
-	for (auto itGO : gameObjectsOrdered)
-	{
-		cMesh* mesh = ((cMesh*)itGO.second->FindComponent(MESH));
-		for (int i = 0; i <= mesh->numIndex ; i += 3)
-		{
-			Triangle triangle(mesh->vertex[mesh->index[i]], mesh->vertex[mesh->index[i + 1]], mesh->vertex[mesh->index[i + 2]]);
-			if (triangle.Intersects(ray))
-			{
-				float3 distanceTri = position - triangle.CenterPoint();
-				if (ret.distance > distanceTri.Length() || ret.distance==0)
-				{
-					ret.distance = distanceTri.Length();
-					ret.gameObject = itGO.second;
-					ret.position = triangle.CenterPoint();
-					ret.normal = triangle.NormalCCW();
-				}
-			}
-		}
-		if (ret.gameObject != nullptr)
-		{
-			break;
-		}
-	}
-	return ret;
 }

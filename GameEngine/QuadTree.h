@@ -28,9 +28,6 @@ public:
 	void AddGameObject(GameObject* gameObject);
 	void DeleteGameObjects();
 
-	template <typename Col>
-	std::vector<GameObject*> Collide(const Col colision);
-
 
 private:
 	void AddGameObjectToChild(GameObject* gameObject);
@@ -50,38 +47,10 @@ public:
 	void RecalculateQuad(GameObject* rootScene);
 
 	bool draw = true;
-
-	QuadNode GetRoot();
 private:
 	QuadNode root;
 };
-
-
-template <typename Col>
-inline std::vector<GameObject*> QuadNode::Collide(const Col colision)
-{
-	std::vector<GameObject*> ret;
-
-	if (quadBox.Intersects(colision) || quadBox.Contains(colision))
-	{
-		for (auto itGameObjects : gameObjects)
-		{
-			if (colision.Intersects(itGameObjects->aabbBox))
-			{
-				ret.push_back(itGameObjects);
-			}
-		}
-		for (auto itSons : sons)
-		{
-			itSons->Collide(colision);
-		}
-	}
-
-	return ret;
-}
 #endif // !__QUADTREE__
-
-//OBJECTES DINAMIS I ESTATICS, ELS DINAMICS NO S'AFEGEIXEN A L'ARBRE
 
 //AFEGIR OBJECTE
 //RETORNAR COLISIONS
@@ -89,4 +58,3 @@ inline std::vector<GameObject*> QuadNode::Collide(const Col colision)
 //OBJECTE FORA QUADTREE
 //MOC UN OBJECTE
 //BORRAR UN OBJECTE
-

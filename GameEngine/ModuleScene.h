@@ -11,14 +11,6 @@ class GameObject;
 //class myQuadTree;
 //class Importer;
 
-struct RayCastHit
-{
-	GameObject* gameObject = nullptr;
-	float3 position = float3::zero;
-	float3 normal = float3::zero;
-	float distance = 0.f;
-};
-
 class ModuleScene : public Module
 {
 public:
@@ -37,7 +29,6 @@ public:
 	GameObject* CreateGameObject(std::string name = "GameObject", bool active = true, GameObject* parent = nullptr);
 	void CreateFbx(char* path);
 	void ResetScene();
-	RayCastHit RayCast(const float3& position, const float3& direction);
 
 	myQuadTree quad;
 
