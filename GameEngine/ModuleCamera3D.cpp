@@ -54,7 +54,8 @@ update_status ModuleCamera3D::Update(float dt)
 {
 	cameraDistance = { -20.0f, 10.0f, -20.0f };
 
-	if (camera){
+	if (camera)
+	{
 		vec3 newPos(0, 0, 0);
 		float speed = 3.0f * dt;
 		if (App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
