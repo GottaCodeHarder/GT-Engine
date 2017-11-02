@@ -67,9 +67,13 @@ void cCamera::DrawUI()
 
 void cCamera::FrustumCulling(GameObject* gameObject)
 {
-	for (auto sonsGO : gameObject->sons)
+	std::vector<GameObject*> gameObjectColisions = App->scene->quad.GetRoot().Collide<Frustum>(frustum);
+	
+	for (auto itGameObjects : gameObjectColisions)
 	{
-		FrustumCulling(sonsGO);
+		itGameObjects->insideFrustum = true; //FER UN PRE UPDATE I POSAR TOTS ELS COMPONENTS A FALS
 	}
-	gameObject->insideFrustum = frustum.Contains(gameObject->aabbBox);
+	//QUAN HI HAGI GAME OBJECTS DINAMICS COMPROBARLOS TAMBE
+	//SI ES ESTATIC NO ES POT MOURE
+
 }
