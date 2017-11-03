@@ -108,7 +108,11 @@ update_status ModuleScene::Update(float dt)
 	if (rayCast)
 	{
 		const cCamera* cameraTMP = App->camera->GetDefaultCamera();
-		RayCastHit goSelected = RayCast(((cTransform*)cameraTMP->gameObject->FindComponent(TRANSFORM))->positionLocal, cameraTMP->frustum.UnProject(App->input->GetMouseX(), App->input->GetMouseY()).dir.Normalized());
+		float2 pointNearPlane = cameraTMP->frustum.ScreenToViewportSpace(App->input->GetMouseX(), App->input->GetMouseY(), SCREEN_WIDTH, SCREEN_HEIGHT);
+		float3 dir = cameraTMP->frustum.UnProject(pointNearPlane).dir;
+		float3 dir1 = cameraTMP->frustum.UnProjectFromNearPlane(pointNearPlane.x, pointNearPlane.y).dir;
+
+		RayCastHit goSelected = RayCast(((cTransform*)cameraTMP->gameObject->FindComponent(TRANSFORM))->positionLocal, dir1);
 		App->editor->selected = goSelected.gameObject;
 		rayCast = false;
 	}

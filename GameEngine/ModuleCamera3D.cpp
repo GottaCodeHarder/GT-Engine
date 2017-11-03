@@ -17,9 +17,9 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 	GameObject* tmp = App->scene->CreateGameObject("DefaultCamera");
 	defaultCamera = new cCamera(tmp);
 	tmp->AddComponent(defaultCamera);
-	defaultCamera->frustum.SetViewPlaneDistances(1, 100);
+	defaultCamera->frustum.SetViewPlaneDistances(2, 100);
 	defaultCamera->frustum.SetWorldMatrix(((cTransform*)defaultCamera->gameObject->FindComponent(TRANSFORM))->GetGlobalMatrixTransf().Float3x4Part());
-	defaultCamera->frustum.SetPerspective(1, 1);
+	defaultCamera->frustum.SetPerspective(2, 1.5);
 	defaultCamera->frustum.ComputeViewProjMatrix();
 
 
@@ -119,7 +119,7 @@ update_status ModuleCamera3D::Update(float dt)
 		}
 
 
-		//((cTransform*)defaultCamera->gameObject->FindComponent(TRANSFORM))->positionLocal += newPos;
+		((cTransform*)defaultCamera->gameObject->FindComponent(TRANSFORM))->positionLocal += newPos;
 		Position += newPos;
 		Reference += newPos;
 
