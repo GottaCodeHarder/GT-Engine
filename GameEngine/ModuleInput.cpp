@@ -3,6 +3,7 @@
 #include "ModuleInput.h"
 #include "ModuleWindow.h"
 #include "ModuleRenderer3D.h"
+#include "ModuleScene.h"
 #include "ImGui/imgui_impl_sdl_gl3.h"
 
 #define MAX_KEYS 300
@@ -87,6 +88,11 @@ update_status ModuleInput::PreUpdate(float dt)
 		}
 	}
 
+	if (GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN && !ImGui::IsMouseHoveringAnyWindow())
+	{
+		App->scene->rayCast = true;
+	}
+
 	mouseXMotion = mouseYMotion = 0;
 	bool quit = false;
 	static SDL_Event e;
@@ -112,7 +118,7 @@ update_status ModuleInput::PreUpdate(float dt)
 				mouseYMotion = e.motion.yrel / SCREEN_SIZE;
 				break;
 			}
-		
+
 			case SDL_DROPFILE:
 			{
 				file_path = e.drop.file; //BE ES LA RUTA

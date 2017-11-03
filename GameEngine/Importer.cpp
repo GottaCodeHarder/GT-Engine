@@ -96,7 +96,11 @@ GameObject* Importer::LoadFbx(const char * path)
 					}
 					if (mesh->vertex.size() == 0)
 					{
-						//mesh->vertex.data() = mesh->vertex._Myfirst;
+						for (int j = 0; j < scene->mMeshes[i]->mNumVertices; j++)
+						{
+							mesh->vertex.push_back(float3(scene->mMeshes[i]->mVertices[j].x, scene->mMeshes[i]->mVertices[j].y, scene->mMeshes[i]->mVertices[j].z));
+
+						}
 					}
 
 					if (scene->mMeshes[i]->HasNormals())
@@ -137,12 +141,12 @@ GameObject* Importer::LoadFbx(const char * path)
 						else
 						{
 							memcpy(&index[j * 3], scene->mMeshes[i]->mFaces[j].mIndices, sizeof(uint) * 3);
-							//unsigned int * it = scene->mMeshes[i]->mFaces[j].mIndices;
-							//mesh->index.push_back(*it);
-							//it++;
-							//mesh->index.push_back(*it);
-							//it++;
-							//mesh->index.push_back(*it);
+							unsigned int * it = scene->mMeshes[i]->mFaces[j].mIndices;
+							mesh->index.push_back(*it);
+							it++;
+							mesh->index.push_back(*it);
+							it++;
+							mesh->index.push_back(*it);
 						}
 					}
 

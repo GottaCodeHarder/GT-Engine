@@ -84,7 +84,7 @@ void cCamera::DesactivateCameraAttached(GameObject * GO)
 	for (auto sonsGO : GO->sons)
 	{
 		cCamera* cameraTMP = ((cCamera*)sonsGO->FindComponent(CAMERA));
-		if (cameraTMP->cameraAttached)
+		if (cameraTMP != nullptr && cameraTMP->cameraAttached)
 		{
 			cameraTMP->cameraAttached = false;
 		}

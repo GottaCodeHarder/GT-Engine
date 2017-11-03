@@ -105,6 +105,14 @@ update_status ModuleScene::Update(float dt)
 		App->input->has_dropped = false;
 	}
 
+	if (rayCast)
+	{
+		const cCamera* cameraTMP = App->camera->GetDefaultCamera();
+		RayCastHit goSelected = RayCast(((cTransform*)cameraTMP->gameObject->FindComponent(TRANSFORM))->positionLocal, cameraTMP->frustum.UnProject(App->input->GetMouseX(), App->input->GetMouseY()).dir.Normalized());
+		App->editor->selected = goSelected.gameObject;
+		rayCast = false;
+	}
+
 	quad.Draw();
 	return UPDATE_CONTINUE;
 }
@@ -142,10 +150,13 @@ void ModuleScene::CreateFbx(char* path)
 	App->camera->referenceDone = true;
 	if (tmp != nullptr)
 	{
+		cTransform* cameraTmp = ((cTransform*)App->camera->GetDefaultCamera()->gameObject->FindComponent(TRANSFORM));
+
 		fbxMaxBoxes.push_back(importer.maxBox);
 		App->camera->Position.x = importer.maxBox.maxPoint.x * 2;
 		App->camera->Position.y = importer.maxBox.maxPoint.y * 2;
 		App->camera->Position.z = importer.maxBox.maxPoint.z * 2;
+		cameraTmp->positionLocal = { App->camera->Position.x, App->camera->Position.y, App->camera->Position.z };
 		App->camera->LookAt(vec(importer.maxBox.CenterPoint().x, importer.maxBox.CenterPoint().y, importer.maxBox.CenterPoint().z));
 		tmp = nullptr;
 		delete tmp;
@@ -174,13 +185,16 @@ RayCastHit ModuleScene::RayCast(const float3 & position, const float3 & directio
 	{
 		std::vector<GameObject*> posibleColisions = quad.GetRoot().Collide(ray);
 		//COMPROVAR TOTS ELS DINAMICS
-
+		GetDynamicGO(root, posibleColisions);
 
 		for (auto itGO : posibleColisions)
 		{
-			float3 distance = position - itGO->aabbBox.CenterPoint();
-			float distance1 = distance.LengthSq();
-			gameObjectsOrdered.insert(std::pair<float, GameObject*>(distance1, itGO));
+			if (itGO->FindComponent(MESH) != nullptr)
+			{
+				float3 distance = position - itGO->aabbBox.CenterPoint();
+				float distance1 = distance.LengthSq();
+				gameObjectsOrdered.insert(std::pair<float, GameObject*>(distance1, itGO));
+			}
 		}
 	}
 
@@ -189,7 +203,7 @@ RayCastHit ModuleScene::RayCast(const float3 & position, const float3 & directio
 	for (auto itGO : gameObjectsOrdered)
 	{
 		cMesh* mesh = ((cMesh*)itGO.second->FindComponent(MESH));
-		for (int i = 0; i <= mesh->numIndex ; i += 3)
+		for (int i = 0; i <= mesh->numIndex-3 ; i += 3)
 		{
 			Triangle triangle(mesh->vertex[mesh->index[i]], mesh->vertex[mesh->index[i + 1]], mesh->vertex[mesh->index[i + 2]]);
 			if (triangle.Intersects(ray))
@@ -210,4 +224,19 @@ RayCastHit ModuleScene::RayCast(const float3 & position, const float3 & directio
 		}
 	}
 	return ret;
+}
+
+std::vector<GameObject*> ModuleScene::GetDynamicGO(const GameObject * GO, std::vector<GameObject*>& posibleCol)
+{
+
+	for (auto dynamicObj : GO->sons)
+	{
+		if (!dynamicObj->statiC)
+		{
+			posibleCol.push_back(dynamicObj);
+		}
+		GetDynamicGO(dynamicObj,posibleCol);
+	}
+
+	return posibleCol;
 }

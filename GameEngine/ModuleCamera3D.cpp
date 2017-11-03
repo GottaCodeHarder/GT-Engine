@@ -20,6 +20,7 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 	defaultCamera->frustum.SetViewPlaneDistances(1, 100);
 	defaultCamera->frustum.SetWorldMatrix(((cTransform*)defaultCamera->gameObject->FindComponent(TRANSFORM))->GetGlobalMatrixTransf().Float3x4Part());
 	defaultCamera->frustum.SetPerspective(1, 1);
+	defaultCamera->frustum.ComputeViewProjMatrix();
 
 
 	((cTransform*)defaultCamera->gameObject->FindComponent(TRANSFORM))->positionLocal = { 0.f,0.f,5.f };
@@ -101,14 +102,16 @@ update_status ModuleCamera3D::Update(float dt)
 						Position.y = App->editor->selected->aabbBox.maxPoint.y * 2;
 						Position.z = App->editor->selected->aabbBox.maxPoint.z * 2;
 						LookAt(vec(App->editor->selected->aabbBox.CenterPoint().x, App->editor->selected->aabbBox.CenterPoint().y, App->editor->selected->aabbBox.CenterPoint().z));
-
 					}
 					else if (((cTransform*)App->editor->selected->FindComponent(TRANSFORM)) != nullptr)
 					{
-						Position.x = ((cTransform*)App->editor->selected->FindComponent(TRANSFORM))->GetGlobalPos().x + 2;
-						Position.y = ((cTransform*)App->editor->selected->FindComponent(TRANSFORM))->GetGlobalPos().y + 2;
-						Position.z = ((cTransform*)App->editor->selected->FindComponent(TRANSFORM))->GetGlobalPos().z + 2;
-						LookAt(vec(((cTransform*)App->editor->selected->FindComponent(TRANSFORM))->GetGlobalPos().x, ((cTransform*)App->editor->selected->FindComponent(TRANSFORM))->GetGlobalPos().y, ((cTransform*)App->editor->selected->FindComponent(TRANSFORM))->GetGlobalPos().z));
+						cTransform* tmp = ((cTransform*)App->editor->selected->FindComponent(TRANSFORM));
+						cTransform* cameraTmp = ((cTransform*)defaultCamera->gameObject->FindComponent(TRANSFORM));
+						Position.x = tmp->GetGlobalPos().x + 2;
+						Position.y = tmp->GetGlobalPos().y + 2;
+						Position.z = tmp->GetGlobalPos().z + 2;
+						cameraTmp->positionLocal = { Position.x, Position.y, Position.z };
+						LookAt(vec(tmp->GetGlobalPos().x, tmp->GetGlobalPos().y, tmp->GetGlobalPos().z));
 
 					}
 				}
@@ -116,7 +119,7 @@ update_status ModuleCamera3D::Update(float dt)
 		}
 
 
-		((cTransform*)defaultCamera->gameObject->FindComponent(TRANSFORM))->positionLocal += newPos;
+		//((cTransform*)defaultCamera->gameObject->FindComponent(TRANSFORM))->positionLocal += newPos;
 		Position += newPos;
 		Reference += newPos;
 
@@ -287,6 +290,6 @@ void ModuleCamera3D::CalculateViewMatrix()
 {
 	ViewMatrix = float4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -X.Dot(Position), -Y.Dot(Position), -Z.Dot(Position), 1.0f);
 	ViewMatrixInverse = ViewMatrix.Inverted();
-	defaultCamera->frustum.front = ViewMatrixInverse.Row3(2);
-	defaultCamera->frustum.up = ViewMatrixInverse.Row3(1);
+	defaultCamera->frustum.front = -ViewMatrix.Transposed().Row3(2);
+	defaultCamera->frustum.up = ViewMatrix.Transposed().Row3(1);
 }
