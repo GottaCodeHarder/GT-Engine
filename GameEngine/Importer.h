@@ -37,8 +37,10 @@ public:
 
 	ImVec2 imageDimensions;
 
-	GameObject* LoadFbx(const char* path);
+	GameObject* LegacyLoadFbx(const char* path);
 	AABB maxBox;
+
+	bool GTSave(GameObject *toSave);
 
 private:
 	bool bDevilInit = false;
