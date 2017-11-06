@@ -30,6 +30,9 @@ public:
 	void Save(JSON_Object *go) const;
 	void Load(const JSON_Object *go);
 
+	// Returns the length of the buffer
+	uint Serialize(char* buffer);
+
 	void Enable();
 	void Disable();
 
@@ -45,6 +48,16 @@ public:
 	bool isInsideQuad = false;
 
 private:
+
+
+template <typename var>
+void Cpy(var toCopy, char*& it)
+{
+	uint bytes = szieof(var);
+	memcpy(it, &toCopy, bytes);
+	it += bytes;
+}
+// How to declare for uint: Cpy<uint>(sons.size(), it);
 
 };
 

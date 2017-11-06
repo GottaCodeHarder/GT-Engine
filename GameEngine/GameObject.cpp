@@ -243,12 +243,61 @@ void GameObject::Save(JSON_Object *go) const
 		//it.second->Save();
 	}
 
+	for (auto child : sons)
+	{
+		//child->Save();
+	}
+
 	json_object_set_value(go, "Components", value);
 }
 
 void GameObject::Load(const JSON_Object * go)
 {
 
+}
+
+uint GameObject::Serialize(char * buf)
+{
+	uint length = 0;
+	length += sizeof(uint); // Size of Name Length variable
+ 	length += name.length(); // Size of the Name String
+	length += sizeof(uint); // Size of Components
+	length += sizeof(uint); // Size of Childs
+
+
+	buf = new char[length]; // Actual size of 8
+	char* it = buf;
+
+	memcpy(it, &length, sizeof(uint));
+	it += sizeof(uint);
+
+	memcpy(it, name.data(), name.length());
+	it += name.length();
+
+	// Saving Components
+	uint size = components.size();
+	memcpy(it, &size, sizeof(uint));
+	it += sizeof(uint);
+
+	// Saving Childs
+	size = sons.size();
+	memcpy(it, &size, sizeof(uint));
+	it += sizeof(uint);
+
+	for (auto it : components)
+	{
+		//it.first
+		//it.second
+	}
+
+	for (std::vector<GameObject*>::iterator child = sons.begin(); child != sons.end(); child++)
+	{
+		uint childLength = (*child)->Serialize(it);
+		length += childLength;
+		it += childLength;
+	}
+
+	return length;
 }
 
 void GameObject::Enable()

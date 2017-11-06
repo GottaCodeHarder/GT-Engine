@@ -9,6 +9,7 @@
 #include "GameObject.h"
 #include "Application.h"
 #include "ModuleScene.h"
+#include "ModuleFileSystem.h"
 #include <queue>
 
 #pragma comment (lib, "Devil/libx86/DevIL.lib")
@@ -259,20 +260,12 @@ GameObject* Importer::LegacyLoadFbx(const char * path)
 	else
 		MYLOG("Error loading scene %s", path);
 
-
-	return ret;
-}
-
-bool Importer::GTSave(GameObject * toSave)
-{
-	bool ret = false;
-
-	if (toSave->FindComponent(componentType::MESH) != NULL)
-	{
-		
-	}
-
-	return ret;
+	char* buffer;
+	uint len = ret->Serialize(buffer);
+	App->fileSystem->Save("FileName", buffer, len);
+	delete[] buffer;
+	
+	return ret; // tmp
 }
 
 GLuint Importer::LoadImageFile(const char* theFileName, cMaterial* material)

@@ -40,8 +40,6 @@ public:
 	GameObject* LegacyLoadFbx(const char* path);
 	AABB maxBox;
 
-	bool GTSave(GameObject *toSave);
-
 private:
 	bool bDevilInit = false;
 	bool bCalcRet = false;
