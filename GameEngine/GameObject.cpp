@@ -7,6 +7,7 @@
 #include "cMesh.h"
 #include "cCamera.h"
 #include "MathGeoLib/MathGeoLib.h"
+#include "JSON/parson.h"
 
 #include "glew/include/glew.h"
 #include "SDL/include/SDL_opengl.h"
@@ -227,6 +228,27 @@ bool GameObject::SonHasMesh()
 void GameObject::AddComponent(Component* addComponent)
 {
 	components.insert(std::pair<componentType, Component*>(addComponent->type, addComponent));
+}
+
+void GameObject::Save(JSON_Object *go) const
+{
+	json_object_set_string(go, "Name", name.data());
+	json_object_set_boolean(go, "Active", active);
+
+	JSON_Value* value = json_value_init_array();
+	JSON_Array* compArray = json_value_get_array(value);
+
+	for (auto it : components)
+	{
+		//it.second->Save();
+	}
+
+	json_object_set_value(go, "Components", value);
+}
+
+void GameObject::Load(const JSON_Object * go)
+{
+
 }
 
 void GameObject::Enable()

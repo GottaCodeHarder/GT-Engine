@@ -2,6 +2,7 @@
 #define __Component__
 
 #include "Globals.h"
+#include "JSON/parson.h"
 
 enum componentType
 {
@@ -31,6 +32,9 @@ public:
 	virtual void Disable() {};
 
 	virtual void DrawUI() {};
+
+	virtual void Save(JSON_Object &object) const {};
+	virtual void Load(const JSON_Object &object) {};
 
 	componentType type;
 	bool active = true;

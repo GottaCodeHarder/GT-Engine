@@ -27,10 +27,13 @@ public:
 
 	void AddComponent(Component*);
 
+	void Save(JSON_Object *go) const;
+	void Load(const JSON_Object *go);
+
 	void Enable();
 	void Disable();
 
-std::string name;
+	std::string name;
 	GameObject* parent;
 	std::vector<GameObject*> sons;
 	bool active = true;
