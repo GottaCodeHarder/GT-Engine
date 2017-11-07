@@ -16,6 +16,7 @@ public:
 
 	void PreUpdate();
 	void Update();
+	void IsPlaying(float dt);
 	Component* FindComponent(componentType);
 
 	void DrawUI();

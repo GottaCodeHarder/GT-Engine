@@ -205,7 +205,6 @@ update_status ModuleEditor::Update(float dt)
 		}
 	}
 
-
 	return UPDATE_CONTINUE;
 }
 
@@ -542,7 +541,7 @@ void ModuleEditor::PlayPause()
 	if (setPlay)
 	{
 		ImGui::SetNextWindowPos(ImVec2(App->window->screenSurface->w/2 - sizeX/2, 20));
-		ImGui::SetNextWindowSize(ImVec2(sizeX, 50.f));
+		ImGui::SetNextWindowSize(ImVec2(sizeX, 70.f));
 		setPlay = false;
 	}
 
@@ -552,18 +551,23 @@ void ModuleEditor::PlayPause()
 	{
 		if (ImGui::Button("Play"))
 		{
-	
+			App->isPlaying = true;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Pause"))
 		{
-	
+			App->GetGameTimer().Stop();
+			App->GetGameTimer().Read();
+			App->isPlaying = false;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Restart"))
 		{
-	
+			App->isPlaying = false;
+			App->SetGameDt(0.f);
+			App->GetGameTimer().Chronometer(true, 0);
 		}
+		ImGui::Text("Time: %f", App->GetGameDt());
 	}
 	ImGui::End();
 }
