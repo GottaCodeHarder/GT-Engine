@@ -76,6 +76,8 @@ bool Application::Init()
 	App->window->SetTitle(name.c_str());
 
 	msTimer.Start();
+	msTimerGame.Start();
+	dtGame = 0.f;
 	return ret;
 }
 
@@ -96,6 +98,20 @@ void Application::PrepareUpdate()
 {
 	dt = (float)msTimer.Read() / 1000.0f;
 	msTimer.Start();
+
+	//Game Timer
+	if (isPlaying)
+	{
+		float dt = GetGameDt();
+		Timer timer = msTimerGame;
+		//timer.Start();
+		SetGameDt((float)msTimerGame.Read() / 1000.0f);
+		GetGameTimer().Start();
+	}
+	else
+	{
+		GetGameTimer().Stop();
+	}
 }
 
 // ---------------------------------------------
@@ -146,6 +162,21 @@ bool Application::CleanUp()
 	}
 
 	return ret;
+}
+
+void Application::SetGameDt(float dtGameNew)
+{
+	dtGame = dtGameNew;
+}
+
+const float Application::GetGameDt()
+{
+	return dtGame;
+}
+
+Timer Application::GetGameTimer()
+{
+	return msTimerGame;
 }
 
 void Application::RequestBrowser(std::string link)

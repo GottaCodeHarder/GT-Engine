@@ -49,6 +49,7 @@ bool ModuleEditor::Start()
 	window_menu.insert(std::pair<std::string, bool>("Console", true));
 	window_menu.insert(std::pair<std::string, bool>("Heriarchy", true));
 	window_menu.insert(std::pair<std::string, bool>("Properties", true));
+	window_menu.insert(std::pair<std::string, bool>("Play/Pause", true));
 
 	//Insert Menu About
 	help_menu.insert(std::pair<std::string, bool>("About", false));
@@ -160,8 +161,11 @@ update_status ModuleEditor::Update(float dt)
 	}
 	if (window_menu["Console"])
 	{
-		ImGui::SetNextWindowPos(ImVec2(0, 738));
 		Console();
+	}
+	if (window_menu["Play/Pause"])
+	{
+		PlayPause();
 	}
 
 	//Show Help Menu
@@ -200,7 +204,6 @@ update_status ModuleEditor::Update(float dt)
 			it->second = false;
 		}
 	}
-
 
 	return UPDATE_CONTINUE;
 }
@@ -442,11 +445,20 @@ void ModuleEditor::MenuHelp()
 	}
 }
 
+
+//METHODS
 void ModuleEditor::Console()
 {
-	(ImGui::Begin("Console", 0, ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoResize));
+	if (setConsole)
 	{
+		ImGui::SetNextWindowPos(ImVec2(0, 738));
 		ImGui::SetWindowSize(ImVec2(1230.0f, 220.0f));
+		setConsole = false;
+	}
+
+	(ImGui::Begin("Console", 0, ImGuiWindowFlags_NoFocusOnAppearing));
+	{
+
 		ImGui::Text(console_buffer.c_str());		
 	}
 
@@ -457,10 +469,14 @@ void ModuleEditor::Configuration()
 {
 	sizeX = 370.f;
 
-	ImGui::SetNextWindowSize(ImVec2(sizeX, App->window->screenSurface->h - 560.f));
-	ImGui::SetNextWindowPos(ImVec2(App->window->screenSurface->w - sizeX, 558.f));
-	ImGuiWindowFlags flag = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_AlwaysAutoResize;
+	if (setConfig)
+	{
+		ImGui::SetNextWindowPos(ImVec2(App->window->screenSurface->w - sizeX, 558.f));
+		ImGui::SetNextWindowSize(ImVec2(sizeX, App->window->screenSurface->h - 560.f));
+		setConfig = false;
+	}
+
+	ImGuiWindowFlags flag = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_ShowBorders;
 	ImGui::Begin("Configuration", 0, ImVec2(500, 1000), 0.8f, flag);
 	{
 		App->AddImGui();
@@ -473,10 +489,14 @@ void ModuleEditor::Heriarchy()
 {
 	sizeX = 370.f;
 
-	ImGui::SetNextWindowSize(ImVec2(sizeX, App->window->screenSurface->h - 243.f));
-	ImGui::SetNextWindowPos(ImVec2(0, 20));
-	ImGuiWindowFlags flag = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_AlwaysAutoResize;
+	if (setHeriarchy)
+	{
+		ImGui::SetNextWindowPos(ImVec2(0, 20));
+		ImGui::SetNextWindowSize(ImVec2(sizeX, App->window->screenSurface->h - 243.f));
+		setHeriarchy = false;
+	}
+
+	ImGuiWindowFlags flag = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_ShowBorders;
 	ImGui::Begin("Heriarchy", 0, ImVec2(500, 1000), 0.8f, flag);
 	{
 		App->scene->AddHeriarchyGui();
@@ -488,11 +508,14 @@ void ModuleEditor::Heriarchy()
 void ModuleEditor::Properties()
 {
 	sizeX = 370.f;
+	if (setProperties)
+	{
+		ImGui::SetNextWindowPos(ImVec2(App->window->screenSurface->w - sizeX, 20));
+		ImGui::SetNextWindowSize(ImVec2(sizeX, App->window->screenSurface->h - 423.f));
+		setProperties = false;
+	}
 
-	ImGui::SetNextWindowSize(ImVec2(sizeX, App->window->screenSurface->h - 423.f));
-	ImGui::SetNextWindowPos(ImVec2(App->window->screenSurface->w - sizeX, 20));
-	ImGuiWindowFlags flag = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_AlwaysAutoResize;
+	ImGuiWindowFlags flag = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_ShowBorders;
 	ImGui::Begin("Properties", 0, ImVec2(500, 1000), 0.8f, flag);
 	{
 		if (selected == nullptr)
@@ -508,6 +531,44 @@ void ModuleEditor::Properties()
 		}
 	}
 
+	ImGui::End();
+}
+
+void ModuleEditor::PlayPause()
+{
+	sizeX = 170.f;
+
+	if (setPlay)
+	{
+		ImGui::SetNextWindowPos(ImVec2(App->window->screenSurface->w/2 - sizeX/2, 20));
+		ImGui::SetNextWindowSize(ImVec2(sizeX, 70.f));
+		setPlay = false;
+	}
+
+
+	ImGuiWindowFlags flag = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_ShowBorders;
+	ImGui::Begin("Play/Pause", 0, ImVec2(500, 1000), 0.8f, flag);
+	{
+		if (ImGui::Button("Play"))
+		{
+			App->isPlaying = true;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Pause"))
+		{
+			App->GetGameTimer().Stop();
+			App->GetGameTimer().Read();
+			App->isPlaying = false;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Restart"))
+		{
+			App->isPlaying = false;
+			App->SetGameDt(0.f);
+			App->GetGameTimer().Chronometer(true, 0);
+		}
+		ImGui::Text("Time: %f", App->GetGameDt());
+	}
 	ImGui::End();
 }
 
@@ -747,6 +808,8 @@ void ModuleEditor::HelpAbout()
 
 	ImGui::End();
 }
+
+
 
 void ModuleEditor::AddTextConsole(char* text)
 {

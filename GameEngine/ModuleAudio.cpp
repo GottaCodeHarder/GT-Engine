@@ -40,7 +40,7 @@ bool ModuleAudio::Init()
 		MYLOG("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
 		ret = false;
 	}
-
+	soundtime.Start();
 	return ret;
 }
 

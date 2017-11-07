@@ -91,7 +91,18 @@ void GameObject::Update()
 		}
 
 		glPopMatrix();
+
+		if (App->isPlaying)
+		{
+			IsPlaying(App->GetGameDt());
+		}
+
+
 	}
+}
+
+void GameObject::IsPlaying(float dt)
+{
 }
 
 Component * GameObject::FindComponent(componentType type)

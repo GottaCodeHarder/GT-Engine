@@ -8,7 +8,7 @@
 // ---------------------------------------------
 Timer::Timer()
 {
-	Start();
+	//Start();
 }
 
 // ---------------------------------------------
@@ -52,6 +52,14 @@ bool Timer::SoundsTimer()
 		return true;
 	}
 	return false;
+}
+
+void Timer::ResetTimer()
+{
+	startedAt = 0.f;
+	stoppedAt = 0.f;
+	timeStartMinutes = 0.f;
+	timeStartMinutes = 0.f;
 }
 
 Uint32 Timer::Chronometer(bool set, int pos)

@@ -4,6 +4,9 @@
 #include <gl/GLU.h>
 #include "GameObject.h"
 #include "cMesh.h"
+#include "ImGuizmo.h"
+#include "Application.h"
+#include "ModuleInput.h"
 
 
 #include "cTransform.h"
@@ -91,49 +94,68 @@ void cTransform::DrawUI()
 			ImGui::TreePop();
 		}
 		ImGui::Spacing();
-		if(!gameObject->statiC)
+		if (gameObject->name != "DefaultCamera")
 		{
-			if (ImGui::TreeNodeEx("Modify Local Position"))
+			if (!gameObject->statiC)
 			{
-				if (ImGui::DragFloat("x", &positionLocal.x, 0.5f))
+				if (ImGui::TreeNodeEx("Modify Local Position"))
 				{
-					transformChange = true;
+					if (ImGui::DragFloat("x", &positionLocal.x, 0.5f))
+					{
+						transformChange = true;
+					}
+					if (ImGui::DragFloat("y", &positionLocal.y, 0.5f)) { transformChange = true; }
+					if (ImGui::DragFloat("z", &positionLocal.z, 0.5f)) { transformChange = true; }
+
+					ImGui::TreePop();
 				}
-				if (ImGui::DragFloat("y", &positionLocal.y, 0.5f)) { transformChange = true; }
-				if (ImGui::DragFloat("z", &positionLocal.z, 0.5f)) { transformChange = true; }
-		
-				ImGui::TreePop();
-			}
-			if (ImGui::TreeNodeEx("Modify Local Scale"))
-			{
-				if (ImGui::DragFloat("x", &scaleLocal.x, 0.5f)) { transformChange = true; }
-				if (ImGui::DragFloat("y", &scaleLocal.y, 0.5f)) { transformChange = true; }
-				if (ImGui::DragFloat("z", &scaleLocal.z, 0.5f)) { transformChange = true; }
-				ImGui::TreePop();
-			}
-			if (ImGui::TreeNodeEx("Modify Local Rotation"))
-			{
-				float x = 0.f;
-				if (ImGui::DragFloat("x", &x, 0.00005f))
+				if (ImGui::TreeNodeEx("Modify Local Scale"))
 				{
-					rotationLocal = rotationLocal * Quat::RotateX(x);
-					transformChange = true;
+					if (ImGui::DragFloat("x", &scaleLocal.x, 0.5f)) { transformChange = true; }
+					if (ImGui::DragFloat("y", &scaleLocal.y, 0.5f)) { transformChange = true; }
+					if (ImGui::DragFloat("z", &scaleLocal.z, 0.5f)) { transformChange = true; }
+					ImGui::TreePop();
 				}
-				float y = 0.f;
-				if (ImGui::DragFloat("y", &y, 0.00005f))
+				if (ImGui::TreeNodeEx("Modify Local Rotation"))
 				{
-					rotationLocal = rotationLocal * Quat::RotateY(y);
-					transformChange = true;
+					float x = 0.f;
+					if (ImGui::DragFloat("x", &x, 0.00005f))
+					{
+						rotationLocal = rotationLocal * Quat::RotateX(x);
+						transformChange = true;
+					}
+					float y = 0.f;
+					if (ImGui::DragFloat("y", &y, 0.00005f))
+					{
+						rotationLocal = rotationLocal * Quat::RotateY(y);
+						transformChange = true;
+					}
+					float z = 0.f;
+					if (ImGui::DragFloat("z", &z, 0.00005f))
+					{
+						rotationLocal = rotationLocal * Quat::RotateZ(z);
+						transformChange = true;
+					}
+					ImGui::TreePop();
 				}
-				float z = 0.f;
-				if (ImGui::DragFloat("z", &z, 0.00005f))
-				{
-					rotationLocal = rotationLocal * Quat::RotateZ(z);
-					transformChange = true;
-				}
-				ImGui::TreePop();
 			}
 		}
+
 	}
+
+
+	//GUIZMO
+	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
+	static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
+	if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN)
+		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+	if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
+		mCurrentGizmoOperation = ImGuizmo::SCALE;
+	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
+		mCurrentGizmoOperation = ImGuizmo::ROTATE;
+
+	ImGuiIO& io = ImGui::GetIO();
+	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+
 }
 

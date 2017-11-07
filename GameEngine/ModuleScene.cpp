@@ -9,7 +9,6 @@
 #include "cTransform.h"
 #include "cCamera.h"
 #include "cMesh.h"
-#include "QuadTree.h"
 
 #include "glew/include/glew.h"
 #include "SDL/include/SDL_opengl.h"
@@ -69,7 +68,6 @@ bool ModuleScene::CleanUp()
 
 update_status ModuleScene::PreUpdate(float dt)
 {
-
 	return UPDATE_CONTINUE;
 }
 

@@ -33,7 +33,9 @@ public:
 private:
 
 	Timer	msTimer;
+	Timer	msTimerGame;
 	float	dt;
+	float	dtGame;
 	std::vector<Module*> modulesList;
 
 public:
@@ -45,11 +47,15 @@ public:
 	void AddImGui();
 	update_status Update();
 	bool CleanUp();
+	void SetGameDt(float dtGameNew);
+	const float GetGameDt();
+	Timer GetGameTimer();
 
 	std::string name;
 	std::string organization;
 
 	void RequestBrowser(std::string link);
+	bool isPlaying = false;
 
 private:
 
@@ -60,6 +66,8 @@ private:
 	uint  frameCount = 0;
 	Timer startUp;
 	float capFramerate = 60.0f;
+
+
 
 	void LoadConfiguration();
 	void SaveConfiguration();
