@@ -68,6 +68,7 @@ private:
 	void ToolRandom();
 	void ViewGeometry();
 	void HelpAbout();
+	void PlayPause();
 
 	void SetStyle(Style style);
 	void InitStyles();
@@ -86,5 +87,12 @@ private:
 	float millisec = 0.0f;
 	float fps = 60.0f;
 	bool bFreeze = false;
+
+	bool setProperties = true;
+	bool setHeriarchy = true;
+	bool setConsole = true;
+	bool setConfig = true;
+	bool setPlay = true;
+
 };
 #endif 

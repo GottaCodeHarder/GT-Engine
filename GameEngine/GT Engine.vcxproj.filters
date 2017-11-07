@@ -492,6 +492,9 @@
     <ClInclude Include="QuadTree.h">
       <Filter>Sources\Tools</Filter>
     </ClInclude>
+    <ClInclude Include="ImGuizmo.h">
+      <Filter>Sources\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleAudio.cpp">
@@ -699,6 +702,9 @@
       <Filter>Sources\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="QuadTree.cpp">
+      <Filter>Sources\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuizmo.cpp">
       <Filter>Sources\Tools</Filter>
     </ClCompile>
   </ItemGroup>
