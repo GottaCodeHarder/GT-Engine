@@ -295,10 +295,11 @@ uint GameObject::Serialize(char * buf)
 	memcpy(it, &size, sizeof(uint));
 	it += sizeof(uint);
 
-	for (auto it : components)
+	for (auto i : components)
 	{
-		//it.first
-		//it.second
+		uint compLength = i.second->Serialize(it);
+		length += compLength;
+		it += compLength;
 	}
 
 	for (std::vector<GameObject*>::iterator child = sons.begin(); child != sons.end(); child++)

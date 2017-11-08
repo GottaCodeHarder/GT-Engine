@@ -260,8 +260,8 @@ GameObject* Importer::LegacyLoadFbx(const char * path)
 	else
 		MYLOG("Error loading scene %s", path);
 
-	//char* buffer;
-	//uint len = ret->Serialize(buffer);
+	char* buffer = "";
+	uint len = ret->Serialize(buffer);
 	//App->fileSystem->Save("FileName", buffer, len);
 	//delete[] buffer;
 	
