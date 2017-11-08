@@ -106,6 +106,8 @@ update_status ModuleScene::Update(float dt)
 	}
 	static float3 point1;
 	static float3 point2;
+	static float3 destination;
+	static float3 position;
 		if (!ImGuizmo::IsOver())
 	{
 		if (rayCast)
@@ -117,12 +119,15 @@ update_status ModuleScene::Update(float dt)
 			point1 = ((cTransform*)cameraTMP->gameObject->FindComponent(TRANSFORM))->GetGlobalPos();
 			point2 = point1 + dir * 1000;
 			RayCastHit goSelected = RayCast(((cTransform*)cameraTMP->gameObject->FindComponent(TRANSFORM))->GetGlobalPos(), dir);
+			position = goSelected.position;
+			destination = goSelected.position + goSelected.normal * 3;
 
 			App->editor->selected = goSelected.gameObject;
-
 		}
 	}			
-		App->renderer3D->debugDraw->drawLine(btVector3(point1.x, point1.y, point1.z), btVector3(point2.x, point2.y, point2.z), btVector3(0, 0.7f, 0));
+		
+	App->renderer3D->debugDraw->drawLine(btVector3(position.x, position.y, position.z), btVector3(destination.x, destination.y,destination.z) , btVector3(0.7f, 0.f, 0.f));
+	App->renderer3D->debugDraw->drawLine(btVector3(point1.x, point1.y, point1.z), btVector3(point2.x, point2.y, point2.z), btVector3(0, 0.7f, 0));
 	rayCast = false;
 
 	quad.Draw();
@@ -192,6 +197,7 @@ void ModuleScene::ResetScene()
 RayCastHit ModuleScene::RayCast(const float3 & position, const float3 & direction)
 {
 	LineSegment ray(position , position+direction*500);
+	LineSegment rayTrans;
 	std::map<float, GameObject*> gameObjectsOrdered;
 
 	{
@@ -215,14 +221,17 @@ RayCastHit ModuleScene::RayCast(const float3 & position, const float3 & directio
 	for (auto itGO : gameObjectsOrdered)
 	{
 		cMesh* mesh = ((cMesh*)itGO.second->FindComponent(MESH));
+		rayTrans = ray;
+		rayTrans.Transform(((cTransform*)itGO.second->FindComponent(TRANSFORM))->GetGlobalMatrixTransf().Inverted());
 		for (int i = 0; i <= mesh->numIndex-3 ; i += 3)
 		{
 			Triangle triangle(mesh->vertex[mesh->index[i]], mesh->vertex[mesh->index[i + 1]], mesh->vertex[mesh->index[i + 2]]);
-			if (triangle.Intersects(ray))
+			if (triangle.Intersects(rayTrans))
 			{
-				float3 distanceTri = position - triangle.CenterPoint();
+				float3 distanceTri = rayTrans.a - triangle.CenterPoint();
 				if (ret.distance > distanceTri.Length() || ret.distance==0)
 				{
+					triangle.Transform(((cTransform*)itGO.second->FindComponent(TRANSFORM))->GetGlobalMatrixTransf());
 					ret.distance = distanceTri.Length();
 					ret.gameObject = itGO.second;
 					ret.position = triangle.CenterPoint();
