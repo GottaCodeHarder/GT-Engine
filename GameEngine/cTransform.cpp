@@ -7,6 +7,9 @@
 #include "ImGuizmo.h"
 #include "Application.h"
 #include "ModuleInput.h"
+#include "ModuleCamera3D.h"
+#include "ModuleRenderer3D.h"
+#include "ModuleEditor.h"
 
 
 #include "cTransform.h"
@@ -31,8 +34,7 @@ const float3 cTransform::GetGlobalPos()
 			return positionLocal + transformParent->GetGlobalPos();
 		}
 	}
-	//rotationLocal = rotationLocal * Quat::RotateX(1.0f);
-	return float3(0.f, 0.f, 0.f);
+	return positionLocal;
 }
 
 const float3 cTransform::GetGlobalScale()
@@ -42,11 +44,12 @@ const float3 cTransform::GetGlobalScale()
 		cTransform* transformParent = (cTransform*)gameObject->parent->FindComponent(TRANSFORM);
 		if (transformParent != nullptr)
 		{
-			return scaleLocal + transformParent->GetGlobalScale();
+			float3 parentScale = transformParent->GetGlobalScale();
+			return float3(scaleLocal.x * parentScale.x , scaleLocal.y * parentScale.y , scaleLocal.z * parentScale.z);
 		}
 	}
-	//rotationLocal = rotationLocal * Quat::RotateX(1.0f);
-	return float3(0.f,0.f,0.f);
+
+	return scaleLocal;
 }
 
 const Quat cTransform::GetGlobalRoatation()
@@ -56,10 +59,9 @@ const Quat cTransform::GetGlobalRoatation()
 		cTransform* transformParent = (cTransform*)gameObject->parent->FindComponent(TRANSFORM);
 		if (transformParent != nullptr)
 		{
-			//return rotationLocal + transformParent->GetRoatation();
+			return rotationLocal * transformParent->GetGlobalRoatation();
 		}
 	}
-	//rotationLocal = rotationLocal * Quat::RotateX(1.0f);
 	return rotationLocal;
 }
 
@@ -71,6 +73,55 @@ const float4x4 cTransform::GetLocalMatrixTransf()
 const float4x4 cTransform::GetGlobalMatrixTransf()
 {
 	return float4x4::FromTRS(GetGlobalPos(), GetGlobalRoatation(), scaleLocal);
+}
+
+void cTransform::SetGlobalTransform(float4x4 matrix)
+{
+	float3 pos;
+	float3 scale;
+	Quat rot;
+	matrix.Decompose(pos, rot, scale);
+	SetGlobalPos(pos);
+	SetGlobalRot(rot);
+	SetGlobalScale(scale);
+}
+
+void cTransform::SetGlobalPos(float3 globalPos)
+{
+	if (gameObject->parent != nullptr)
+	{
+		positionLocal = globalPos - ((cTransform*)gameObject->parent->FindComponent(TRANSFORM))->GetGlobalPos();
+	}
+	else
+	{
+		positionLocal = globalPos;
+	}
+}
+
+void cTransform::SetGlobalScale(float3 globalScale)
+{
+	if (gameObject->parent != nullptr)
+	{
+		float3 parentScale = ((cTransform*)gameObject->parent->FindComponent(TRANSFORM))->GetGlobalScale();
+		scaleLocal = float3(globalScale.x / parentScale.x, globalScale.y / parentScale.y, globalScale.z / parentScale.z);
+	}
+	else
+	{
+		scaleLocal = globalScale;
+	}
+}
+
+void cTransform::SetGlobalRot(Quat globalRot)
+{
+	if (gameObject->parent != nullptr)
+	{
+		math::Quat parentRot = ((cTransform*)gameObject->parent->FindComponent(TRANSFORM))->GetGlobalRoatation();
+		rotationLocal = globalRot / parentRot;
+	}
+	else
+	{
+		rotationLocal = globalRot;
+	}
 }
 
 void cTransform::DrawUI()
@@ -88,9 +139,12 @@ void cTransform::DrawUI()
 		ImGui::Spacing();
 		if (ImGui::TreeNodeEx("Global Information", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			ImGui::Text("Position: %f, %f, %f", GetGlobalPos().x, GetGlobalPos().y, GetGlobalPos().z);
-			ImGui::Text("Scale: %f, %f, %f", scaleLocal.x, scaleLocal.y, scaleLocal.z);
-			ImGui::Text("Rotation: %f, %f, %f, %f ", rotationLocal.x, rotationLocal.y, rotationLocal.z, rotationLocal.w);
+			float3 globalPos = GetGlobalPos();
+			float3 globalScale = GetGlobalScale();
+			Quat globalRot = GetGlobalRoatation();
+			ImGui::Text("Position: %f, %f, %f", globalPos.x, globalPos.y, globalPos.z);
+			ImGui::Text("Scale: %f, %f, %f", globalScale.x, globalScale.y, globalScale.z);
+			ImGui::Text("Rotation: %f, %f, %f, %f ", globalRot.x, globalRot.y, globalRot.z, globalRot.w);
 			ImGui::TreePop();
 		}
 		ImGui::Spacing();
@@ -145,17 +199,26 @@ void cTransform::DrawUI()
 
 
 	//GUIZMO
-	static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
-	static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
-	if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN)
-		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
-	if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
-		mCurrentGizmoOperation = ImGuizmo::SCALE;
-	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
-		mCurrentGizmoOperation = ImGuizmo::ROTATE;
+	if (App->editor->selected == gameObject)
+	{
+		static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
+		static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
+		if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN)
+			mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+		if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
+			mCurrentGizmoOperation = ImGuizmo::SCALE;
+		if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
+			mCurrentGizmoOperation = ImGuizmo::ROTATE;
 
-	ImGuiIO& io = ImGui::GetIO();
-	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-
+		if (ImGuizmo::IsUsing())
+		{
+			transformChange = true;
+		}
+		ImGuiIO& io = ImGui::GetIO();
+		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+		float4x4 matrix = GetGlobalMatrixTransf().Transposed();
+		ImGuizmo::Manipulate(App->camera->GetViewMatrixFloat(), App->renderer3D->projectionMatrix.M, mCurrentGizmoOperation, mCurrentGizmoMode, matrix.ptr(), NULL);
+		SetGlobalTransform(matrix.Transposed());
+	}
 }
 

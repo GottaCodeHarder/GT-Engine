@@ -49,7 +49,7 @@ public:
 	bool CleanUp();
 	void SetGameDt(float dtGameNew);
 	const float GetGameDt();
-	Timer GetGameTimer();
+	Timer* GetGameTimer();
 
 	std::string name;
 	std::string organization;

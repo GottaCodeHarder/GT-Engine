@@ -9,6 +9,7 @@
 #include "SDL/include/SDL_opengl.h"
 #include <gl/GL.h>
 #include <gl/GLU.h>
+#include "ImGuizmo.h"
 
 #include "GameObject.h"
 #include "Random.h"
@@ -65,6 +66,15 @@ bool ModuleEditor::Start()
 
 }
 
+update_status ModuleEditor::PreUpdate(float dt)
+{
+	ImGui_ImplSdlGL3_NewFrame(App->window->GetWindow());
+	ImGuizmo::BeginFrame();
+	return UPDATE_CONTINUE;
+}
+
+
+
 // Load assets
 bool ModuleEditor::CleanUp()
 {
@@ -79,7 +89,7 @@ bool ModuleEditor::CleanUp()
 update_status ModuleEditor::Update(float dt)
 {
 
-	ImGui_ImplSdlGL3_NewFrame(App->window->GetWindow());
+
 	
 	SDL_Event sdlEvent;
 	SDL_PollEvent(&sdlEvent);
@@ -552,12 +562,13 @@ void ModuleEditor::PlayPause()
 		if (ImGui::Button("Play"))
 		{
 			App->isPlaying = true;
+			App->GetGameTimer()->Start();
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Pause"))
 		{
-			App->GetGameTimer().Stop();
-			App->GetGameTimer().Read();
+			App->GetGameTimer()->Stop();
+			//App->GetGameTimer().Read();
 			App->isPlaying = false;
 		}
 		ImGui::SameLine();
@@ -565,7 +576,7 @@ void ModuleEditor::PlayPause()
 		{
 			App->isPlaying = false;
 			App->SetGameDt(0.f);
-			App->GetGameTimer().Chronometer(true, 0);
+			//App->GetGameTimer().Chronometer(true, 0);
 		}
 		ImGui::Text("Time: %f", App->GetGameDt());
 	}

@@ -32,8 +32,8 @@ private:
 	bool drawFrustum = true;
 	bool activeCamera = true;
 
-	float horizontalFOV = 2;
+	float horizontalFOV = 1;
 	float verticalFOV = 1;
-	float nearPlane = 1;
-	float farPlane = 100;
+	float nearPlane = 0.5;
+	float farPlane = 200;
 };

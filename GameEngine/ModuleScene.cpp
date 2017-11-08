@@ -4,11 +4,13 @@
 #include "ModuleInput.h"
 #include "ModuleEditor.h"
 #include "ModuleScene.h"
+#include "ModuleRenderer3D.h"
 #include "GameObject.h"
 //#include "Importer.h"
 #include "cTransform.h"
 #include "cCamera.h"
 #include "cMesh.h"
+#include "ImGuizmo.h"
 
 #include "glew/include/glew.h"
 #include "SDL/include/SDL_opengl.h"
@@ -102,18 +104,26 @@ update_status ModuleScene::Update(float dt)
 
 		App->input->has_dropped = false;
 	}
-
-	if (rayCast)
+	static float3 point1;
+	static float3 point2;
+		if (!ImGuizmo::IsOver())
 	{
-		const cCamera* cameraTMP = App->camera->GetDefaultCamera();
-		float2 pointNearPlane = cameraTMP->frustum.ScreenToViewportSpace(App->input->GetMouseX(), App->input->GetMouseY(), SCREEN_WIDTH, SCREEN_HEIGHT);
-		float3 dir = cameraTMP->frustum.UnProject(pointNearPlane).dir;
-		float3 dir1 = cameraTMP->frustum.UnProjectFromNearPlane(pointNearPlane.x, pointNearPlane.y).dir;
+		if (rayCast)
+		{
+			const cCamera* cameraTMP = App->camera->GetDefaultCamera();
+			float2 pointNearPlane = cameraTMP->frustum.ScreenToViewportSpace(App->input->GetMouseX(), App->input->GetMouseY(), SCREEN_WIDTH, SCREEN_HEIGHT);
+			float3 dir = cameraTMP->frustum.UnProject(pointNearPlane).dir;
+			float3 dir1 = cameraTMP->frustum.UnProjectFromNearPlane(pointNearPlane.x, pointNearPlane.y).dir;
+			point1 = ((cTransform*)cameraTMP->gameObject->FindComponent(TRANSFORM))->GetGlobalPos();
+			point2 = point1 + dir * 1000;
+			RayCastHit goSelected = RayCast(((cTransform*)cameraTMP->gameObject->FindComponent(TRANSFORM))->GetGlobalPos(), dir);
 
-		RayCastHit goSelected = RayCast(((cTransform*)cameraTMP->gameObject->FindComponent(TRANSFORM))->positionLocal, dir1);
-		App->editor->selected = goSelected.gameObject;
-		rayCast = false;
-	}
+			App->editor->selected = goSelected.gameObject;
+
+		}
+	}			
+		App->renderer3D->debugDraw->drawLine(btVector3(point1.x, point1.y, point1.z), btVector3(point2.x, point2.y, point2.z), btVector3(0, 0.7f, 0));
+	rayCast = false;
 
 	quad.Draw();
 	return UPDATE_CONTINUE;

@@ -10,6 +10,7 @@
 #include "cMesh.h"
 #include "cMaterial.h"
 #include "cTransform.h"
+#include "cCamera.h"
 
 
 #include "glew/include/glew.h"
@@ -152,7 +153,8 @@ bool ModuleRenderer3D::Init()
 update_status ModuleRenderer3D::PreUpdate(float dt)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	
+	OnResize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -350,7 +352,10 @@ void ModuleRenderer3D::OnResize(int width, int height)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	projectionMatrix = perspective(60.0f, (float)width / (float)height, 0.125f, 512.0f);
+	for (int i = 0; i < 16; i++)
+	{
+		App->renderer3D->projectionMatrix.M[i] = App->camera->GetDefaultCamera()->frustum.ProjectionMatrix().Transposed().ptr()[i];
+	}
 	glLoadMatrixf(&projectionMatrix);
 
 	glMatrixMode(GL_MODELVIEW);

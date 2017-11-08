@@ -16,10 +16,12 @@ cCamera::cCamera(GameObject* _gameObject) : Component(CAMERA, _gameObject)
 {
 	transform = new cTransform(_gameObject);
 
+	verticalFOV = horizontalFOV * SCREEN_HEIGHT/ SCREEN_WIDTH ;
+
 	frustum.SetViewPlaneDistances(nearPlane, farPlane);
 	frustum.SetWorldMatrix(((cTransform*)gameObject->FindComponent(TRANSFORM))->GetGlobalMatrixTransf().Float3x4Part());
 	frustum.SetPerspective(horizontalFOV,verticalFOV);
-
+	frustum.SetKind(math::FrustumProjectiveSpace::FrustumSpaceGL, math::FrustumHandedness::FrustumRightHanded);
 }
 
 cCamera::~cCamera()
@@ -34,6 +36,8 @@ void cCamera::RealUpdate()
 
 	frustum.SetPerspective(horizontalFOV, verticalFOV);
 	frustum.SetViewPlaneDistances(nearPlane, farPlane);
+	frustum.ComputeProjectionMatrix();
+	frustum.ComputeViewMatrix();
 
 	if (transformFrustum)
 	{

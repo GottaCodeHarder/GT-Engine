@@ -76,7 +76,7 @@ bool Application::Init()
 	App->window->SetTitle(name.c_str());
 
 	msTimer.Start();
-	msTimerGame.Start();
+	//msTimerGame.Start();
 	dtGame = 0.f;
 	return ret;
 }
@@ -102,15 +102,13 @@ void Application::PrepareUpdate()
 	//Game Timer
 	if (isPlaying)
 	{
-		float dt = GetGameDt();
 		Timer timer = msTimerGame;
 		//timer.Start();
 		SetGameDt((float)msTimerGame.Read() / 1000.0f);
-		GetGameTimer().Start();
 	}
 	else
 	{
-		GetGameTimer().Stop();
+		GetGameTimer()->Stop();
 	}
 }
 
@@ -174,9 +172,9 @@ const float Application::GetGameDt()
 	return dtGame;
 }
 
-Timer Application::GetGameTimer()
+Timer* Application::GetGameTimer()
 {
-	return msTimerGame;
+	return &msTimerGame;
 }
 
 void Application::RequestBrowser(std::string link)

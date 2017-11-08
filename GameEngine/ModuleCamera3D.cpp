@@ -5,6 +5,7 @@
 #include "ModuleInput.h"
 #include "ModuleEditor.h"
 #include "ModuleScene.h"
+#include "ModuleRenderer3D.h"
 #include "GameObject.h"
 #include "cMesh.h"
 #include "cCamera.h"
@@ -17,9 +18,7 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 	GameObject* tmp = App->scene->CreateGameObject("DefaultCamera");
 	defaultCamera = new cCamera(tmp);
 	tmp->AddComponent(defaultCamera);
-	defaultCamera->frustum.SetViewPlaneDistances(2, 100);
 	defaultCamera->frustum.SetWorldMatrix(((cTransform*)defaultCamera->gameObject->FindComponent(TRANSFORM))->GetGlobalMatrixTransf().Float3x4Part());
-	defaultCamera->frustum.SetPerspective(2, 1.5);
 	defaultCamera->frustum.ComputeViewProjMatrix();
 
 
@@ -217,6 +216,12 @@ update_status ModuleCamera3D::Update(float dt)
 
 	// Recalculate matrix -------------
 	CalculateViewMatrix();
+
+	for (int i = 0; i < 16; i++)
+	{
+		App->renderer3D->projectionMatrix.M[i] = defaultCamera->frustum.ProjectionMatrix().ptr()[i];
+	}
+
 
 	return UPDATE_CONTINUE;
 }

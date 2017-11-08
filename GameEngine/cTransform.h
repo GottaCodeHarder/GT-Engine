@@ -19,6 +19,10 @@ public:
 	const Quat GetGlobalRoatation();
 	const float4x4 GetLocalMatrixTransf();
 	const float4x4 GetGlobalMatrixTransf();
+	void SetGlobalTransform(float4x4 matrix);
+	void SetGlobalPos(float3 globalPos);
+	void SetGlobalScale(float3 globalScale);
+	void SetGlobalRot(Quat globalRot);
 
 	void RealUpdate()
 	{
