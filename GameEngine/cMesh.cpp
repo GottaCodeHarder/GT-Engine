@@ -75,3 +75,46 @@ void cMesh::DrawAABB(AABB aabbBox)
 	App->renderer3D->debugDraw->drawLine(btVector3(aabbBox.maxPoint.x, aabbBox.maxPoint.y, aabbBox.minPoint.z), btVector3(aabbBox.maxPoint.x, aabbBox.minPoint.y, aabbBox.minPoint.z), btVector3(0, 0.7f, 0));
 }
 
+uint cMesh::Serialize(char * buffer)
+{
+	uint length = 0;
+	length += sizeof(int);
+	length += sizeof(uint);
+	length += normals.size() * sizeof(float3);
+	length += sizeof(uint);
+	length += vertex.size() * sizeof(float3);
+	length += sizeof(uint);
+	length += index.size() * sizeof(uint);
+
+	buffer = new char[length];
+	char* it = buffer;
+
+	memcpy(it, &length, sizeof(uint));
+	it += sizeof(uint);
+	
+	memcpy(it, &type, sizeof(uint));
+	it += sizeof(uint);
+
+	int size = normals.size();
+	memcpy(it, &size, sizeof(uint));
+	it += sizeof(uint);
+
+	memcpy(it, normals.data(), sizeof(float3) * normals.size());
+	it += normals.size() * sizeof(float3);
+
+	size = vertex.size();
+	memcpy(it, &size, sizeof(uint));
+	it += sizeof(uint);
+
+	memcpy(it, vertex.data(), sizeof(float3) * vertex.size());
+	it += vertex.size() * sizeof(float3);
+
+	size = index.size();
+	memcpy(it, &size, sizeof(uint));
+	it += sizeof(uint);
+
+	memcpy(it, index.data(), sizeof(uint) * index.size());
+	it += index.size() * sizeof(uint);
+
+	return uint();
+}

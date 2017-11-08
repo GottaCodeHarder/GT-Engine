@@ -268,12 +268,11 @@ void GameObject::Load(const JSON_Object * go)
 
 uint GameObject::Serialize(char * buf)
 {
-	uint length = 0;
+	uint length = 0; // Size of the GameObject
 	length += sizeof(uint); // Size of Name Length variable
  	length += name.length(); // Size of the Name String
 	length += sizeof(uint); // Size of Components
 	length += sizeof(uint); // Size of Childs
-
 
 	buf = new char[length]; // Actual size of 8
 	char* it = buf;
@@ -281,11 +280,15 @@ uint GameObject::Serialize(char * buf)
 	memcpy(it, &length, sizeof(uint));
 	it += sizeof(uint);
 
+	uint size = name.length();
+	memcpy(it, &size, sizeof(uint));
+	it += sizeof(uint);
+
 	memcpy(it, name.data(), name.length());
 	it += name.length();
 
 	// Saving Components
-	uint size = components.size();
+	size = components.size();
 	memcpy(it, &size, sizeof(uint));
 	it += sizeof(uint);
 
