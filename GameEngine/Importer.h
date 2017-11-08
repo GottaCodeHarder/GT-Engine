@@ -19,6 +19,7 @@
 class GameObject;
 class cMaterial;
 class ResourceMesh;
+class ResourceTexture;
 
 enum FileExtensions
 {
@@ -34,12 +35,14 @@ public:
 
 	FileExtensions GetExtension(const char* path);
 	bool FileExists(const std::string& name);
-	GLuint LoadImageFile(const char* file, cMaterial* material);
+	GLuint LoadImageFile(const char* file);
+	GLuint LoadImageFile(const char* file , cMaterial* material);
 
 	ImVec2 imageDimensions;
 
 	GameObject* LegacyLoadFbx(const char* path);
 	ResourceMesh* LoadMesh(const aiScene* scene , int meshIndex);
+	ResourceTexture* LoadTexture(const aiScene* scene , int textIndex , const char* path , cMaterial* material);
 	AABB maxBox;
 
 private:

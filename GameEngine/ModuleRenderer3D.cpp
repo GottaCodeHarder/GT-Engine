@@ -9,6 +9,7 @@
 #include "GameObject.h"
 #include "cMesh.h"
 #include "ResourceMesh.h"
+#include "ResourceTexture.h"
 #include "cMaterial.h"
 #include "cTransform.h"
 #include "cCamera.h"
@@ -217,10 +218,10 @@ void ModuleRenderer3D::DrawGameObject(GameObject* go)
 	{
 		return;
 	}
-		if (((material)->buffTexture) > 0)
+		if (((material)->resource->buffTexture) > 0)
 		{
 			glEnableClientState(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, (material)->buffTexture);
+			glBindTexture(GL_TEXTURE_2D, (material)->resource->buffTexture);
 		}
 
 		if (((mesh)->resource->buffVertex) > 0)

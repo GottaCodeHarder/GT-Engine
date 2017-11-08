@@ -1,17 +1,16 @@
 #include "Component.h"
 #include "MathGeoLib/MathGeoLib.h"
 
+class ResourceTexture;
 class GameObject;
+
 class cMaterial : public Component
 {
 public:
 	cMaterial(GameObject* _gameObject);
 	~cMaterial();
 
-	float3 color;
-	uint buffTexture = 0;
-	std::string path;
-	ImVec2 imageDimensions;
+	ResourceTexture* resource;
 
 	void RealUpdate()
 	{

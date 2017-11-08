@@ -1,5 +1,6 @@
 #ifndef __RESOURCES__
 #define __RESOURCES__
+
 #include "Globals.h"
 #include "Component.h"
 

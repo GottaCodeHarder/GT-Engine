@@ -4,12 +4,13 @@
 #include "Devil/include/ilu.h"
 #include "Devil/include/ilut.h"
 #include "cMesh.h"
-#include "ResourceMesh.h"
 #include "cTransform.h"
 #include "cMaterial.h"
 #include "GameObject.h"
 #include "Application.h"
 #include "ModuleResourceManager.h"
+#include "ResourceMesh.h"
+#include "ResourceTexture.h"
 #include "ModuleScene.h"
 #include "ModuleFileSystem.h"
 #include <queue>
@@ -71,6 +72,7 @@ GameObject* Importer::LegacyLoadFbx(const char * path)
 					cTransform* transform = new cTransform(gameObject);
 					cMaterial* material = new cMaterial(gameObject);
 
+					//LOAD MESH
 					mesh->resource = (ResourceMesh*)App->resourceManager->LoadResourceMesh(scene, i , path + gameObject->name);
 
 					float4x4 matrix = transform->GetGlobalMatrixTransf();
@@ -87,45 +89,8 @@ GameObject* Importer::LegacyLoadFbx(const char * path)
 					transform->positionLocal = { vectorPosition.x , vectorPosition.y , vectorPosition.z };
 					transform->rotationLocal = { quaternionTransform.x,quaternionTransform.y, quaternionTransform.z, quaternionTransform.w };
 
-
-					if (scene->HasMaterials())
-					{
-						if (scene->mMaterials[scene->mMeshes[i]->mMaterialIndex]->GetTextureCount(aiTextureType_DIFFUSE) > 0)
-						{
-							aiString texturePath; // Path to the texture, from FBX directory
-							scene->mMaterials[scene->mMeshes[i]->mMaterialIndex]->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &texturePath);
-							std::string texName = texturePath.C_Str();
-							std::string strPath = path;
-							material->path = texturePath.C_Str();
-
-							for (uint i = strlen(path); i >= 0; i--)
-							{
-								if (path[i] == '\\')
-								{
-									strPath.resize(i + 1);
-									strPath += texName;
-									break;
-								}
-							}
-							if (strPath.c_str() != NULL)
-							{
-								if (FileExists(strPath.c_str()))
-								{
-									material->buffTexture = LoadImageFile(strPath.c_str(),material);
-								}
-							}
-							else
-							{
-								MYLOG("ERROR Image not loaded");
-							}
-
-							if (material->buffTexture == -1)
-							{
-								MYLOG("ERROR Creating buffer for Texture");
-							}
-						}
-					}
-
+					//LOAD TEXTURE/MATERIAL
+					material->resource = (ResourceTexture*)App->resourceManager->LoadResourceTexture(scene, i, path, gameObject->name + path , material);
 
 					if (mesh != nullptr)
 					{
@@ -133,7 +98,6 @@ GameObject* Importer::LegacyLoadFbx(const char * path)
 						OBB obb = mesh->resource->aabbBox.Transform(matrix);
 
 						gameObject->aabbBox.Enclose(obb);
-						//SI TE COMPONENT CAMERA CAMBIAR FRUSTUM
 					}
 
 					if (gameObject->statiC)
@@ -283,7 +247,53 @@ ResourceMesh * Importer::LoadMesh(const aiScene* scene , int meshIndex)
 	return ret;
 }
 
-GLuint Importer::LoadImageFile(const char* theFileName, cMaterial* material)
+ResourceTexture * Importer::LoadTexture(const aiScene* scene , int textIndex , const char* path , cMaterial* material)
+{
+	ResourceTexture* ret = new ResourceTexture();
+
+	if (scene->HasMaterials())
+	{
+		if (scene->mMaterials[scene->mMeshes[textIndex]->mMaterialIndex]->GetTextureCount(aiTextureType_DIFFUSE) > 0)
+		{
+			aiString texturePath; // Path to the texture, from FBX directory
+			scene->mMaterials[scene->mMeshes[textIndex]->mMaterialIndex]->GetTexture(aiTextureType::aiTextureType_DIFFUSE, 0, &texturePath);
+			std::string texName = texturePath.C_Str();
+			std::string strPath = path;
+			ret->path = texturePath.C_Str();
+
+			for (uint i = strlen(path); i >= 0; i--)
+			{
+				if (path[i] == '\\')
+				{
+					strPath.resize(i + 1);
+					strPath += texName;
+					break;
+				}
+			}
+			if (strPath.c_str() != NULL)
+			{
+				if (FileExists(strPath.c_str()))
+				{
+					ret->buffTexture = LoadImageFile(strPath.c_str());
+				}
+				else
+				{
+					MYLOG("ERROR Image not loaded");
+				}
+			}
+
+
+			if (ret->buffTexture == -1)
+			{
+				MYLOG("ERROR Creating buffer for Texture");
+			}
+			material->resource->imageDimensions = ImVec2(ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT));
+		}
+	}
+	return ret;
+}
+
+GLuint Importer::LoadImageFile(const char* theFileName)
 {
 	if (!bDevilInit)
 	{
@@ -338,7 +348,78 @@ GLuint Importer::LoadImageFile(const char* theFileName, cMaterial* material)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), 0, GL_RGBA, GL_UNSIGNED_BYTE, ilGetData());
 
-		material->imageDimensions = ImVec2(ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT));
+		//material->resource->imageDimensions = ImVec2(ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT));
+	}
+	else
+	{
+		error = ilGetError();
+		MYLOG("Image loading failed! IL error: %i - %s", error, iluErrorString(error));
+		return -1;
+	}
+
+	//ilDeleteImages(1, &imageID);
+
+	MYLOG("Texture for mesh applied: %s", theFileName);
+
+	return textureID;
+}
+
+GLuint Importer::LoadImageFile(const char * theFileName, cMaterial * material)
+{
+	if (!bDevilInit)
+	{
+		ilInit();
+
+		GLenum err = glewInit();
+		if (GLEW_OK != err)
+		{
+			MYLOG("GLEW initialisation error: %s", glewGetErrorString(err));
+			exit(-1);
+		}
+		MYLOG("GLEW intialised successfully. Current GLEW version: %s", glewGetString(GLEW_VERSION));
+
+		bDevilInit = true;
+	}
+
+	ILuint imageID = 0;
+	GLuint textureID;
+
+	// Safe
+	ILboolean success;
+	ILenum error;
+
+	ilGenImages(1, &imageID);
+	ilBindImage(imageID);
+
+	success = ilLoadImage(theFileName);
+	if (success)
+	{
+		ILinfo ImageInfo;
+		iluGetImageInfo(&ImageInfo);
+		if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
+		{
+			iluFlipImage();
+		}
+
+		success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+
+		if (!success)
+		{
+			error = ilGetError();
+			MYLOG("Image conversion failed! IL error: %i - %s", error, iluErrorString(error));
+			return -1;
+		}
+
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glGenTextures(1, &textureID);
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), 0, GL_RGBA, GL_UNSIGNED_BYTE, ilGetData());
+
+		material->resource->imageDimensions = ImVec2(ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT));
 	}
 	else
 	{

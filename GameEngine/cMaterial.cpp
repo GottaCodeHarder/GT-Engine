@@ -5,17 +5,20 @@
 #include <commdlg.h>
 #include "Application.h"
 #include "ModuleScene.h"
+#include "ResourceTexture.h"
+#include "ModuleResourceManager.h"
 
 #include "cMaterial.h"
+#include "GameObject.h"
 
 cMaterial::cMaterial(GameObject* _gameObject) : Component(MATERIAL, _gameObject)
 {
-	path.assign("No path");
+	resource = new ResourceTexture();
+	resource->path.assign("No path");
 }
 
 cMaterial::~cMaterial()
 {
-	glDeleteBuffers(1, &buffTexture);
 }
 
 void cMaterial::DrawUI()
@@ -31,11 +34,11 @@ void cMaterial::DrawUI()
 			ImVec2 texScreenPos = ImGui::GetCursorScreenPos();
 			float texWidth = 200.f;
 			float texHeight = 200.f;
-			ImTextureID textureID = (ImTextureID)this->buffTexture;
+			ImTextureID textureID = (ImTextureID)resource->buffTexture;
 
 			ImGui::Text("Currently displaying resized texture,");
 			ImGui::Text("hover to zoom");
-			ImGui::Text("Dimensions: %.0fx%.0f", imageDimensions.x, imageDimensions.y);
+			ImGui::Text("Dimensions: %.0fx%.0f", resource->imageDimensions.x, resource->imageDimensions.y);
 			ImGui::Image(textureID, ImVec2(texWidth, texHeight), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 255, 255, 255), ImColor(255, 255, 255, 128));
 
 			if (ImGui::IsItemHovered())
@@ -70,12 +73,11 @@ void cMaterial::LoadTexture()
 	oFileName.lpstrTitle = "Select file to import";
 	if (GetOpenFileName(&oFileName) != 0)
 	{
-		if (buffTexture > 0)
+		if (resource->buffTexture > 0)
 		{
 			//glDeleteBuffers(1, &(*it)->buffTexture);
 		}
-		buffTexture = App->scene->importer.LoadImageFile(fileName, this);
+		resource = (ResourceTexture*)App->resourceManager->LoadResourceTexture(gameObject->name + fileName, this);
 	}
-
 }
 

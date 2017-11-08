@@ -5,6 +5,7 @@
 
 class Application;
 class ResourceMesh;
+class ResourceTexture;
 class Resources;
 
 class ResourceManager : public Module
@@ -21,6 +22,8 @@ public:
 	bool CleanUp();
 
 	ResourceMesh* LoadResourceMesh(const aiScene* scene, int meshIndex , std::string name);
+	ResourceTexture* LoadResourceTexture(const aiScene* scene, int textIndex, std::string path, std::string name , cMaterial* componentMaterial);
+	ResourceTexture* LoadResourceTexture(std::string name , cMaterial* componentMaterial);
 	void UnLoadResource(Resources* resourceUnLoad);
 
 	std::map<std::string , Resources*> resources;
