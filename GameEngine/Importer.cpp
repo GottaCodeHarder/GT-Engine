@@ -4,10 +4,12 @@
 #include "Devil/include/ilu.h"
 #include "Devil/include/ilut.h"
 #include "cMesh.h"
+#include "ResourceMesh.h"
 #include "cTransform.h"
 #include "cMaterial.h"
 #include "GameObject.h"
 #include "Application.h"
+#include "ModuleResourceManager.h"
 #include "ModuleScene.h"
 #include "ModuleFileSystem.h"
 #include <queue>
@@ -68,8 +70,10 @@ GameObject* Importer::LegacyLoadFbx(const char * path)
 					cMesh* mesh = new cMesh(gameObject);
 					cTransform* transform = new cTransform(gameObject);
 					cMaterial* material = new cMaterial(gameObject);
-					mesh->vertex.reserve(scene->mMeshes[i]->mNumVertices);
-					memcpy(mesh->vertex.data(), scene->mMeshes[i]->mVertices, sizeof(float3)*scene->mMeshes[i]->mNumVertices);
+
+					mesh->resource = (ResourceMesh*)App->resourceManager->LoadResourceMesh(scene, i , path + gameObject->name);
+
+					float4x4 matrix = transform->GetGlobalMatrixTransf();
 					gameObject->AddComponent(mesh);
 					gameObject->AddComponent(transform);
 					gameObject->AddComponent(material);
@@ -83,93 +87,6 @@ GameObject* Importer::LegacyLoadFbx(const char * path)
 					transform->positionLocal = { vectorPosition.x , vectorPosition.y , vectorPosition.z };
 					transform->rotationLocal = { quaternionTransform.x,quaternionTransform.y, quaternionTransform.z, quaternionTransform.w };
 
-					if (mesh->vertex.empty() != false)
-					{
-						glGenBuffers(1, (GLuint*) &(mesh->buffVertex));
-						glBindBuffer(GL_ARRAY_BUFFER, mesh->buffVertex);
-						glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * scene->mMeshes[i]->mNumVertices, mesh->vertex.data(), GL_STATIC_DRAW);
-
-						MYLOG("Importer - Loading %i vertex succesful!", scene->mMeshes[i]->mNumVertices);
-					}
-					else
-					{
-						MYLOG("WARNING, the scene has 0 vertex!");
-					}
-					if (mesh->vertex.size() == 0)
-					{
-						for (int j = 0; j < scene->mMeshes[i]->mNumVertices; j++)
-						{
-							mesh->vertex.push_back(float3(scene->mMeshes[i]->mVertices[j].x, scene->mMeshes[i]->mVertices[j].y, scene->mMeshes[i]->mVertices[j].z));
-
-						}
-					}
-
-					if (scene->mMeshes[i]->HasNormals())
-					{
-						mesh->normals.reserve(scene->mMeshes[i]->mNumVertices);
-						memcpy(mesh->normals.data(), scene->mMeshes[i]->mNormals, sizeof(float3)*scene->mMeshes[i]->mNumVertices);
-						glGenBuffers(1, (GLuint*) &(mesh->buffNormals));
-						glBindBuffer(GL_ARRAY_BUFFER, mesh->buffNormals);
-						glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * scene->mMeshes[i]->mNumVertices, mesh->normals.data(), GL_STATIC_DRAW);
-					}
-
-					if (scene->mMeshes[i]->HasTextureCoords(0))
-					{
-						float* uv = new float[scene->mMeshes[i]->mNumVertices * 2]; //BE
-						//memcpy(uv, scene->mMeshes[i]->mTextureCoords, sizeof(float)*scene->mMeshes[i]->mNumVertices);
-						for (int j = 0; j < scene->mMeshes[i]->mNumVertices; ++j)
-						{
-							uv[j * 2] = scene->mMeshes[i]->mTextureCoords[0][j].x;
-							uv[j * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][j].y;
-						}
-
-						glGenBuffers(1, (GLuint*) &(mesh->buffUv));
-						glBindBuffer(GL_ARRAY_BUFFER, mesh->buffUv);
-						glBufferData(GL_ARRAY_BUFFER, sizeof(float) * scene->mMeshes[i]->mNumVertices * 2, uv, GL_STATIC_DRAW);
-					}
-
-					mesh->index.reserve(scene->mMeshes[i]->mNumFaces * 3);
-
-
-					uint* index = new uint[scene->mMeshes[i]->mNumFaces * 3];
-					mesh->numIndex = scene->mMeshes[i]->mNumFaces * 3;
-					for (uint j = 0; j < scene->mMeshes[i]->mNumFaces; j++)
-					{
-						if (scene->mMeshes[i]->mFaces[j].mNumIndices != 3)
-						{
-							MYLOG("WARNING, geometry face with != 3 indices!");
-						}
-						else
-						{
-							memcpy(&index[j * 3], scene->mMeshes[i]->mFaces[j].mIndices, sizeof(uint) * 3);
-							unsigned int * it = scene->mMeshes[i]->mFaces[j].mIndices;
-							mesh->index.push_back(*it);
-							it++;
-							mesh->index.push_back(*it);
-							it++;
-							mesh->index.push_back(*it);
-						}
-					}
-
-					glGenBuffers(1, (GLuint*) &(mesh->buffIndex));
-					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->buffIndex);
-					glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * scene->mMeshes[i]->mNumFaces * 3, index, GL_STATIC_DRAW);
-					MYLOG("Importer - Loading %i index succesful!", (uint)scene->mMeshes[i]->mNumFaces * 3);
-
-					mesh->aabbBox.SetNegativeInfinity();
-					mesh->aabbBox.Enclose(mesh->vertex.data(), scene->mMeshes[i]->mNumVertices);
-					mesh->numVertex = scene->mMeshes[i]->mNumVertices;
-					meshesBoxes.push_back(mesh->aabbBox);
-
-					float4x4 matrix = transform->GetGlobalMatrixTransf();
-					if (mesh != nullptr)
-					{
-						gameObject->aabbBox.SetNegativeInfinity();
-						OBB obb = mesh->aabbBox.Transform(matrix);
-
-						gameObject->aabbBox.Enclose(obb);
-						//SI TE COMPONENT CAMERA CAMBIAR FRUSTUM
-					}
 
 					if (scene->HasMaterials())
 					{
@@ -207,6 +124,16 @@ GameObject* Importer::LegacyLoadFbx(const char * path)
 								MYLOG("ERROR Creating buffer for Texture");
 							}
 						}
+					}
+
+
+					if (mesh != nullptr)
+					{
+						gameObject->aabbBox.SetNegativeInfinity();
+						OBB obb = mesh->resource->aabbBox.Transform(matrix);
+
+						gameObject->aabbBox.Enclose(obb);
+						//SI TE COMPONENT CAMERA CAMBIAR FRUSTUM
 					}
 
 					if (gameObject->statiC)
@@ -266,6 +193,94 @@ GameObject* Importer::LegacyLoadFbx(const char * path)
 	//delete[] buffer;
 	
 	return ret; // tmp
+}
+
+ResourceMesh * Importer::LoadMesh(const aiScene* scene , int meshIndex)
+{
+	ResourceMesh* ret = new ResourceMesh();
+	int i = meshIndex;
+	ret->vertex.reserve(scene->mMeshes[i]->mNumVertices);
+	memcpy(ret->vertex.data(), scene->mMeshes[i]->mVertices, sizeof(float3)*scene->mMeshes[i]->mNumVertices);
+
+	if (ret->vertex.empty() != false)
+	{
+		glGenBuffers(1, (GLuint*) &(ret->buffVertex));
+		glBindBuffer(GL_ARRAY_BUFFER, ret->buffVertex);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * scene->mMeshes[i]->mNumVertices, ret->vertex.data(), GL_STATIC_DRAW);
+
+		MYLOG("Importer - Loading %i vertex succesful!", scene->mMeshes[i]->mNumVertices);
+	}
+	else
+	{
+		MYLOG("WARNING, the scene has 0 vertex!");
+	}
+	if (ret->vertex.size() == 0)
+	{
+		for (int j = 0; j < scene->mMeshes[i]->mNumVertices; j++)
+		{
+			ret->vertex.push_back(float3(scene->mMeshes[i]->mVertices[j].x, scene->mMeshes[i]->mVertices[j].y, scene->mMeshes[i]->mVertices[j].z));
+
+		}
+	}
+
+	if (scene->mMeshes[i]->HasNormals())
+	{
+		ret->normals.reserve(scene->mMeshes[i]->mNumVertices);
+		memcpy(ret->normals.data(), scene->mMeshes[i]->mNormals, sizeof(float3)*scene->mMeshes[i]->mNumVertices);
+		glGenBuffers(1, (GLuint*) &(ret->buffNormals));
+		glBindBuffer(GL_ARRAY_BUFFER, ret->buffNormals);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * scene->mMeshes[i]->mNumVertices, ret->normals.data(), GL_STATIC_DRAW);
+	}
+
+	if (scene->mMeshes[i]->HasTextureCoords(0))
+	{
+		float* uv = new float[scene->mMeshes[i]->mNumVertices * 2]; //BE
+																	//memcpy(uv, scene->mMeshes[i]->mTextureCoords, sizeof(float)*scene->mMeshes[i]->mNumVertices);
+		for (int j = 0; j < scene->mMeshes[i]->mNumVertices; ++j)
+		{
+			uv[j * 2] = scene->mMeshes[i]->mTextureCoords[0][j].x;
+			uv[j * 2 + 1] = scene->mMeshes[i]->mTextureCoords[0][j].y;
+		}
+
+		glGenBuffers(1, (GLuint*) &(ret->buffUv));
+		glBindBuffer(GL_ARRAY_BUFFER, ret->buffUv);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * scene->mMeshes[i]->mNumVertices * 2, uv, GL_STATIC_DRAW);
+	}
+
+	ret->index.reserve(scene->mMeshes[i]->mNumFaces * 3);
+
+
+	uint* index = new uint[scene->mMeshes[i]->mNumFaces * 3];
+	ret->numIndex = scene->mMeshes[i]->mNumFaces * 3;
+	for (uint j = 0; j < scene->mMeshes[i]->mNumFaces; j++)
+	{
+		if (scene->mMeshes[i]->mFaces[j].mNumIndices != 3)
+		{
+			MYLOG("WARNING, geometry face with != 3 indices!");
+		}
+		else
+		{
+			memcpy(&index[j * 3], scene->mMeshes[i]->mFaces[j].mIndices, sizeof(uint) * 3);
+			unsigned int * it = scene->mMeshes[i]->mFaces[j].mIndices;
+			ret->index.push_back(*it);
+			it++;
+			ret->index.push_back(*it);
+			it++;
+			ret->index.push_back(*it);
+		}
+	}
+
+	glGenBuffers(1, (GLuint*) &(ret->buffIndex));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ret->buffIndex);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * scene->mMeshes[i]->mNumFaces * 3, index, GL_STATIC_DRAW);
+	MYLOG("Importer - Loading %i index succesful!", (uint)scene->mMeshes[i]->mNumFaces * 3);
+
+	ret->aabbBox.SetNegativeInfinity();
+	ret->aabbBox.Enclose(ret->vertex.data(), scene->mMeshes[i]->mNumVertices);
+	ret->numVertex = scene->mMeshes[i]->mNumVertices;
+	meshesBoxes.push_back(ret->aabbBox);
+
+	return ret;
 }
 
 GLuint Importer::LoadImageFile(const char* theFileName, cMaterial* material)

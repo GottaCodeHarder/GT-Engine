@@ -64,6 +64,9 @@
     <Filter Include="Sources\GameObjects">
       <UniqueIdentifier>{90d1b4ac-ffce-4a5f-a5b0-fe456f345ad3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Resources">
+      <UniqueIdentifier>{8579a55a-9f4e-4626-9e92-c82d3b295009}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Module.h">
@@ -495,6 +498,18 @@
     <ClInclude Include="ImGuizmo.h">
       <Filter>Sources\Tools</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleResourceManager.h">
+      <Filter>Sources\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceMesh.h">
+      <Filter>Sources\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceTexture.h">
+      <Filter>Sources\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources.h">
+      <Filter>Sources\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleAudio.cpp">
@@ -706,6 +721,9 @@
     </ClCompile>
     <ClCompile Include="ImGuizmo.cpp">
       <Filter>Sources\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleResourceManager.cpp">
+      <Filter>Sources\Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

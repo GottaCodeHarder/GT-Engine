@@ -10,6 +10,7 @@
 #include "cTransform.h"
 #include "cCamera.h"
 #include "cMesh.h"
+#include "ResourceMesh.h"
 #include "ImGuizmo.h"
 
 #include "glew/include/glew.h"
@@ -223,9 +224,9 @@ RayCastHit ModuleScene::RayCast(const float3 & position, const float3 & directio
 		cMesh* mesh = ((cMesh*)itGO.second->FindComponent(MESH));
 		rayTrans = ray;
 		rayTrans.Transform(((cTransform*)itGO.second->FindComponent(TRANSFORM))->GetGlobalMatrixTransf().Inverted());
-		for (int i = 0; i <= mesh->numIndex-3 ; i += 3)
+		for (int i = 0; i <= mesh->resource->numIndex-3 ; i += 3)
 		{
-			Triangle triangle(mesh->vertex[mesh->index[i]], mesh->vertex[mesh->index[i + 1]], mesh->vertex[mesh->index[i + 2]]);
+			Triangle triangle(mesh->resource->vertex[mesh->resource->index[i]], mesh->resource->vertex[mesh->resource->index[i + 1]], mesh->resource->vertex[mesh->resource->index[i + 2]]);
 			if (triangle.Intersects(rayTrans))
 			{
 				float3 distanceTri = rayTrans.a - triangle.CenterPoint();

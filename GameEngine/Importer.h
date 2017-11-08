@@ -18,6 +18,7 @@
 
 class GameObject;
 class cMaterial;
+class ResourceMesh;
 
 enum FileExtensions
 {
@@ -38,6 +39,7 @@ public:
 	ImVec2 imageDimensions;
 
 	GameObject* LegacyLoadFbx(const char* path);
+	ResourceMesh* LoadMesh(const aiScene* scene , int meshIndex);
 	AABB maxBox;
 
 private:

@@ -4,6 +4,7 @@
 #include <gl/GLU.h>
 
 #include "cMesh.h"
+#include "ResourceMesh.h"
 #include "cTransform.h"
 #include "Application.h"
 #include "ModuleRenderer3D.h"
@@ -16,10 +17,7 @@ cMesh::cMesh(GameObject* _gameObject) : Component(MESH, _gameObject)
 
 cMesh::~cMesh()
 {
-	glDeleteBuffers(1, &buffNormals);
-	glDeleteBuffers(1, &buffIndex);
-	glDeleteBuffers(1, &buffVertex);
-	glDeleteBuffers(1, &buffUv);
+
 }
 
 void cMesh::RealUpdate()
@@ -33,8 +31,8 @@ void cMesh::DrawUI()
 	{
 		if (ImGui::TreeNodeEx("Geometry", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			ImGui::Text("Vertex Count: %i", this->numVertex);
-			ImGui::Text("Triangle Count: %i", this->numIndex / 3);
+			ImGui::Text("Vertex Count: %i", resource->numVertex);
+			ImGui::Text("Triangle Count: %i", resource->numIndex / 3);
 			ImGui::TreePop();
 		}
 		ImGui::Spacing();

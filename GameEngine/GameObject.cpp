@@ -5,6 +5,7 @@
 #include "ModuleScene.h"
 #include "cTransform.h"
 #include "cMesh.h"
+#include "ResourceMesh.h"
 #include "cCamera.h"
 #include "MathGeoLib/MathGeoLib.h"
 #include "JSON/parson.h"
@@ -96,8 +97,6 @@ void GameObject::Update()
 		{
 			IsPlaying(App->GetGameDt());
 		}
-
-
 	}
 }
 
@@ -137,7 +136,7 @@ void GameObject::UpdateAABB(float4x4 matrix)
 	if (FindComponent(MESH) != nullptr)
 	{
 		aabbBox.SetNegativeInfinity();
-		OBB obb = ((cMesh*)FindComponent(MESH))->aabbBox.Transform(matrix);
+		OBB obb = ((cMesh*)FindComponent(MESH))->resource->aabbBox.Transform(matrix);
 
 		aabbBox.Enclose(obb);
 	}

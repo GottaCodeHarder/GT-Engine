@@ -15,6 +15,7 @@ class ModuleEditor;
 class ModuleFileSystem;
 class ModuleHardware;
 class ModuleScene;
+class ResourceManager;
 
 class Application
 {
@@ -29,6 +30,7 @@ public:
 	ModuleFileSystem* fileSystem;
 	ModuleHardware* hardware;
 	ModuleScene* scene;
+	ResourceManager * resourceManager;
 
 private:
 

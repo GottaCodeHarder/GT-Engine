@@ -8,6 +8,7 @@
 #include "ModuleScene.h"
 #include "GameObject.h"
 #include "cMesh.h"
+#include "ResourceMesh.h"
 #include "cMaterial.h"
 #include "cTransform.h"
 #include "cCamera.h"
@@ -222,31 +223,31 @@ void ModuleRenderer3D::DrawGameObject(GameObject* go)
 			glBindTexture(GL_TEXTURE_2D, (material)->buffTexture);
 		}
 
-		if (((mesh)->buffVertex) > 0)
+		if (((mesh)->resource->buffVertex) > 0)
 		{
 			glEnableClientState(GL_VERTEX_ARRAY);
-			glBindBuffer(GL_ARRAY_BUFFER, (mesh)->buffVertex);
+			glBindBuffer(GL_ARRAY_BUFFER, (mesh)->resource->buffVertex);
 			glVertexPointer(3, GL_FLOAT, 0, NULL);
 		}
 
-		if (((mesh)->buffNormals) > 0)
+		if (((mesh)->resource->buffNormals) > 0)
 		{
 			glEnableClientState(GL_NORMAL_ARRAY);
-			glBindBuffer(GL_ARRAY_BUFFER, (mesh)->buffNormals);
+			glBindBuffer(GL_ARRAY_BUFFER, (mesh)->resource->buffNormals);
 			glNormalPointer(GL_FLOAT, 0, NULL);
 		}
 
-		if (((mesh)->buffUv) > 0)
+		if (((mesh)->resource->buffUv) > 0)
 		{
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glBindBuffer(GL_ARRAY_BUFFER, (mesh)->buffUv);
+			glBindBuffer(GL_ARRAY_BUFFER, (mesh)->resource->buffUv);
 			glTexCoordPointer(2, GL_FLOAT, 0, NULL);
 		}
 
-		if (((mesh)->buffIndex) > 0)
+		if (((mesh)->resource->buffIndex) > 0)
 		{
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (mesh)->buffIndex);
-			glDrawElements(GL_TRIANGLES, (mesh)->numIndex, GL_UNSIGNED_INT, NULL);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (mesh)->resource->buffIndex);
+			glDrawElements(GL_TRIANGLES, (mesh)->resource->numIndex, GL_UNSIGNED_INT, NULL);
 		}
 		//float3 hola = ((cTransform*)mesh->gameObject->FindComponent(TRANSFORM))->positionLocal;
 		// CleanUp

@@ -207,6 +207,7 @@
     <ClInclude Include="Module.h" />
     <ClInclude Include="ModuleAudio.h" />
     <ClInclude Include="ModuleInput.h" />
+    <ClInclude Include="ModuleResourceManager.h" />
     <ClInclude Include="ModuleScene.h" />
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="PhysBody3D.h" />
@@ -214,7 +215,10 @@
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="Random.h" />
+    <ClInclude Include="Resources.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ResourceMesh.h" />
+    <ClInclude Include="ResourceTexture.h" />
     <ClInclude Include="SDL\include\SDL.h" />
     <ClInclude Include="SDL\include\SDL_syswm.h" />
     <ClInclude Include="Timer.h" />
@@ -283,6 +287,7 @@
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModulePhysics3D.cpp" />
     <ClCompile Include="ModuleRenderer3D.cpp" />
+    <ClCompile Include="ModuleResourceManager.cpp" />
     <ClCompile Include="ModuleScene.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="PhysBody3D.cpp" />
