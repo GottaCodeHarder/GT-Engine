@@ -77,7 +77,7 @@ void cMaterial::LoadTexture()
 		{
 			//glDeleteBuffers(1, &(*it)->buffTexture);
 		}
-		resource = (ResourceTexture*)App->resourceManager->LoadResourceTexture(gameObject->name + fileName, this);
+		resource = (ResourceTexture*)App->resourceManager->LoadResourceTexture(fileName, this);
 	}
 }
 

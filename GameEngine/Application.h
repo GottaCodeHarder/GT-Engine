@@ -58,6 +58,7 @@ public:
 
 	void RequestBrowser(std::string link);
 	bool isPlaying = false;
+	bool isStopped = false;
 
 private:
 

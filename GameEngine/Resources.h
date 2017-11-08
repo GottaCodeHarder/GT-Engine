@@ -15,6 +15,7 @@ public:
 	T* Read() { return (T*)this; }
 
 	std::string name;
+	int id;
 };
 
 #endif // !__RESOURCES__

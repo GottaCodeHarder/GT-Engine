@@ -562,13 +562,16 @@ void ModuleEditor::PlayPause()
 		if (ImGui::Button("Play"))
 		{
 			App->isPlaying = true;
+
 			App->GetGameTimer()->Start();
+
+			App->isStopped = false;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Pause"))
 		{
 			App->GetGameTimer()->Stop();
-			//App->GetGameTimer().Read();
+			App->isStopped = true;
 			App->isPlaying = false;
 		}
 		ImGui::SameLine();
@@ -576,7 +579,6 @@ void ModuleEditor::PlayPause()
 		{
 			App->isPlaying = false;
 			App->SetGameDt(0.f);
-			//App->GetGameTimer().Chronometer(true, 0);
 		}
 		ImGui::Text("Time: %f", App->GetGameDt());
 	}

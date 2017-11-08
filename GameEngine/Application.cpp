@@ -80,6 +80,7 @@ bool Application::Init()
 
 	msTimer.Start();
 	//msTimerGame.Start();
+	isStopped = false;
 	dtGame = 0.f;
 	return ret;
 }
