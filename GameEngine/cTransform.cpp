@@ -199,7 +199,7 @@ void cTransform::DrawUI()
 
 
 	//GUIZMO
-	if (App->editor->selected == gameObject)
+	if (App->editor->selected == gameObject && !App->input->GetKey(SDL_SCANCODE_LALT) == KEY_DOWN)
 	{
 		static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
 		static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);

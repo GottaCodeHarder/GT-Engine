@@ -95,23 +95,25 @@ update_status ModuleCamera3D::Update(float dt)
 			{
 				if (App->editor->selected != nullptr)
 				{
+					cTransform* cameraTmp = ((cTransform*)defaultCamera->gameObject->FindComponent(TRANSFORM));
 					if (((cMesh*)App->editor->selected->FindComponent(MESH)) != nullptr)
 					{
+
 						Position.x = App->editor->selected->aabbBox.maxPoint.x * 2;
 						Position.y = App->editor->selected->aabbBox.maxPoint.y * 2;
 						Position.z = App->editor->selected->aabbBox.maxPoint.z * 2;
+						cameraTmp->positionLocal = { Position.x, Position.y, Position.z };
 						LookAt(vec(App->editor->selected->aabbBox.CenterPoint().x, App->editor->selected->aabbBox.CenterPoint().y, App->editor->selected->aabbBox.CenterPoint().z));
+					
 					}
 					else if (((cTransform*)App->editor->selected->FindComponent(TRANSFORM)) != nullptr)
 					{
 						cTransform* tmp = ((cTransform*)App->editor->selected->FindComponent(TRANSFORM));
-						cTransform* cameraTmp = ((cTransform*)defaultCamera->gameObject->FindComponent(TRANSFORM));
 						Position.x = tmp->GetGlobalPos().x + 2;
 						Position.y = tmp->GetGlobalPos().y + 2;
 						Position.z = tmp->GetGlobalPos().z + 2;
 						cameraTmp->positionLocal = { Position.x, Position.y, Position.z };
 						LookAt(vec(tmp->GetGlobalPos().x, tmp->GetGlobalPos().y, tmp->GetGlobalPos().z));
-
 					}
 				}
 			}		
@@ -165,6 +167,7 @@ update_status ModuleCamera3D::Update(float dt)
 			}
 			else if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LALT) == KEY_REPEAT)
 			{
+				cTransform* cameraTmp = ((cTransform*)defaultCamera->gameObject->FindComponent(TRANSFORM));
 				float Sensitivity = 0.005f;
 
 				if (App->editor->selected != nullptr)
@@ -208,6 +211,7 @@ update_status ModuleCamera3D::Update(float dt)
 				}
 
 				Position = Reference + Z * Position.Length();
+				cameraTmp->positionLocal = Position;
 			}
 		}
 	}

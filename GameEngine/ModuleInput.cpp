@@ -90,7 +90,11 @@ update_status ModuleInput::PreUpdate(float dt)
 
 	if (GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN && !ImGui::IsMouseHoveringAnyWindow())
 	{
-		App->scene->rayCast = true;
+		if (!App->input->GetKey(SDL_SCANCODE_LALT) == KEY_DOWN)
+		{
+			App->scene->rayCast = true;
+		}
+
 	}
 
 	mouseXMotion = mouseYMotion = 0;

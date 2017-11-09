@@ -52,7 +52,10 @@ void QuadNode::AddGameObject(GameObject * gameObject)
 
 		if (quadBox.Contains(gameObject->aabbBox.CenterPoint()))
 		{
-			gameObjects.push_back(gameObject);
+			if (gameObject->statiC)
+			{
+				gameObjects.push_back(gameObject);
+			}
 		}
 
 		if (gameObjects.size() > MAX_OBJECTS_NODE)
@@ -83,7 +86,10 @@ void QuadNode::AddGameObject(GameObject * gameObject)
 			gameObjects.clear();
 			for (auto tmpGO1 : tmpGO)
 			{
-				gameObjects.push_back(tmpGO1);
+				if (tmpGO1->statiC)
+				{
+					gameObjects.push_back(tmpGO1);
+				}
 			}
 			tmpGO.clear();
 
@@ -91,7 +97,11 @@ void QuadNode::AddGameObject(GameObject * gameObject)
 	}
 	else
 	{
-		gameObjects.push_back(AddGameObjectToChild(gameObject));
+		if (gameObject->statiC)
+		{
+			gameObjects.push_back(AddGameObjectToChild(gameObject));
+		}
+
 	}
 }
 
@@ -117,10 +127,12 @@ GameObject* QuadNode::AddGameObjectToChild(GameObject * gameObject)
 		{
 			if (sons[i]->quadBox.Contains(gameObject->aabbBox))
 			{
-				sons[i]->AddGameObject(gameObject);
-				sonAssigned = true;
-				return nullptr;
-				break;
+				if (gameObject->statiC)
+				{
+					sons[i]->AddGameObject(gameObject);
+					sonAssigned = true;
+					return nullptr;
+				}
 			}
 		}
 		if (!sonAssigned)
