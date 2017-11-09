@@ -80,11 +80,11 @@ uint cMesh::Serialize(char * buffer)
 	uint length = 0;
 	length += sizeof(int);
 	length += sizeof(uint);
-	length += normals.size() * sizeof(float3);
+	length += resource->normals.size() * sizeof(float3);
 	length += sizeof(uint);
-	length += vertex.size() * sizeof(float3);
+	length += resource->vertex.size() * sizeof(float3);
 	length += sizeof(uint);
-	length += index.size() * sizeof(uint);
+	length += resource->index.size() * sizeof(uint);
 
 	buffer = new char[length];
 	char* it = buffer;
@@ -95,26 +95,26 @@ uint cMesh::Serialize(char * buffer)
 	memcpy(it, &type, sizeof(uint));
 	it += sizeof(uint);
 
-	int size = normals.size();
+	int size = resource->normals.size();
 	memcpy(it, &size, sizeof(uint));
 	it += sizeof(uint);
 
-	memcpy(it, normals.data(), sizeof(float3) * normals.size());
-	it += normals.size() * sizeof(float3);
+	memcpy(it, resource->normals.data(), sizeof(float3) * resource->normals.size());
+	it += resource->normals.size() * sizeof(float3);
 
-	size = vertex.size();
+	size = resource->vertex.size();
 	memcpy(it, &size, sizeof(uint));
 	it += sizeof(uint);
 
-	memcpy(it, vertex.data(), sizeof(float3) * vertex.size());
-	it += vertex.size() * sizeof(float3);
+	memcpy(it, resource->vertex.data(), sizeof(float3) * resource->vertex.size());
+	it += resource->vertex.size() * sizeof(float3);
 
-	size = index.size();
+	size = resource->index.size();
 	memcpy(it, &size, sizeof(uint));
 	it += sizeof(uint);
 
-	memcpy(it, index.data(), sizeof(uint) * index.size());
-	it += index.size() * sizeof(uint);
+	memcpy(it, resource->index.data(), sizeof(uint) * resource->index.size());
+	it += resource->index.size() * sizeof(uint);
 
 	return uint();
 }
