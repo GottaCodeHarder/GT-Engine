@@ -81,3 +81,42 @@ void cMaterial::LoadTexture()
 	}
 }
 
+uint cMaterial::Serialize(char * buffer)
+{
+	uint length = 0;
+	length += sizeof(uint);
+	length += sizeof(int);
+	length += sizeof(uint);
+	length += sizeof(float2);
+	length += sizeof(uint);
+	length += resource->path.length();
+	length += sizeof(float3);
+
+	buffer = new char[length];
+	char* it = buffer;
+
+	memcpy(it, &length, sizeof(uint));
+	it += sizeof(uint);
+
+	memcpy(it, &type, sizeof(int));
+	it += sizeof(int);
+
+	memcpy(it, &resource->buffTexture, sizeof(uint));
+	it += sizeof(uint);
+
+	memcpy(it, &resource->imageDimensions, sizeof(float2));
+	it += sizeof(float2);
+
+	uint size = resource->path.length();
+	memcpy(it, &size, sizeof(uint));
+	it += sizeof(uint);
+
+	memcpy(it, resource->path.data(), size);
+	it += size;
+
+	memcpy(it, &resource->color, sizeof(float3));
+	it += sizeof(float3);
+
+	return length;
+}
+

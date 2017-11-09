@@ -222,3 +222,10 @@ void cTransform::DrawUI()
 	}
 }
 
+uint cTransform::Serialize(char * buffer)
+{
+	uint length = 0;
+
+	return length;
+}
+

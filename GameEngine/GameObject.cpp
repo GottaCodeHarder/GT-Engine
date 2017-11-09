@@ -269,6 +269,7 @@ void GameObject::Load(const JSON_Object * go)
 uint GameObject::Serialize(char * buf)
 {
 	uint length = 0; // Size of the GameObject
+	length += sizeof(uint);
 	length += sizeof(uint); // Size of Name Length variable
  	length += name.length(); // Size of the Name String
 	length += sizeof(uint); // Size of Components

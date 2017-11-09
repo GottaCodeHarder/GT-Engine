@@ -20,5 +20,7 @@ public:
 	void DrawUI();
 	void LoadTexture();
 
+	uint Serialize(char* buffer);
+
 private:
 };

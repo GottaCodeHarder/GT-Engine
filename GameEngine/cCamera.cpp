@@ -126,6 +126,54 @@ void cCamera::FrustumCulling(GameObject* gameObject)
 	dynamicFrustum(App->scene->root);
 }
 
+uint cCamera::Serialize(char * buffer)
+{
+	uint length = 0;
+	length += sizeof(uint);
+	length += sizeof(int);
+	length += sizeof(float);
+	length += sizeof(float);
+	length += sizeof(float);
+	length += sizeof(float);
+	length += sizeof(bool);
+	length += sizeof(bool);
+	length += sizeof(bool);
+
+	buffer = new char[length];
+	char* it = buffer;
+
+	memcpy(it, &length, sizeof(uint));
+	it += sizeof(uint);
+
+	memcpy(it, &type, sizeof(int));
+	it += sizeof(int);
+
+	memcpy(it, &farPlane, sizeof(float));
+	it += sizeof(float);
+
+	memcpy(it, &nearPlane, sizeof(float));
+	it += sizeof(float);
+
+	memcpy(it, &horizontalFOV, sizeof(float));
+	it += sizeof(float);
+
+	memcpy(it, &verticalFOV, sizeof(float));
+	it += sizeof(float);
+
+	memcpy(it, &bCulling, sizeof(bool));
+	it += sizeof(bool);
+
+	memcpy(it, &drawFrustum, sizeof(bool));
+	it += sizeof(bool);
+
+	memcpy(it, &activeCamera, sizeof(bool));
+	it += sizeof(bool);
+
+	// Transform goes here
+
+	return uint();
+}
+
 void cCamera::dynamicFrustum(GameObject * gameObject)
 {
 	for (auto staticGO : gameObject->sons)

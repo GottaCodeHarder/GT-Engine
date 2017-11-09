@@ -24,6 +24,8 @@ public:
 
 	bool cameraAttached = false;
 
+	uint Serialize(char* buffer);
+
 private:
 
 	void dynamicFrustum(GameObject* gameObject);

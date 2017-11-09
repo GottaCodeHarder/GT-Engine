@@ -78,6 +78,7 @@ void cMesh::DrawAABB(AABB aabbBox)
 uint cMesh::Serialize(char * buffer)
 {
 	uint length = 0;
+	length += sizeof(uint);
 	length += sizeof(int);
 	length += sizeof(uint);
 	length += resource->normals.size() * sizeof(float3);
@@ -92,8 +93,8 @@ uint cMesh::Serialize(char * buffer)
 	memcpy(it, &length, sizeof(uint));
 	it += sizeof(uint);
 	
-	memcpy(it, &type, sizeof(uint));
-	it += sizeof(uint);
+	memcpy(it, &type, sizeof(int));
+	it += sizeof(int);
 
 	int size = resource->normals.size();
 	memcpy(it, &size, sizeof(uint));
@@ -116,5 +117,5 @@ uint cMesh::Serialize(char * buffer)
 	memcpy(it, resource->index.data(), sizeof(uint) * resource->index.size());
 	it += resource->index.size() * sizeof(uint);
 
-	return uint();
+	return length;
 }

@@ -32,6 +32,9 @@ public:
 	void DrawUI();
 
 	bool transformChange = false;
+
+	uint Serialize(char* buffer);
+
 private:
 
 };
