@@ -54,7 +54,11 @@ void QuadNode::AddGameObject(GameObject * gameObject)
 		{
 			if (gameObject->statiC)
 			{
-				gameObjects.push_back(gameObject);
+				if (gameObject != nullptr)
+				{
+					gameObjects.push_back(gameObject);
+				}
+
 			}
 		}
 
@@ -88,7 +92,11 @@ void QuadNode::AddGameObject(GameObject * gameObject)
 			{
 				if (tmpGO1->statiC)
 				{
-					gameObjects.push_back(tmpGO1);
+					if (tmpGO1 != nullptr)
+					{
+						gameObjects.push_back(tmpGO1);
+					}
+
 				}
 			}
 			tmpGO.clear();
@@ -99,9 +107,40 @@ void QuadNode::AddGameObject(GameObject * gameObject)
 	{
 		if (gameObject->statiC)
 		{
-			gameObjects.push_back(AddGameObjectToChild(gameObject));
+			if (gameObject != nullptr)
+			{
+				gameObjects.push_back(AddGameObjectToChild(gameObject));
+			}
+
 		}
 
+	}
+}
+
+GameObject* QuadNode::AddGameObjectToChild(GameObject * gameObject)
+{
+	if (!sons.empty())
+	{
+		bool sonAssigned = false;
+		for (int i = 0; i < sons.size(); i++)
+		{
+			if (sons[i]->quadBox.Contains(gameObject->aabbBox))
+			{
+				if (gameObject->statiC)
+				{
+					if (gameObject != nullptr)
+					{
+						sons[i]->AddGameObject(gameObject);
+						sonAssigned = true;
+						return nullptr;
+					}
+				}
+			}
+		}
+		if (!sonAssigned)
+		{
+			return gameObject;
+		}
 	}
 }
 
@@ -116,30 +155,6 @@ void QuadNode::DeleteGameObjects()
 	}
 	gameObjects.clear();
 	sons.clear();
-}
-
-GameObject* QuadNode::AddGameObjectToChild(GameObject * gameObject)
-{
-	if (!sons.empty())
-	{
-		bool sonAssigned = false;
-		for (int i = 0; i < sons.size(); i++)
-		{
-			if (sons[i]->quadBox.Contains(gameObject->aabbBox))
-			{
-				if (gameObject->statiC)
-				{
-					sons[i]->AddGameObject(gameObject);
-					sonAssigned = true;
-					return nullptr;
-				}
-			}
-		}
-		if (!sonAssigned)
-		{
-			return gameObject;
-		}
-	}
 }
 
 myQuadTree::myQuadTree() : root(MIN_WORLD_POINT, MAX_WORLD_POINT)

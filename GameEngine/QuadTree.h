@@ -67,9 +67,12 @@ inline std::vector<GameObject*> QuadNode::Collide(const Col colision)
 	{
 		for (auto itGameObjects : gameObjects)
 		{
-			if (itGameObjects->aabbBox.Intersects(colision) || itGameObjects->aabbBox.Contains(colision))
+			if (itGameObjects != nullptr)
 			{
-				ret.push_back(itGameObjects);
+				if (itGameObjects->aabbBox.Intersects(colision) || itGameObjects->aabbBox.Contains(colision))
+				{
+					ret.push_back(itGameObjects);
+				}
 			}
 		}
 		for (auto itSons : sons)
