@@ -28,6 +28,8 @@ bool ModuleFileSystem::Init()
 	MYLOG("Loading File System");
 	bool ret = true;
 
+	PHYSFS_setWriteDir(".");
+
 	return ret;
 }
 
