@@ -225,6 +225,21 @@ void cTransform::DrawUI()
 uint cTransform::Serialize(char * buffer)
 {
 	uint length = 0;
+	length += sizeof(float3);
+	length += sizeof(float3);
+	length += sizeof(Quat);
+
+	buffer = new char[length];
+	char* it = buffer;
+
+	memcpy(it, &positionLocal, sizeof(float3));
+	it += sizeof(float3);
+
+	memcpy(it, &scaleLocal, sizeof(float3));
+	it += sizeof(float3);
+
+	memcpy(it, &rotationLocal, sizeof(Quat));
+	it += sizeof(Quat);
 
 	return length;
 }

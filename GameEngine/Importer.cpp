@@ -153,7 +153,7 @@ GameObject* Importer::LegacyLoadFbx(const char * path)
 
 	char* buffer = "";
 	uint len = ret->Serialize(buffer);
-	//App->fileSystem->Save("FileName", buffer, len);
+	App->fileSystem->Save("Test.GTE", buffer, len);
 	//delete[] buffer;
 	
 	return ret; // tmp

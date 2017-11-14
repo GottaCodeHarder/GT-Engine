@@ -171,7 +171,7 @@ uint cCamera::Serialize(char * buffer)
 
 	// Transform goes here
 
-	return uint();
+	return length;
 }
 
 void cCamera::dynamicFrustum(GameObject * gameObject)
