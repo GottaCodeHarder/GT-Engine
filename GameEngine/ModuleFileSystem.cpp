@@ -77,7 +77,22 @@ std::vector<std::string> ModuleFileSystem::GetFolderContent(char * path)
 	std::vector<std::string> ret;
 
 	// Convert char** to vector<string>
-	PHYSFS_enumerateFiles(path);
+	
+	char **files = PHYSFS_enumerateFiles(path);
+	
+	if (*files == NULL)
+		printf("Failure. Reason: %s.\n", PHYSFS_getLastError());
+
+	for (char* i = *files; i != NULL; i=*++files)
+	{
+		for (std::vector<std::string>::iterator it = ret.begin();; it++)
+		{
+
+			*it = i;
+		}
+	}
+
+	PHYSFS_freeList(files);
 
 	return ret;
 }
