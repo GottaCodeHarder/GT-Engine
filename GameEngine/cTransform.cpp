@@ -222,7 +222,7 @@ void cTransform::DrawUI()
 	}
 }
 
-uint cTransform::Serialize(char * buffer)
+uint cTransform::Serialize(char * &buffer)
 {
 	uint length = 0;
 	length += sizeof(float3);

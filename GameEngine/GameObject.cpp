@@ -266,19 +266,22 @@ void GameObject::Load(const JSON_Object * go)
 
 }
 
-uint GameObject::Serialize(char * buf)
+uint GameObject::Serialize(char * &buf)
 {
 	uint length = 0; // Size of the GameObject
-	length += sizeof(uint);
-	length += sizeof(uint); // Size of Name Length variable
- 	length += name.length(); // Size of the Name String
-	length += sizeof(uint); // Size of Components
-	length += sizeof(uint); // Size of Childs
+	uint myLength = 0;
+	myLength += sizeof(uint);
+	myLength += sizeof(uint); // Size of Name Length variable
+	myLength += name.length(); // Size of the Name String
+	myLength += sizeof(uint); // Size of Components
+	myLength += sizeof(uint); // Size of Childs
 
-	buf = new char[length]; // Actual size of 8
-	char* it = buf;
+	length = myLength;
 
-	memcpy(it, &length, sizeof(uint));
+	char* myself = new char[myLength]; // Actual size of 8
+	char* it = myself;
+
+	memcpy(it, &myLength, sizeof(uint));
 	it += sizeof(uint);
 
 	uint size = name.length();
@@ -290,6 +293,7 @@ uint GameObject::Serialize(char * buf)
 
 	// Saving Components
 	size = components.size();
+
 	memcpy(it, &size, sizeof(uint));
 	it += sizeof(uint);
 
@@ -298,19 +302,38 @@ uint GameObject::Serialize(char * buf)
 	memcpy(it, &size, sizeof(uint));
 	it += sizeof(uint);
 
+	std::vector<std::pair<uint, char*>> toAdd;
+
 	for (auto i : components)
 	{
-		uint compLength = i.second->Serialize(it);
-		length += compLength;
-		it += compLength;
+		std::pair<uint, char*> pair;
+		pair.first = i.second->Serialize(pair.second);
+		length += pair.first;
+		toAdd.push_back(pair);
 	}
 
 	for (std::vector<GameObject*>::iterator child = sons.begin(); child != sons.end(); child++)
 	{
-		uint childLength = (*child)->Serialize(it);
-		length += childLength;
-		it += childLength;
+		std::pair<uint, char*> pair;
+		pair.first = (*child)->Serialize(pair.second);
+		length += pair.first;
+		toAdd.push_back(pair);
 	}
+
+	buf = new char[length];
+	it = buf;
+
+	memcpy(it, myself, myLength);
+	it += myLength;
+
+	for (std::vector<std::pair<uint, char*>>::iterator i = toAdd.begin(); i != toAdd.end(); i++)
+	{
+		memcpy(it, i->second, i->first);
+		it += i->first;
+		delete[] i->second;
+	}
+
+	delete[] myself;
 
 	return length;
 }

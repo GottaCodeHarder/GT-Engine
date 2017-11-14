@@ -33,7 +33,7 @@ public:
 
 	bool transformChange = false;
 
-	uint Serialize(char* buffer);
+	uint Serialize(char* &buffer);
 
 private:
 

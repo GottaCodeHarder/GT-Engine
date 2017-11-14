@@ -18,7 +18,7 @@ public:
 	void DrawAABB(AABB aabbBox);
 	bool aabbTransform = false;
 
-	uint Serialize(char* buffer);
+	uint Serialize(char* &buffer);
 
 private:
 	bool aabbActive = false;

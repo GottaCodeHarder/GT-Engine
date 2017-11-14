@@ -126,7 +126,7 @@ void cCamera::FrustumCulling(GameObject* gameObject)
 	dynamicFrustum(App->scene->root);
 }
 
-uint cCamera::Serialize(char * buffer)
+uint cCamera::Serialize(char * &buffer)
 {
 	uint length = 0;
 	length += sizeof(uint);

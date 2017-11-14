@@ -24,7 +24,7 @@ public:
 
 	bool cameraAttached = false;
 
-	uint Serialize(char* buffer);
+	uint Serialize(char* &buffer);
 
 private:
 

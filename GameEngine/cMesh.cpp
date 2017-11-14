@@ -75,7 +75,7 @@ void cMesh::DrawAABB(AABB aabbBox)
 	App->renderer3D->debugDraw->drawLine(btVector3(aabbBox.maxPoint.x, aabbBox.maxPoint.y, aabbBox.minPoint.z), btVector3(aabbBox.maxPoint.x, aabbBox.minPoint.y, aabbBox.minPoint.z), btVector3(0, 0.7f, 0));
 }
 
-uint cMesh::Serialize(char * buffer)
+uint cMesh::Serialize(char * &buffer)
 {
 	uint length = 0;
 	length += sizeof(uint);
@@ -116,6 +116,12 @@ uint cMesh::Serialize(char * buffer)
 
 	memcpy(it, resource->index.data(), sizeof(uint) * resource->index.size());
 	it += resource->index.size() * sizeof(uint);
+
+	float2* uv = new float2[resource->vertex.size()];
+	glGetBufferSubData(resource->buffUv, NULL, resource->vertex.size() * sizeof(float2), uv);
+	memcpy(it, uv, resource->vertex.size() * sizeof(float2));
+
+	delete[] uv;
 
 	return length;
 }

@@ -32,7 +32,7 @@ public:
 	void Load(const JSON_Object *go);
 
 	// Returns the length of the buffer
-	uint Serialize(char* buffer);
+	uint Serialize(char* &buffer);
 
 	void Enable();
 	void Disable();

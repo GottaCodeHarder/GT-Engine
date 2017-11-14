@@ -81,7 +81,7 @@ void cMaterial::LoadTexture()
 	}
 }
 
-uint cMaterial::Serialize(char * buffer)
+uint cMaterial::Serialize(char * &buffer)
 {
 	uint length = 0;
 	length += sizeof(uint);
