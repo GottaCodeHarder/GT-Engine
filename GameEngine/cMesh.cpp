@@ -86,6 +86,7 @@ uint cMesh::Serialize(char * &buffer)
 	length += resource->vertex.size() * sizeof(float3);
 	length += sizeof(uint);
 	length += resource->index.size() * sizeof(uint);
+	length += resource->vertex.size() * sizeof(float2);
 
 	buffer = new char[length];
 	char* it = buffer;
