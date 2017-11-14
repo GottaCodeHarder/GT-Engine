@@ -32,6 +32,7 @@ public:
 	{
 		return "save/";
 	}
+	std::vector<std::string> GetFolderContent(char* path);
 
 	// Open for Read/Write
 	unsigned int Load(const char* file, char** buffer) const;

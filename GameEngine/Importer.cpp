@@ -151,7 +151,7 @@ GameObject* Importer::LegacyLoadFbx(const char * path)
 	else
 		MYLOG("Error loading scene %s", path);
 
-	char* buffer = "";
+	char* buffer;
 	uint len = ret->Serialize(buffer);
 	App->fileSystem->Save("Test.GTE", buffer, len);
 	//delete[] buffer;
@@ -435,13 +435,18 @@ GLuint Importer::LoadImageFile(const char * theFileName, cMaterial * material)
 	return textureID;
 }
 
-FileExtensions Importer::GetExtension(const char *path)
+FileExtensions Importer::GetExtension(const char *path) //Move to ModuleFileSystem
 {
 	char* ptr = &(char)path[strlen(path)];
 
-	for (; *ptr != '.' && ptr != path; ptr--)
+	for (; *ptr != '.'; ptr--)
 	{
 		// You found a secret :D
+
+		if (ptr == path)
+		{
+			return FileExtensions::Folder;
+		}
 	}
 	
 	ptr++;
@@ -463,7 +468,7 @@ FileExtensions Importer::GetExtension(const char *path)
 	return FileExtensions::Unsupported;
 }
 
-bool Importer::FileExists(const std::string& name)
+bool Importer::FileExists(const std::string& name) //Move to ModuleFileSystem
 {
 	struct stat buffer;
 	return (stat(name.c_str(), &buffer) == 0);

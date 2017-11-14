@@ -72,6 +72,16 @@ bool ModuleFileSystem::IsDirectory(const char* file) const
 	return PHYSFS_isDirectory(file) != 0;
 }
 
+std::vector<std::string> ModuleFileSystem::GetFolderContent(char * path)
+{
+	std::vector<std::string> ret;
+
+	// Convert char** to vector<string>
+	PHYSFS_enumerateFiles(path);
+
+	return ret;
+}
+
 // Read a whole file and put it in a new buffer
 unsigned int ModuleFileSystem::Load(const char* file, char** buffer) const
 {

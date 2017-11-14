@@ -25,6 +25,7 @@ enum FileExtensions
 {
 	Scene3D = 0,
 	Image,
+	Folder,
 	Unsupported
 };
 
