@@ -153,9 +153,36 @@ GameObject* Importer::ImportFbx(const char * path)
 
 	char* buffer;
 	uint len = ret->Serialize(buffer);
-	std::string name = "Library/";
-	name;
-	App->fileSystem->Save(name.c_str(), buffer, len);
+
+	std::string filename = "Library/";
+	std::string tmp = path;
+
+	// If files are from Assets
+	int pos = tmp.find("Assets");
+	if (pos != std::string::npos)
+	{
+		tmp = tmp.substr(pos + 7); // 7 being "Assets/"
+	}
+
+	while (true)
+	{
+		pos = tmp.find("/");
+		if (pos != std::string::npos)
+		{
+			tmp[pos] = '_';
+		}
+		else
+			break;
+	}
+
+	std::string::iterator it = tmp.end() - 1;
+	for (; *it != '.' && it != tmp.begin(); it--) {}
+	tmp.erase(it, tmp.end());
+	tmp += ".GTE";
+
+	filename += tmp;
+	
+	App->fileSystem->Save(filename.c_str(), buffer, len);
 	//delete[] buffer;
 	
 	return ret; // tmp
@@ -465,6 +492,20 @@ FileExtensions Importer::GetExtension(const char *path)
 	if (supported3DScenesFormats.find(ptr) != std::string::npos)
 	{
 		return FileExtensions::Scene3D;
+	}
+
+	std::string supportedGTSceneFormats("GTScene");
+
+	if (supportedGTSceneFormats.find(ptr) != std::string::npos)
+	{
+		return FileExtensions::GTScene;
+	}
+
+	std::string supportedGTImportedFormats("GTE");
+
+	if (supportedGTImportedFormats.find(ptr) != std::string::npos)
+	{
+		return FileExtensions::GTImported;
 	}
 
 	return FileExtensions::Unsupported;
