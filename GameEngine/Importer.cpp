@@ -322,6 +322,49 @@ ResourceTexture * Importer::LoadTexture(const aiScene* scene , int textIndex , c
 	return ret;
 }
 
+GameObject * Importer::ImportGTE(const char * path)
+{
+	std::string tmp = path;
+	
+	// Check that it isn't in Assets
+	int pos = tmp.find("Assets");
+	if (pos != std::string::npos)
+	{
+		tmp = tmp.substr(pos + 7); // 7 being "Assets/"
+	}
+
+	while (true)
+	{
+		pos = tmp.find("/");
+		if (pos != std::string::npos)
+		{
+			tmp[pos] = '_';
+		}
+		else
+			break;
+	}
+
+	std::string filename = "Library/";
+	filename += tmp;
+
+	SDL_RWops* rwops = App->fileSystem->Load(filename.c_str());
+	uint size = rwops->size(rwops);
+	
+	if (size >= NULL)
+	{
+		char* content = new char[size];
+		rwops->read(rwops, content, size, 1);
+
+
+		GameObject* base = new GameObject("", true, App->scene->root);
+		base->DeSerialize(content, nullptr);
+	}
+
+	rwops->close(rwops);
+
+	return nullptr;
+}
+
 GLuint Importer::LoadImageFile(const char* theFileName)
 {
 	if (!bDevilInit)

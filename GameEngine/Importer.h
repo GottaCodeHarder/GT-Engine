@@ -48,6 +48,8 @@ public:
 	ResourceTexture* LoadTexture(const aiScene* scene , int textIndex , const char* path , cMaterial* material);
 	AABB maxBox;
 
+	GameObject* ImportGTE(const char* path);
+
 private:
 	bool bDevilInit = false;
 	bool bCalcRet = false;

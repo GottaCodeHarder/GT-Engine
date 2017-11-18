@@ -32,8 +32,6 @@ bool ModuleFileSystem::Init()
 	PHYSFS_setWriteDir(".");
 	AddPath(".");
 
-	GetFolderContentRecursive("/Assets");
-
 	return ret;
 }
 
