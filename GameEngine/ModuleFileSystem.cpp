@@ -4,6 +4,7 @@
 #include "PhysFS/include/physfs.h"
 #include "SDL/include/SDL.h"
 #include "JSON/parson.h"
+#include "Importer.h"
 
 #pragma comment( lib, "PhysFS/libx86/physfs.lib" )
 
@@ -29,6 +30,9 @@ bool ModuleFileSystem::Init()
 	bool ret = true;
 
 	PHYSFS_setWriteDir(".");
+	AddPath(".");
+
+	GetFolderContentRecursive("/Assets");
 
 	return ret;
 }
@@ -72,27 +76,52 @@ bool ModuleFileSystem::IsDirectory(const char* file) const
 	return PHYSFS_isDirectory(file) != 0;
 }
 
-std::vector<std::string> ModuleFileSystem::GetFolderContent(char * path)
+std::vector<std::string> ModuleFileSystem::GetFolderContent(const char * path)
 {
 	std::vector<std::string> ret;
 
 	// Convert char** to vector<string>
 	
 	char **files = PHYSFS_enumerateFiles(path);
-	
+	char **tmp = files;
+
 	if (*files == NULL)
-		printf("Failure. Reason: %s.\n", PHYSFS_getLastError());
+		MYLOG("Failure. Reason: %s.\n", PHYSFS_getLastError());
 
-	for (char* i = *files; i != NULL; i=*++files)
+	for (char* i = *tmp; i != NULL; i=*++tmp)
 	{
-		for (std::vector<std::string>::iterator it = ret.begin();; it++)
-		{
+		ret.push_back(i);
+	}
+	
+	PHYSFS_freeList(files);
 
-			*it = i;
+	return ret;
+}
+
+std::vector<std::string> ModuleFileSystem::GetFolderContentRecursive(const char * path)
+{
+	std::vector<std::string> files = GetFolderContent(path);
+	
+	std::vector<std::string> ret;
+
+	for (std::vector<std::string>::iterator i = files.begin(); i != files.end(); i++)
+	{
+		FileExtensions type = Importer::GetExtension(i->c_str());
+
+		std::string strPath = path;
+		strPath += "/";
+		strPath += i->c_str();
+
+		if (type == FileExtensions::Folder)
+		{
+			std::vector<std::string> tmp = GetFolderContentRecursive(strPath.c_str());
+			ret.insert(ret.end(), tmp.begin(), tmp.end());
+		}
+		else if (type != FileExtensions::Unsupported)
+		{
+			ret.push_back(strPath);
 		}
 	}
-
-	PHYSFS_freeList(files);
 
 	return ret;
 }
