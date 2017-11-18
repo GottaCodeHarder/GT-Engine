@@ -344,23 +344,25 @@ GameObject * Importer::ImportGTE(const char * path)
 			break;
 	}
 
-	std::string filename = "Library/";
-	filename += tmp;
+	std::string filename = tmp;
 
 	SDL_RWops* rwops = App->fileSystem->Load(filename.c_str());
-	uint size = rwops->size(rwops);
 	
-	if (size >= NULL)
+	if (rwops != nullptr)
 	{
-		char* content = new char[size];
-		rwops->read(rwops, content, size, 1);
+		uint size = rwops->size(rwops);
+
+		if (size >= NULL)
+		{
+			char* content = new char[size];
+			rwops->read(rwops, content, size, 1);
 
 
-		GameObject* base = new GameObject("", true, App->scene->root);
-		base->DeSerialize(content, nullptr);
+			GameObject* base = new GameObject("", true, App->scene->root);
+			base->DeSerialize(content, nullptr);
+		}
+		rwops->close(rwops);
 	}
-
-	rwops->close(rwops);
 
 	return nullptr;
 }

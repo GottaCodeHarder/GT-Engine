@@ -6,7 +6,7 @@
 #include "ModuleScene.h"
 #include "ModuleRenderer3D.h"
 #include "GameObject.h"
-//#include "Importer.h"
+#include "Importer.h"
 #include "cTransform.h"
 #include "cCamera.h"
 #include "cMesh.h"
@@ -94,6 +94,15 @@ update_status ModuleScene::Update(float dt)
 		case FileExtensions::Image:
 		{
 			//LoadImages((char*)App->input->GetFileDropped());
+			break;
+		}
+		case FileExtensions::GTScene:
+		{
+			break;
+		}
+		case FileExtensions::GTImported:
+		{
+			importer.ImportGTE((char*)App->input->GetFileDropped());
 			break;
 		}
 		case FileExtensions::Unsupported:
