@@ -183,7 +183,7 @@ GameObject* Importer::ImportFbx(const char * path)
 	filename += tmp;
 	
 	App->fileSystem->Save(filename.c_str(), buffer, len);
-	//delete[] buffer;
+	delete[] buffer;
 	
 	return ret; // tmp
 }
