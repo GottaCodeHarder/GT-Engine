@@ -156,7 +156,7 @@ GameObject * ModuleScene::CreateGameObject(std::string name, bool active, GameOb
 
 void ModuleScene::CreateFbx(char* path)
 {
-	GameObject* tmp = importer.LegacyLoadFbx(path);
+	GameObject* tmp = importer.ImportFbx(path);
 	App->editor->selected = *tmp->sons.begin();
 	for (auto childsTmp : tmp->sons)
 	{

@@ -19,7 +19,7 @@
 #pragma	comment (lib, "Devil/libx86/ILU.lib")
 #pragma	comment (lib, "Devil/libx86/ILUT.lib")
 
-GameObject* Importer::LegacyLoadFbx(const char * path)
+GameObject* Importer::ImportFbx(const char * path)
 {
 	const aiScene* scene = aiImportFile(path, aiProcessPreset_TargetRealtime_MaxQuality);
 	GameObject* ret = new GameObject("fakeRoot", true, nullptr);
