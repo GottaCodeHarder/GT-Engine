@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "Importer.h"
 #include "ModuleResourceManager.h"
+#include "ModuleFileSystem.h"
 #include "Resources.h"
 #include "ResourceMesh.h"
 #include "ResourceTexture.h"
@@ -21,6 +22,23 @@ ResourceManager::~ResourceManager()
 bool ResourceManager::Init()
 {
 	return false;
+}
+
+bool ResourceManager::Start()
+{
+	std::vector<std::string> toImport = App->fileSystem->GetFolderContentRecursive("/Assets");
+
+	for (std::vector<std::string>::iterator i = toImport.begin(); i != toImport.end(); i++)
+	{
+		FileExtensions type = Importer::GetExtension(i->c_str());
+
+		if (type == FileExtensions::Scene3D)
+		{
+			App->scene->importer.ImportFbx(i->c_str());
+		}
+	}
+
+	return true;
 }
 
 void ResourceManager::AddImGui()
