@@ -34,7 +34,7 @@ class Importer
 
 public:
 
-	FileExtensions GetExtension(const char* path);
+	static FileExtensions GetExtension(const char* path);
 	bool FileExists(const std::string& name);
 	GLuint LoadImageFile(const char* file);
 	GLuint LoadImageFile(const char* file , cMaterial* material);

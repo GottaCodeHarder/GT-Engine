@@ -153,7 +153,9 @@ GameObject* Importer::LegacyLoadFbx(const char * path)
 
 	char* buffer;
 	uint len = ret->Serialize(buffer);
-	App->fileSystem->Save("Test.GTE", buffer, len);
+	std::string name = "Library/";
+	name;
+	App->fileSystem->Save(name.c_str(), buffer, len);
 	//delete[] buffer;
 	
 	return ret; // tmp
@@ -435,7 +437,7 @@ GLuint Importer::LoadImageFile(const char * theFileName, cMaterial * material)
 	return textureID;
 }
 
-FileExtensions Importer::GetExtension(const char *path) //Move to ModuleFileSystem
+FileExtensions Importer::GetExtension(const char *path)
 {
 	char* ptr = &(char)path[strlen(path)];
 
