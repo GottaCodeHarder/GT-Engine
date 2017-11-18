@@ -386,6 +386,7 @@ bool GameObject::DeSerialize(char *& buffer, GameObject * parent)
 			// Size of Component Serialization
 			it += sizeof(uint);
 
+			// Component Type
 			memcpy(&type, it, sizeof(int));
 			it += sizeof(int);
 

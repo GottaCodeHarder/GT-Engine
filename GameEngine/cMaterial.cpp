@@ -120,3 +120,29 @@ uint cMaterial::Serialize(char * &buffer)
 	return length;
 }
 
+void cMaterial::DeSerialize(char *& buffer, GameObject * parent)
+{
+	char* it = buffer;
+
+	// Texture Buffer
+	memcpy(&resource->buffTexture, it, sizeof(uint));
+	it += sizeof(uint);
+
+	// Dimensions
+	memcpy(&resource->imageDimensions, it, sizeof(float2));
+	it += sizeof(float2);
+
+	// Path Length
+	uint size;
+	memcpy(&size, it, sizeof(uint));
+	it += sizeof(uint);
+
+	// Path
+	memcpy(&resource->path, it, size);
+	it += size;
+
+	// Color
+	memcpy(&resource->color, it, sizeof(float3));
+	it += sizeof(float3);
+}
+

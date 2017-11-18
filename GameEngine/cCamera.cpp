@@ -169,9 +169,40 @@ uint cCamera::Serialize(char * &buffer)
 	memcpy(it, &activeCamera, sizeof(bool));
 	it += sizeof(bool);
 
-	// Transform goes here
-
 	return length;
+}
+
+void cCamera::DeSerialize(char *& buffer, GameObject * parent)
+{
+	char* it = buffer;
+
+	// Frustum Far Plane
+	memcpy(&farPlane, it, sizeof(float));
+	it += sizeof(float);
+
+	// Frustum Near Plane
+	memcpy(&farPlane, it, sizeof(float));
+	it += sizeof(float);
+
+	// Horizontal FOV
+	memcpy(&horizontalFOV, it, sizeof(float));
+	it += sizeof(float);
+
+	// Vertical FOV
+	memcpy(&horizontalFOV, it, sizeof(float));
+	it += sizeof(float);
+
+	// Bool Culling
+	memcpy(&bCulling, it, sizeof(bool));
+	it += sizeof(bool);
+
+	// Bool Draw Frustum
+	memcpy(&drawFrustum, it, sizeof(bool));
+	it += sizeof(bool);
+
+	// Bool Active Camera
+	memcpy(&activeCamera, it, sizeof(bool));
+	it += sizeof(bool);
 }
 
 void cCamera::dynamicFrustum(GameObject * gameObject)

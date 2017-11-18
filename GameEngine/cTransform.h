@@ -34,6 +34,7 @@ public:
 	bool transformChange = false;
 
 	uint Serialize(char* &buffer);
+	void DeSerialize(char* &buffer, GameObject* parent);
 
 private:
 

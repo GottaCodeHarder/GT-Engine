@@ -37,7 +37,7 @@ public:
 	virtual void Load(const JSON_Object &object) {};
 	
 	virtual uint Serialize(char* &buffer) { return 0; };
-	virtual uint DeSerialize(char* &buffer, GameObject* parent) { return 0; };
+	virtual void DeSerialize(char* &buffer, GameObject* parent) {};
 
 	componentType type;
 	bool active = true;

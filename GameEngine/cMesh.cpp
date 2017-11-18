@@ -104,13 +104,6 @@ uint cMesh::Serialize(char * &buffer)
 	memcpy(it, resource->normals.data(), sizeof(float3) * resource->normals.size());
 	it += resource->normals.size() * sizeof(float3);
 
-	size = resource->vertex.size();
-	memcpy(it, &size, sizeof(uint));
-	it += sizeof(uint);
-
-	memcpy(it, resource->vertex.data(), sizeof(float3) * resource->vertex.size());
-	it += resource->vertex.size() * sizeof(float3);
-
 	size = resource->index.size();
 	memcpy(it, &size, sizeof(uint));
 	it += sizeof(uint);
@@ -118,11 +111,54 @@ uint cMesh::Serialize(char * &buffer)
 	memcpy(it, resource->index.data(), sizeof(uint) * resource->index.size());
 	it += resource->index.size() * sizeof(uint);
 
+	size = resource->vertex.size();
+	memcpy(it, &size, sizeof(uint));
+	it += sizeof(uint);
+
+	memcpy(it, resource->vertex.data(), sizeof(float3) * resource->vertex.size());
+	it += resource->vertex.size() * sizeof(float3);
+
+
 	float2* uv = new float2[resource->vertex.size()];
 	glGetBufferSubData(resource->buffUv, NULL, resource->vertex.size() * sizeof(float2), uv);
 	memcpy(it, uv, resource->vertex.size() * sizeof(float2));
+	it += resource->vertex.size() * sizeof(float2);
 
 	delete[] uv;
 
 	return length;
+}
+
+void cMesh::DeSerialize(char *& buffer, GameObject * parent)
+{
+	char* it = buffer;
+
+	// Normals Size
+	uint size;
+	memcpy(&size, it, sizeof(uint));
+	it += sizeof(uint);
+
+	// Normals
+	memcpy(&resource->normals, it, sizeof(float3) * size);
+	it += size * sizeof(float3);
+
+	// Index Size
+	memcpy(&size, it, sizeof(uint));
+	it += sizeof(uint);
+
+	// Index
+	memcpy(resource->index.data(), it, sizeof(uint) * size);
+	it += size * sizeof(uint);
+
+	// Vertex Size
+	memcpy(&size, it, sizeof(uint));
+	it += sizeof(uint);
+
+	// Vertex 
+	memcpy(resource->vertex.data(), it, sizeof(float3) * size);
+	it += size * sizeof(float3);
+
+	// UVs
+	//memcpy(it, uv, resource->vertex.size() * sizeof(float2));
+	it += size * sizeof(float2);
 }

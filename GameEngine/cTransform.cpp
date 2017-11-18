@@ -244,3 +244,17 @@ uint cTransform::Serialize(char * &buffer)
 	return length;
 }
 
+void cTransform::DeSerialize(char *& buffer, GameObject * parent)
+{
+	char* it = buffer;
+
+	memcpy(&positionLocal, it, sizeof(float3));
+	it += sizeof(float3);
+
+	memcpy(&scaleLocal, it, sizeof(float3));
+	it += sizeof(float3);
+
+	memcpy(&rotationLocal, it, sizeof(Quat));
+	it += sizeof(Quat);
+}
+

@@ -21,6 +21,7 @@ public:
 	void LoadTexture();
 
 	uint Serialize(char* &buffer);
+	void DeSerialize(char* &buffer, GameObject* parent);
 
 private:
 };
