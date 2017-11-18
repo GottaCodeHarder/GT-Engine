@@ -26,6 +26,8 @@ enum FileExtensions
 	Scene3D = 0,
 	Image,
 	Folder,
+	GTScene,
+	GTImported,
 	Unsupported
 };
 
@@ -41,7 +43,7 @@ public:
 
 	ImVec2 imageDimensions;
 
-	static GameObject* ImportFbx(const char* path);
+	GameObject* ImportFbx(const char* path);
 	ResourceMesh* LoadMesh(const aiScene* scene , int meshIndex);
 	ResourceTexture* LoadTexture(const aiScene* scene , int textIndex , const char* path , cMaterial* material);
 	AABB maxBox;
