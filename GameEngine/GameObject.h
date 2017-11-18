@@ -33,6 +33,7 @@ public:
 
 	// Returns the length of the buffer
 	uint Serialize(char* &buffer);
+	uint DeSerialize(char* &buffer, GameObject * parent);
 
 	void Enable();
 	void Disable();

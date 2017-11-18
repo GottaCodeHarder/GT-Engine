@@ -5,6 +5,7 @@
 #include "ModuleScene.h"
 #include "cTransform.h"
 #include "cMesh.h"
+#include "cMaterial.h"
 #include "ResourceMesh.h"
 #include "cCamera.h"
 #include "MathGeoLib/MathGeoLib.h"
@@ -334,6 +335,117 @@ uint GameObject::Serialize(char * &buf)
 	}
 
 	delete[] myself;
+
+	return length;
+}
+
+uint GameObject::DeSerialize(char *& buffer, GameObject * parent)
+{
+	uint length = 0; // Size of the GameObject
+	uint size = 0;
+	uint sizeChilds = 0;
+	char* it = buffer;
+
+	// Size of Serialization
+	it += sizeof(uint);
+
+	// Name Length
+	memcpy(&size, it, sizeof(uint));
+	it += sizeof(uint);	
+
+	// Name
+	memcpy(&name, it, size);
+	it += name.length();
+	
+	// Components Size
+	memcpy(&size, it, sizeof(uint));
+	it += sizeof(uint);
+
+	// Childs Size
+	memcpy(&sizeChilds, it, sizeof(uint));
+	it += sizeof(uint);
+	
+	// Saving Lengths
+	length += sizeof(uint);
+	length += sizeof(uint); // Size of Name Length variable
+	length += name.length(); // Size of the Name String
+	length += sizeof(uint); // Size of Components
+	length += sizeof(uint); // Size of Childs
+
+	if (size > NULL)
+	{
+		uint tmp = size;
+		while (tmp >= NULL)
+		{
+			componentType type;
+
+			// Size of Component Serialization
+			it += sizeof(uint);
+
+			memcpy(&type, it, sizeof(int));
+			it += sizeof(int);
+			switch (type)
+			{
+			case componentType::TRANSFORM:
+			{
+				cTransform transform(this);
+				uint cSize = transform.DeSerialize(it, this);
+				it += cSize;
+				length += cSize;
+				break;
+			}
+			case componentType::MATERIAL:
+			{
+				cMaterial material(this);
+				uint cSize = material.DeSerialize(it, this);
+				it += cSize;
+				length += cSize;
+				break;
+			}
+			case componentType::MESH:
+			{
+				cMesh mesh(this);
+				uint cSize = mesh.DeSerialize(it, this);
+				it += cSize;
+				length += cSize;
+				break;
+			}
+			case componentType::CAMERA:
+			{
+				cCamera camera(this);
+				uint cSize = camera.DeSerialize(it, this);
+				it += cSize;
+				length += cSize;
+				break;
+			}
+			default:
+			{
+				MYLOG("File was corrupted. Emergency exit, possible Scene bug.");
+				return 0;
+				break;
+			}
+			}
+		}
+	}
+
+	for (std::vector<GameObject*>::iterator child = sons.begin(); child != sons.end(); child++)
+	{
+		size = (*child)->DeSerialize(it, this);
+		length += size;
+		it += size;
+	}
+
+	// Setting Parent
+	if (parent == nullptr)
+	{
+		this->parent = App->scene->root;
+		App->scene->root->sons.push_back(this);
+	}
+	else
+	{
+		this->parent = parent;
+		parent->sons.push_back(this);
+	}
 
 	return length;
 }
