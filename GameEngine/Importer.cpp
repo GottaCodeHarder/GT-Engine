@@ -336,11 +336,10 @@ GameObject * Importer::ImportGTE(const char * path)
 	GameObject* ret = nullptr;
 	std::string tmp = path;
 	
-	// Check that it isn't in Assets
-	int pos = tmp.find("Assets");
+	int pos = tmp.find("Library");
 	if (pos != std::string::npos)
 	{
-		tmp = tmp.substr(pos + 7); // 7 being "Assets/"
+		tmp = tmp.substr(pos + 8); // 8 being "Library/"
 	}
 
 	while (true)
