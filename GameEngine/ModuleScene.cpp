@@ -102,7 +102,7 @@ update_status ModuleScene::Update(float dt)
 		}
 		case FileExtensions::GTImported:
 		{
-			importer.ImportGTE((char*)App->input->GetFileDropped());
+			CreateGte((char*)App->input->GetFileDropped());
 			break;
 		}
 		case FileExtensions::Unsupported:
@@ -189,6 +189,33 @@ void ModuleScene::CreateFbx(char* path)
 		delete tmp;
 	}
 	
+}
+
+void ModuleScene::CreateGte(char * path)
+{
+	GameObject* tmp = importer.ImportGTE(path);
+	App->editor->selected = *tmp->sons.begin();
+	for (auto childsTmp : tmp->sons)
+	{
+		//App->editor->selected = childsTmp;
+		childsTmp->parent = root;
+		root->sons.push_back(childsTmp);
+	}
+
+	App->camera->referenceDone = true;
+	if (tmp != nullptr)
+	{
+		cTransform* cameraTmp = ((cTransform*)App->camera->GetDefaultCamera()->gameObject->FindComponent(TRANSFORM));
+
+		fbxMaxBoxes.push_back(importer.maxBox);
+		App->camera->Position.x = importer.maxBox.maxPoint.x * 2;
+		App->camera->Position.y = importer.maxBox.maxPoint.y * 2;
+		App->camera->Position.z = importer.maxBox.maxPoint.z * 2;
+		cameraTmp->positionLocal = { App->camera->Position.x, App->camera->Position.y, App->camera->Position.z };
+		App->camera->LookAt(vec(importer.maxBox.CenterPoint().x, importer.maxBox.CenterPoint().y, importer.maxBox.CenterPoint().z));
+		tmp = nullptr;
+		delete tmp;
+	}
 }
 
 void ModuleScene::ResetScene()

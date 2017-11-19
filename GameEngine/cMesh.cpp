@@ -190,7 +190,8 @@ uint cMesh::DeSerialize(char * &buffer, GameObject * parent)
 
 	///////////////////////
 	// Vertex
-	/*if (resource->vertex.empty() != false)
+
+	if (resource->vertex.empty() != false)
 	{
 		glGenBuffers(1, (GLuint*) &(resource->buffVertex));
 		glBindBuffer(GL_ARRAY_BUFFER, resource->buffVertex);
@@ -201,6 +202,15 @@ uint cMesh::DeSerialize(char * &buffer, GameObject * parent)
 	else
 	{
 		MYLOG("WARNING, the .GTE scene has 0 vertex!");
+	}
+
+	if (resource->vertex.size() == 0)
+	{
+		for (int j = 0; j < resource->numVertex; j++)
+		{
+			//SAVE VERTEX
+			//resource->vertex.push_back(float3(scene->mMeshes[i]->mVertices[j].x, scene->mMeshes[i]->mVertices[j].y, scene->mMeshes[i]->mVertices[j].z));
+		}
 	}
 	// Normals
 	if (resource->normals.empty() != false)
@@ -213,7 +223,7 @@ uint cMesh::DeSerialize(char * &buffer, GameObject * parent)
 	// UVs
 	if (uv->Size > NULL)
 	{
-		/*glGenBuffers(1, (GLuint*) &(resource->buffUv));
+		glGenBuffers(1, (GLuint*) &(resource->buffUv));
 		glBindBuffer(GL_ARRAY_BUFFER, resource->buffUv);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * resource->numVertex * 2, uv, GL_STATIC_DRAW);
 	}
@@ -225,7 +235,7 @@ uint cMesh::DeSerialize(char * &buffer, GameObject * parent)
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, resource->buffIndex);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, resource->numIndex * 3, &resource->index, GL_STATIC_DRAW);
 		MYLOG("DeSerialize - Loading %i index succesful!", resource->numIndex * 3);
-	}*/
+	}
 
 	return ret;
 }

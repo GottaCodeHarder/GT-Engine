@@ -10,6 +10,7 @@
 #include "ModuleCamera3D.h"
 #include "ModuleRenderer3D.h"
 #include "ModuleEditor.h"
+#include "ResourceMesh.h"
 
 
 #include "cTransform.h"
@@ -265,6 +266,14 @@ uint cTransform::DeSerialize(char *& buffer, GameObject * parent)
 	memcpy(&rotationLocal, it, sizeof(Quat));
 	it += sizeof(Quat);
 	ret += sizeof(Quat);
+
+	if (gameObject->FindComponent(MESH) != nullptr)
+	{
+		gameObject->aabbBox.SetNegativeInfinity();
+		OBB obb = ((cMesh*)gameObject->FindComponent(MESH))->resource->aabbBox.Transform(GetGlobalMatrixTransf());
+		
+		gameObject->aabbBox.Enclose(obb);
+	}
 
 	return ret;
 }

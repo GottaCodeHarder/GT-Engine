@@ -616,8 +616,7 @@ void ModuleEditor::LoadFile()
 		}
 		case FileExtensions::GTImported:
 		{
-			Importer imp;
-			imp.ImportGTE(fileName);
+			App->scene->CreateGte(fileName);
 			break;
 		}
 		case FileExtensions::Unsupported:

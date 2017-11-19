@@ -96,7 +96,7 @@ GameObject* Importer::ImportFbx(const char * path)
 					{
 						gameObject->aabbBox.SetNegativeInfinity();
 						OBB obb = mesh->resource->aabbBox.Transform(matrix);
-
+					
 						gameObject->aabbBox.Enclose(obb);
 					}
 
@@ -324,6 +324,7 @@ ResourceTexture * Importer::LoadTexture(const aiScene* scene , int textIndex , c
 
 GameObject * Importer::ImportGTE(const char * path)
 {
+	GameObject* ret;
 	std::string tmp = path;
 	
 	// Check that it isn't in Assets
@@ -358,13 +359,14 @@ GameObject * Importer::ImportGTE(const char * path)
 			rwops->read(rwops, content, size, 1);
 
 
-			GameObject* base = new GameObject("", true, App->scene->root);
-			base->DeSerialize(content, App->scene->root);
+			ret = new GameObject("", true, App->scene->root);
+
+			ret->DeSerialize(content, App->scene->root);
 		}
 		rwops->close(rwops);
 	}
 
-	return nullptr;
+	return ret;
 }
 
 GLuint Importer::LoadImageFile(const char* theFileName)

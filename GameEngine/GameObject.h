@@ -48,6 +48,7 @@ public:
 	AABB aabbBox;
 	bool statiC = false;
 	bool isInsideQuad = false;
+	bool resizeAABB = true;
 
 private:
 

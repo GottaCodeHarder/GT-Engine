@@ -38,11 +38,6 @@ void GameObject::Update()
 {
 	if (active)
 	{
-		for (auto comp : components)
-		{
-			comp.second->Update();
-		}
-		
 		//Multiply all the matrixTransform with their sons
 		glPushMatrix();
 
@@ -55,9 +50,10 @@ void GameObject::Update()
 			float4x4 matrix1 = ((cTransform*)FindComponent(TRANSFORM))->GetLocalMatrixTransf();
 
 			//if has a mesh it is modified
-			if (SonHasMesh())
+			if (SonHasMesh() || resizeAABB)
 			{
 				UpdateAABB(matrix);
+				resizeAABB = false;
 			}
 			//IF has frustum it is modified
 			if (((cCamera*)FindComponent(CAMERA)) != nullptr)
@@ -66,6 +62,12 @@ void GameObject::Update()
 			}
 
 			((cTransform*)FindComponent(TRANSFORM))->transformChange = false;
+		}
+
+		//UPDATE COMPONENTS
+		for (auto comp : components)
+		{
+			comp.second->Update();
 		}
 
 		if (!sons.empty())
