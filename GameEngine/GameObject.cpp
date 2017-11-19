@@ -396,8 +396,10 @@ uint GameObject::DeSerialize(char * &buffer, GameObject * parent)
 			{
 			case componentType::TRANSFORM:
 			{
-				cTransform transform(this);
-				t = transform.DeSerialize(it, this);
+				//cTransform* c = (cTransform*)FindComponent(TRANSFORM);
+				cTransform * c = (cTransform*)this->FindComponent(TRANSFORM);
+				t = (c->DeSerialize(it, this));
+				//t = transform.DeSerialize(it, this);
 				it += t;
 				ret += t;
 				break;
@@ -446,6 +448,7 @@ uint GameObject::DeSerialize(char * &buffer, GameObject * parent)
 			uint t = 0;
 			GameObject* go = new GameObject("", true, this);
 			t = go->DeSerialize(it, this);
+			sons.push_back(go);
 			it += t;
 			ret += t;
 
