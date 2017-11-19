@@ -359,7 +359,7 @@ GameObject * Importer::ImportGTE(const char * path)
 
 
 			GameObject* base = new GameObject("", true, App->scene->root);
-			base->DeSerialize(content, nullptr);
+			base->DeSerialize(content, App->scene->root);
 		}
 		rwops->close(rwops);
 	}

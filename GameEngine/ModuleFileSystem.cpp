@@ -74,6 +74,11 @@ bool ModuleFileSystem::IsDirectory(const char* file) const
 	return PHYSFS_isDirectory(file) != 0;
 }
 
+const char * ModuleFileSystem::GetExecutableDirectory() const
+{
+	return PHYSFS_getBaseDir();
+}
+
 std::vector<std::string> ModuleFileSystem::GetFolderContent(const char * path)
 {
 	std::vector<std::string> ret;

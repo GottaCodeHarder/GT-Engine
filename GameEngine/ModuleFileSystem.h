@@ -32,6 +32,8 @@ public:
 	{
 		return "save/";
 	}
+	const char* GetExecutableDirectory() const;
+
 	std::vector<std::string> GetFolderContent(const char* path);
 	std::vector<std::string> GetFolderContentRecursive(const char* path);
 
