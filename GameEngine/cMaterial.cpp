@@ -107,7 +107,7 @@ uint cMaterial::Serialize(char * &buffer)
 	it += sizeof(float2);
 
 	// Path Length
-	uint size = resource->path.length();
+	uint size = resource->path.size();
 	memcpy(it, &size, sizeof(uint));
 	it += sizeof(uint);
 
@@ -128,18 +128,18 @@ uint cMaterial::DeSerialize(char *& buffer, GameObject * parent)
 	uint ret = 0;
 
 	// Texture Buffer
-	memcpy(&resource->buffTexture, &it, sizeof(uint));
+	memcpy(&resource->buffTexture, it, sizeof(uint));
 	it += sizeof(uint);
 	ret += sizeof(uint);
 
 	// Dimensions
-	memcpy(&resource->imageDimensions, &it, sizeof(float2));
+	memcpy(&resource->imageDimensions, it, sizeof(float2));
 	it += sizeof(float2);
 	ret += sizeof(float2);
 
 	// Path Length
-	uint size;
-	memcpy(&size, &it, sizeof(uint));
+	uint size = 0;
+	memcpy(&size, it, sizeof(uint));
 	it += sizeof(uint);
 	ret += sizeof(uint);
 
@@ -149,7 +149,7 @@ uint cMaterial::DeSerialize(char *& buffer, GameObject * parent)
 	ret += size;
 
 	// Color
-	memcpy(&resource->color, &it, sizeof(float3));
+	memcpy(&resource->color, it, sizeof(float3));
 	it += sizeof(float3);
 	ret += sizeof(float3);
 

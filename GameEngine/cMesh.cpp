@@ -17,7 +17,7 @@ cMesh::cMesh(GameObject* _gameObject) : Component(MESH, _gameObject)
 
 cMesh::~cMesh()
 {
-	delete[] resource;
+	
 }
 
 void cMesh::RealUpdate()
@@ -184,13 +184,13 @@ uint cMesh::DeSerialize(char * &buffer, GameObject * parent)
 
 	// UVs
 	float2* uv = new float2[resource->numVertex];
-	memcpy(&uv, it, resource->numVertex * sizeof(float2));
+	//memcpy(&uv, it, resource->numVertex * sizeof(float2));
 	it += resource->numVertex * sizeof(float2);
 	ret += resource->numVertex * sizeof(float2);
 
 	///////////////////////
 	// Vertex
-	if (resource->vertex.empty() != false)
+	/*if (resource->vertex.empty() != false)
 	{
 		glGenBuffers(1, (GLuint*) &(resource->buffVertex));
 		glBindBuffer(GL_ARRAY_BUFFER, resource->buffVertex);
@@ -213,16 +213,19 @@ uint cMesh::DeSerialize(char * &buffer, GameObject * parent)
 	// UVs
 	if (uv->Size > NULL)
 	{
-		glGenBuffers(1, (GLuint*) &(resource->buffUv));
+		/*glGenBuffers(1, (GLuint*) &(resource->buffUv));
 		glBindBuffer(GL_ARRAY_BUFFER, resource->buffUv);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * resource->numVertex * 2, uv, GL_STATIC_DRAW);
 	}
 
 	// Index
-	glGenBuffers(1, (GLuint*) &(resource->buffIndex));
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, resource->buffIndex);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, resource->numIndex * 3, &resource->index, GL_STATIC_DRAW);
-	MYLOG("Importer - Loading %i index succesful!", resource->numIndex * 3);
+	if (resource->numIndex > 0)
+	{
+		glGenBuffers(1, (GLuint*) &(resource->buffIndex));
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, resource->buffIndex);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, resource->numIndex * 3, &resource->index, GL_STATIC_DRAW);
+		MYLOG("DeSerialize - Loading %i index succesful!", resource->numIndex * 3);
+	}*/
 
 	return ret;
 }

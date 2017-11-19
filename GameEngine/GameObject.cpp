@@ -336,8 +336,9 @@ uint GameObject::Serialize(char * &buf)
 	return length;
 }
 
-bool GameObject::DeSerialize(char * &buffer, GameObject * parent)
+uint GameObject::DeSerialize(char * &buffer, GameObject * parent)
 {
+	uint ret = 0;
 	uint size = 0;
 	uint sizeChilds = 0;
 	char* it = buffer;
@@ -357,18 +358,22 @@ bool GameObject::DeSerialize(char * &buffer, GameObject * parent)
 	// Name Length
 	memcpy(&size, it, sizeof(uint));
 	it += sizeof(uint);
+	ret += sizeof(uint);
 
 	// Name
 	name.assign(&it[0], size);
 	it += size;
+	ret += size;
 	
 	// Components Size
 	memcpy(&size, it, sizeof(uint));
 	it += sizeof(uint);
+	ret += sizeof(uint);
 
 	// Childs Size
 	memcpy(&sizeChilds, it, sizeof(uint));
 	it += sizeof(uint);
+	ret += sizeof(uint);
 
 	if (size > NULL)
 	{
@@ -383,6 +388,7 @@ bool GameObject::DeSerialize(char * &buffer, GameObject * parent)
 			uint t;
 			memcpy(&iType, it, sizeof(int));
 			it += sizeof(int);
+			ret += sizeof(int);
 
 			type = (componentType)iType;
 
@@ -393,6 +399,7 @@ bool GameObject::DeSerialize(char * &buffer, GameObject * parent)
 				cTransform transform(this);
 				t = transform.DeSerialize(it, this);
 				it += t;
+				ret += t;
 				break;
 			}
 			case componentType::MATERIAL:
@@ -400,6 +407,7 @@ bool GameObject::DeSerialize(char * &buffer, GameObject * parent)
 				cMaterial material(this);
 				t = material.DeSerialize(it, this);
 				it += t;
+				ret += t;
 				break;
 			}
 			case componentType::MESH:
@@ -407,6 +415,7 @@ bool GameObject::DeSerialize(char * &buffer, GameObject * parent)
 				cMesh mesh(this);
 				t = mesh.DeSerialize(it, this);
 				it += t;
+				ret += t;
 				break;
 			}
 			case componentType::CAMERA:
@@ -414,12 +423,13 @@ bool GameObject::DeSerialize(char * &buffer, GameObject * parent)
 				cCamera camera(this);
 				t = camera.DeSerialize(it, this);
 				it += t;
+				ret += t;
 				break;
 			}
 			default:
 			{
 				MYLOG("File was corrupted. Emergency exit, possible Scene bug.");
-				return false;
+				return ret;
 				break;
 			}
 			}
@@ -431,16 +441,19 @@ bool GameObject::DeSerialize(char * &buffer, GameObject * parent)
 	if (sizeChilds > NULL)
 	{
 		uint tmp = sizeChilds;
-		while (tmp >= NULL)
+		while (tmp > NULL)
 		{
+			uint t = 0;
 			GameObject* go = new GameObject("", true, this);
-			go->DeSerialize(it, this);
+			t = go->DeSerialize(it, this);
+			it += t;
+			ret += t;
 
 			tmp--;
 		}
 	}
 	
-	return true;
+	return ret;
 }
 
 void GameObject::Enable()
