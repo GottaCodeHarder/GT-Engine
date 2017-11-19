@@ -84,7 +84,6 @@ void cMaterial::LoadTexture()
 uint cMaterial::Serialize(char * &buffer)
 {
 	uint length = 0;
-	length += sizeof(uint);
 	length += sizeof(int);
 	length += sizeof(uint);
 	length += sizeof(float2);
@@ -95,54 +94,65 @@ uint cMaterial::Serialize(char * &buffer)
 	buffer = new char[length];
 	char* it = buffer;
 
-	memcpy(it, &length, sizeof(uint));
-	it += sizeof(uint);
-
-	memcpy(it, &type, sizeof(int));
+	int iType = (int)componentType::MATERIAL;
+	memcpy(it, &iType, sizeof(int));
 	it += sizeof(int);
 
+	// Texture Buffer
 	memcpy(it, &resource->buffTexture, sizeof(uint));
 	it += sizeof(uint);
 
+	// Dimensions
 	memcpy(it, &resource->imageDimensions, sizeof(float2));
 	it += sizeof(float2);
 
+	// Path Length
 	uint size = resource->path.length();
 	memcpy(it, &size, sizeof(uint));
 	it += sizeof(uint);
 
+	// Path
 	memcpy(it, resource->path.data(), size);
 	it += size;
 
+	// Color
 	memcpy(it, &resource->color, sizeof(float3));
 	it += sizeof(float3);
 
 	return length;
 }
 
-void cMaterial::DeSerialize(char *& buffer, GameObject * parent)
+uint cMaterial::DeSerialize(char *& buffer, GameObject * parent)
 {
 	char* it = buffer;
+	uint ret = 0;
 
 	// Texture Buffer
-	memcpy(&resource->buffTexture, it, sizeof(uint));
+	memcpy(&resource->buffTexture, &it, sizeof(uint));
 	it += sizeof(uint);
+	ret += sizeof(uint);
 
 	// Dimensions
-	memcpy(&resource->imageDimensions, it, sizeof(float2));
+	memcpy(&resource->imageDimensions, &it, sizeof(float2));
 	it += sizeof(float2);
+	ret += sizeof(float2);
 
 	// Path Length
 	uint size;
-	memcpy(&size, it, sizeof(uint));
+	memcpy(&size, &it, sizeof(uint));
 	it += sizeof(uint);
+	ret += sizeof(uint);
 
 	// Path
-	memcpy(&resource->path, it, size);
+	resource->path.assign(&it[0], size);
 	it += size;
+	ret += size;
 
 	// Color
-	memcpy(&resource->color, it, sizeof(float3));
+	memcpy(&resource->color, &it, sizeof(float3));
 	it += sizeof(float3);
+	ret += sizeof(float3);
+
+	return ret;
 }
 

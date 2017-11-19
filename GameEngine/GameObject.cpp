@@ -271,7 +271,6 @@ uint GameObject::Serialize(char * &buf)
 {
 	uint length = 0; // Size of the GameObject
 	uint myLength = 0;
-	myLength += sizeof(uint);
 	myLength += sizeof(uint); // Size of Name Length variable
 	myLength += name.length(); // Size of the Name String
 	myLength += sizeof(uint); // Size of Components
@@ -282,23 +281,21 @@ uint GameObject::Serialize(char * &buf)
 	char* myself = new char[myLength]; // Actual size of 8
 	char* it = myself;
 
-	memcpy(it, &myLength, sizeof(uint));
-	it += sizeof(uint);
-
+	// Name Length
 	uint size = name.length();
 	memcpy(it, &size, sizeof(uint));
 	it += sizeof(uint);
 
+	// Name
 	memcpy(it, name.data(), name.length());
 	it += name.length();
 
-	// Saving Components
+	// Components Size
 	size = components.size();
-
 	memcpy(it, &size, sizeof(uint));
 	it += sizeof(uint);
 
-	// Saving Childs
+	// Childs Size
 	size = sons.size();
 	memcpy(it, &size, sizeof(uint));
 	it += sizeof(uint);
@@ -339,7 +336,7 @@ uint GameObject::Serialize(char * &buf)
 	return length;
 }
 
-bool GameObject::DeSerialize(char *& buffer, GameObject * parent)
+bool GameObject::DeSerialize(char * &buffer, GameObject * parent)
 {
 	uint size = 0;
 	uint sizeChilds = 0;
@@ -357,16 +354,13 @@ bool GameObject::DeSerialize(char *& buffer, GameObject * parent)
 		parent->sons.push_back(this);
 	}
 
-	// Size of Serialization
-	it += sizeof(uint);
-
 	// Name Length
 	memcpy(&size, it, sizeof(uint));
-	it += sizeof(uint);	
+	it += sizeof(uint);
 
 	// Name
-	memcpy(&name, it, size);
-	it += name.length();
+	name.assign(&it[0], size);
+	it += size;
 	
 	// Components Size
 	memcpy(&size, it, sizeof(uint));
@@ -379,41 +373,47 @@ bool GameObject::DeSerialize(char *& buffer, GameObject * parent)
 	if (size > NULL)
 	{
 		uint tmp = size;
-		while (tmp >= NULL)
+
+		while (tmp > NULL)
 		{
 			componentType type;
 
-			// Size of Component Serialization
-			it += sizeof(uint);
-
 			// Component Type
-			memcpy(&type, it, sizeof(int));
+			int iType;
+			uint t;
+			memcpy(&iType, it, sizeof(int));
 			it += sizeof(int);
+
+			type = (componentType)iType;
 
 			switch (type)
 			{
 			case componentType::TRANSFORM:
 			{
 				cTransform transform(this);
-				transform.DeSerialize(it, this);
+				t = transform.DeSerialize(it, this);
+				it += t;
 				break;
 			}
 			case componentType::MATERIAL:
 			{
 				cMaterial material(this);
-				material.DeSerialize(it, this);
+				t = material.DeSerialize(it, this);
+				it += t;
 				break;
 			}
 			case componentType::MESH:
 			{
 				cMesh mesh(this);
-				mesh.DeSerialize(it, this);
+				t = mesh.DeSerialize(it, this);
+				it += t;
 				break;
 			}
 			case componentType::CAMERA:
 			{
 				cCamera camera(this);
-				camera.DeSerialize(it, this);
+				t = camera.DeSerialize(it, this);
+				it += t;
 				break;
 			}
 			default:

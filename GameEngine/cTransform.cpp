@@ -225,12 +225,17 @@ void cTransform::DrawUI()
 uint cTransform::Serialize(char * &buffer)
 {
 	uint length = 0;
+	length += sizeof(int);
 	length += sizeof(float3);
 	length += sizeof(float3);
 	length += sizeof(Quat);
 
 	buffer = new char[length];
 	char* it = buffer;
+
+	int iType = (int)componentType::TRANSFORM;
+	memcpy(it, &iType, sizeof(int));
+	it += sizeof(int);
 
 	memcpy(it, &positionLocal, sizeof(float3));
 	it += sizeof(float3);
@@ -244,17 +249,23 @@ uint cTransform::Serialize(char * &buffer)
 	return length;
 }
 
-void cTransform::DeSerialize(char *& buffer, GameObject * parent)
+uint cTransform::DeSerialize(char *& buffer, GameObject * parent)
 {
 	char* it = buffer;
+	uint ret = 0;
 
 	memcpy(&positionLocal, it, sizeof(float3));
 	it += sizeof(float3);
+	ret += sizeof(float3);
 
 	memcpy(&scaleLocal, it, sizeof(float3));
 	it += sizeof(float3);
+	ret += sizeof(float3);
 
 	memcpy(&rotationLocal, it, sizeof(Quat));
 	it += sizeof(Quat);
+	ret += sizeof(Quat);
+
+	return ret;
 }
 
