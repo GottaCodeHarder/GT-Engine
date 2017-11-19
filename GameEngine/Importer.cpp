@@ -509,6 +509,14 @@ GLuint Importer::LoadImageFile(const char * theFileName, cMaterial * material)
 	return textureID;
 }
 
+void Importer::FindAndReplace(std::string & source, std::string const & toFind, std::string const & replace)
+{
+	for (std::string::size_type i = 0; (i = source.find(toFind, i)) != std::string::npos;)
+	{
+		source.replace(i, toFind.length(), replace);
+		i += replace.length();
+	}
+}
 FileExtensions Importer::GetExtension(const char *path)
 {
 	char* ptr = &(char)path[strlen(path)];

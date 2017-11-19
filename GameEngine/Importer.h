@@ -41,6 +41,8 @@ public:
 	GLuint LoadImageFile(const char* file);
 	GLuint LoadImageFile(const char* file , cMaterial* material);
 
+	static void FindAndReplace(std::string& source, std::string const& toFind, std::string const& replace);
+
 	ImVec2 imageDimensions;
 
 	GameObject* ImportFbx(const char* path);
