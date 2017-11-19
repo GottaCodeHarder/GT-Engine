@@ -21,7 +21,12 @@
 
 GameObject* Importer::ImportFbx(const char * path)
 {
-	const aiScene* scene = aiImportFile(path, aiProcessPreset_TargetRealtime_MaxQuality);
+	std::string tmp = App->fileSystem->GetExecutableDirectory();
+	Importer::FindAndReplace(tmp, "\\", "/");
+	tmp.pop_back();
+	tmp += path;
+
+	const aiScene* scene = aiImportFile(tmp.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
 	GameObject* ret = new GameObject("fakeRoot", true, nullptr);
 	bCalcRet = true;
 
@@ -73,7 +78,7 @@ GameObject* Importer::ImportFbx(const char * path)
 					cMaterial* material = new cMaterial(gameObject);
 
 					//LOAD MESH
-					mesh->resource = (ResourceMesh*)App->resourceManager->LoadResourceMesh(scene, i , path + gameObject->name);
+					mesh->resource = (ResourceMesh*)App->resourceManager->LoadResourceMesh(scene, i , tmp + gameObject->name);
 
 					float4x4 matrix = transform->GetGlobalMatrixTransf();
 					gameObject->AddComponent(mesh);
@@ -149,13 +154,13 @@ GameObject* Importer::ImportFbx(const char * path)
 		aiReleaseImport(scene);
 	}
 	else
-		MYLOG("Error loading scene %s", path);
+		MYLOG("Error loading scene %s", tmp);
 
 	char* buffer;
 	uint len = ret->Serialize(buffer);
 
 	std::string filename = "Library/";
-	std::string tmp = path;
+	tmp = path;
 
 	// If files are from Assets
 	int pos = tmp.find("Assets");
@@ -290,9 +295,12 @@ ResourceTexture * Importer::LoadTexture(const aiScene* scene , int textIndex , c
 			std::string strPath = path;
 			ret->path = texturePath.C_Str();
 
-			for (uint i = strlen(path); i >= 0; i--)
+			std::string str = path;
+			Importer::FindAndReplace(str, "/", "\\");
+
+			for (uint i = strlen(str.c_str()); i >= 0; i--)
 			{
-				if (path[i] == '\\')
+				if (str[i] == '\\')
 				{
 					strPath.resize(i + 1);
 					strPath += texName;
@@ -301,6 +309,7 @@ ResourceTexture * Importer::LoadTexture(const aiScene* scene , int textIndex , c
 			}
 			if (strPath.c_str() != NULL)
 			{
+				Importer::FindAndReplace(strPath, "\\", "/");
 				if (FileExists(strPath.c_str()))
 				{
 					ret->buffTexture = LoadImageFile(strPath.c_str());
@@ -324,7 +333,7 @@ ResourceTexture * Importer::LoadTexture(const aiScene* scene , int textIndex , c
 
 GameObject * Importer::ImportGTE(const char * path)
 {
-	GameObject* ret;
+	GameObject* ret = nullptr;
 	std::string tmp = path;
 	
 	// Check that it isn't in Assets

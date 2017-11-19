@@ -191,6 +191,23 @@ int close_sdl_rwops(SDL_RWops *rw)
 unsigned int ModuleFileSystem::Save(const char* file, const char* buffer, unsigned int size) const
 {
 	unsigned int ret = 0;
+	
+	std::string tmp = GetExecutableDirectory();
+	// If files are from Assets
+	Importer::FindAndReplace(tmp, "\\", "/");
+	tmp += file;
+
+	/*int pos = tmp.find("Assets");
+	if (pos != std::string::npos)
+	{
+	tmp = tmp.substr(pos + 7); // 7 being "Assets/"
+	}
+
+	pos = tmp.find("Library");
+	if (pos != std::string::npos)
+	{
+	tmp = tmp.substr(pos + 8); // 7 being "Assets/"
+	}*/
 
 	PHYSFS_file* fs_file = PHYSFS_openWrite(file);
 
