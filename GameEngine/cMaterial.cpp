@@ -127,6 +127,8 @@ uint cMaterial::DeSerialize(char *& buffer, GameObject * parent)
 	char* it = buffer;
 	uint ret = 0;
 
+	resource = new ResourceTexture();
+
 	// Texture Buffer
 	memcpy(&resource->buffTexture, it, sizeof(uint));
 	it += sizeof(uint);

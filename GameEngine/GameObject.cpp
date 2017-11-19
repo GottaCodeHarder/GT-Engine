@@ -397,33 +397,36 @@ uint GameObject::DeSerialize(char * &buffer, GameObject * parent)
 			case componentType::TRANSFORM:
 			{
 				//cTransform* c = (cTransform*)FindComponent(TRANSFORM);
-				cTransform * c = (cTransform*)this->FindComponent(TRANSFORM);
+				cTransform * c = new cTransform(this);
+				this->AddComponent(c);
 				t = (c->DeSerialize(it, this));
-				//t = transform.DeSerialize(it, this);
 				it += t;
 				ret += t;
 				break;
 			}
 			case componentType::MATERIAL:
 			{
-				cMaterial material(this);
-				t = material.DeSerialize(it, this);
+				cMaterial * c = new cMaterial(this);
+				this->AddComponent(c);
+				t = (c->DeSerialize(it, this));
 				it += t;
 				ret += t;
 				break;
 			}
 			case componentType::MESH:
 			{
-				cMesh mesh(this);
-				t = mesh.DeSerialize(it, this);
+				cMesh * c = new cMesh(this);
+				this->AddComponent(c);
+				t = (c->DeSerialize(it, this));
 				it += t;
 				ret += t;
 				break;
 			}
 			case componentType::CAMERA:
 			{
-				cCamera camera(this);
-				t = camera.DeSerialize(it, this);
+				cCamera * c = new cCamera(this);
+				this->AddComponent(c);
+				t = (c->DeSerialize(it, this));
 				it += t;
 				ret += t;
 				break;
@@ -448,7 +451,6 @@ uint GameObject::DeSerialize(char * &buffer, GameObject * parent)
 			uint t = 0;
 			GameObject* go = new GameObject("", true, this);
 			t = go->DeSerialize(it, this);
-			sons.push_back(go);
 			it += t;
 			ret += t;
 
