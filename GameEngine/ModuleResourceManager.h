@@ -18,7 +18,6 @@ public:
 	virtual ~ResourceManager();
 
 	bool Init();
-	bool Start();
 	void AddImGui();
 	bool CleanUp();
 

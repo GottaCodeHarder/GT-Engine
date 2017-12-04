@@ -25,9 +25,6 @@ enum FileExtensions
 {
 	Scene3D = 0,
 	Image,
-	Folder,
-	GTScene,
-	GTImported,
 	Unsupported
 };
 
@@ -36,21 +33,17 @@ class Importer
 
 public:
 
-	static FileExtensions GetExtension(const char* path);
-	static bool FileExists(const std::string& name);
+	FileExtensions GetExtension(const char* path);
+	bool FileExists(const std::string& name);
 	GLuint LoadImageFile(const char* file);
 	GLuint LoadImageFile(const char* file , cMaterial* material);
 
-	static void FindAndReplace(std::string& source, std::string const& toFind, std::string const& replace);
-
 	ImVec2 imageDimensions;
 
-	GameObject* ImportFbx(const char* path);
+	GameObject* LegacyLoadFbx(const char* path);
 	ResourceMesh* LoadMesh(const aiScene* scene , int meshIndex);
 	ResourceTexture* LoadTexture(const aiScene* scene , int textIndex , const char* path , cMaterial* material);
 	AABB maxBox;
-
-	GameObject* ImportGTE(const char* path);
 
 private:
 	bool bDevilInit = false;

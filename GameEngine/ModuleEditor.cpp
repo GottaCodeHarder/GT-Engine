@@ -13,7 +13,6 @@
 
 #include "GameObject.h"
 #include "Random.h"
-#include "Importer.h"
 
 ModuleEditor::ModuleEditor(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -601,30 +600,7 @@ void ModuleEditor::LoadFile()
 
 	if (GetOpenFileName(&oFileName) != 0)
 	{
-		FileExtensions extension = Importer::GetExtension(fileName);
-
-		switch (extension)
-		{
-		case FileExtensions::Scene3D:
-		{
-			App->scene->CreateFbx(fileName);
-			break;
-		}
-		case FileExtensions::GTScene:
-		{
-			break;
-		}
-		case FileExtensions::GTImported:
-		{
-			App->scene->CreateGte(fileName);
-			break;
-		}
-		case FileExtensions::Unsupported:
-		{
-			MYLOG("File Type not supported by GT Engine");
-			break;
-		}
-		}
+		App->scene->CreateFbx(fileName);
 	}
 
 	file_menu["Load File"] = false;

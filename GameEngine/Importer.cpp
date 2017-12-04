@@ -19,14 +19,9 @@
 #pragma	comment (lib, "Devil/libx86/ILU.lib")
 #pragma	comment (lib, "Devil/libx86/ILUT.lib")
 
-GameObject* Importer::ImportFbx(const char * path)
+GameObject* Importer::LegacyLoadFbx(const char * path)
 {
-	std::string tmp = App->fileSystem->GetExecutableDirectory();
-	Importer::FindAndReplace(tmp, "\\", "/");
-	tmp.pop_back();
-	tmp += path;
-
-	const aiScene* scene = aiImportFile(tmp.c_str(), aiProcessPreset_TargetRealtime_MaxQuality);
+	const aiScene* scene = aiImportFile(path, aiProcessPreset_TargetRealtime_MaxQuality);
 	GameObject* ret = new GameObject("fakeRoot", true, nullptr);
 	bCalcRet = true;
 
@@ -78,7 +73,7 @@ GameObject* Importer::ImportFbx(const char * path)
 					cMaterial* material = new cMaterial(gameObject);
 
 					//LOAD MESH
-					mesh->resource = (ResourceMesh*)App->resourceManager->LoadResourceMesh(scene, i , tmp + gameObject->name);
+					mesh->resource = (ResourceMesh*)App->resourceManager->LoadResourceMesh(scene, i , path + gameObject->name);
 
 					float4x4 matrix = transform->GetGlobalMatrixTransf();
 					gameObject->AddComponent(mesh);
@@ -101,7 +96,7 @@ GameObject* Importer::ImportFbx(const char * path)
 					{
 						gameObject->aabbBox.SetNegativeInfinity();
 						OBB obb = mesh->resource->aabbBox.Transform(matrix);
-					
+
 						gameObject->aabbBox.Enclose(obb);
 					}
 
@@ -154,41 +149,12 @@ GameObject* Importer::ImportFbx(const char * path)
 		aiReleaseImport(scene);
 	}
 	else
-		MYLOG("Error loading scene %s", tmp);
+		MYLOG("Error loading scene %s", path);
 
-	char* buffer;
+	char* buffer = "";
 	uint len = ret->Serialize(buffer);
-
-	std::string filename = "Library/";
-	tmp = path;
-
-	// If files are from Assets
-	int pos = tmp.find("Assets");
-	if (pos != std::string::npos)
-	{
-		tmp = tmp.substr(pos + 7); // 7 being "Assets/"
-	}
-
-	while (true)
-	{
-		pos = tmp.find("/");
-		if (pos != std::string::npos)
-		{
-			tmp[pos] = '_';
-		}
-		else
-			break;
-	}
-
-	std::string::iterator it = tmp.end() - 1;
-	for (; *it != '.' && it != tmp.begin(); it--) {}
-	tmp.erase(it, tmp.end());
-	tmp += ".GTE";
-
-	filename += tmp;
-	
-	App->fileSystem->Save(filename.c_str(), buffer, len);
-	delete[] buffer;
+	//App->fileSystem->Save("FileName", buffer, len);
+	//delete[] buffer;
 	
 	return ret; // tmp
 }
@@ -295,12 +261,9 @@ ResourceTexture * Importer::LoadTexture(const aiScene* scene , int textIndex , c
 			std::string strPath = path;
 			ret->path = texturePath.C_Str();
 
-			std::string str = path;
-			Importer::FindAndReplace(str, "/", "\\");
-
-			for (uint i = strlen(str.c_str()); i >= 0; i--)
+			for (uint i = strlen(path); i >= 0; i--)
 			{
-				if (str[i] == '\\')
+				if (path[i] == '\\')
 				{
 					strPath.resize(i + 1);
 					strPath += texName;
@@ -309,7 +272,6 @@ ResourceTexture * Importer::LoadTexture(const aiScene* scene , int textIndex , c
 			}
 			if (strPath.c_str() != NULL)
 			{
-				Importer::FindAndReplace(strPath, "\\", "/");
 				if (FileExists(strPath.c_str()))
 				{
 					ret->buffTexture = LoadImageFile(strPath.c_str());
@@ -328,52 +290,6 @@ ResourceTexture * Importer::LoadTexture(const aiScene* scene , int textIndex , c
 			material->resource->imageDimensions = ImVec2(ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT));
 		}
 	}
-	return ret;
-}
-
-GameObject * Importer::ImportGTE(const char * path)
-{
-	GameObject* ret = nullptr;
-	std::string tmp = path;
-	
-	int pos = tmp.find("Library");
-	if (pos != std::string::npos)
-	{
-		tmp = tmp.substr(pos + 8); // 8 being "Library/"
-	}
-
-	while (true)
-	{
-		pos = tmp.find("/");
-		if (pos != std::string::npos)
-		{
-			tmp[pos] = '_';
-		}
-		else
-			break;
-	}
-
-	std::string filename = tmp;
-
-	SDL_RWops* rwops = App->fileSystem->Load(filename.c_str());
-	
-	if (rwops != nullptr)
-	{
-		uint size = rwops->size(rwops);
-
-		if (size >= NULL)
-		{
-			char* content = new char[size];
-			rwops->read(rwops, content, size, 1);
-
-
-			ret = new GameObject("", true, App->scene->root);
-
-			ret->DeSerialize(content, App->scene->root);
-		}
-		rwops->close(rwops);
-	}
-
 	return ret;
 }
 
@@ -519,26 +435,13 @@ GLuint Importer::LoadImageFile(const char * theFileName, cMaterial * material)
 	return textureID;
 }
 
-void Importer::FindAndReplace(std::string & source, std::string const & toFind, std::string const & replace)
-{
-	for (std::string::size_type i = 0; (i = source.find(toFind, i)) != std::string::npos;)
-	{
-		source.replace(i, toFind.length(), replace);
-		i += replace.length();
-	}
-}
 FileExtensions Importer::GetExtension(const char *path)
 {
 	char* ptr = &(char)path[strlen(path)];
 
-	for (; *ptr != '.'; ptr--)
+	for (; *ptr != '.' && ptr != path; ptr--)
 	{
 		// You found a secret :D
-
-		if (ptr == path)
-		{
-			return FileExtensions::Folder;
-		}
 	}
 	
 	ptr++;
@@ -557,24 +460,10 @@ FileExtensions Importer::GetExtension(const char *path)
 		return FileExtensions::Scene3D;
 	}
 
-	std::string supportedGTSceneFormats("GTScene");
-
-	if (supportedGTSceneFormats.find(ptr) != std::string::npos)
-	{
-		return FileExtensions::GTScene;
-	}
-
-	std::string supportedGTImportedFormats("GTE");
-
-	if (supportedGTImportedFormats.find(ptr) != std::string::npos)
-	{
-		return FileExtensions::GTImported;
-	}
-
 	return FileExtensions::Unsupported;
 }
 
-bool Importer::FileExists(const std::string& name) //Move to ModuleFileSystem
+bool Importer::FileExists(const std::string& name)
 {
 	struct stat buffer;
 	return (stat(name.c_str(), &buffer) == 0);

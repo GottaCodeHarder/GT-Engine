@@ -4,7 +4,6 @@
 #include "PhysFS/include/physfs.h"
 #include "SDL/include/SDL.h"
 #include "JSON/parson.h"
-#include "Importer.h"
 
 #pragma comment( lib, "PhysFS/libx86/physfs.lib" )
 
@@ -30,7 +29,6 @@ bool ModuleFileSystem::Init()
 	bool ret = true;
 
 	PHYSFS_setWriteDir(".");
-	AddPath(".");
 
 	return ret;
 }
@@ -72,61 +70,6 @@ bool ModuleFileSystem::Exists(const char* file) const
 bool ModuleFileSystem::IsDirectory(const char* file) const
 {
 	return PHYSFS_isDirectory(file) != 0;
-}
-
-const char * ModuleFileSystem::GetExecutableDirectory() const
-{
-	return PHYSFS_getBaseDir();
-}
-
-std::vector<std::string> ModuleFileSystem::GetFolderContent(const char * path)
-{
-	std::vector<std::string> ret;
-
-	// Convert char** to vector<string>
-	
-	char **files = PHYSFS_enumerateFiles(path);
-	char **tmp = files;
-
-	if (*files == NULL)
-		MYLOG("Failure. Reason: %s.\n", PHYSFS_getLastError());
-
-	for (char* i = *tmp; i != NULL; i=*++tmp)
-	{
-		ret.push_back(i);
-	}
-	
-	PHYSFS_freeList(files);
-
-	return ret;
-}
-
-std::vector<std::string> ModuleFileSystem::GetFolderContentRecursive(const char * path)
-{
-	std::vector<std::string> files = GetFolderContent(path);
-	
-	std::vector<std::string> ret;
-
-	for (std::vector<std::string>::iterator i = files.begin(); i != files.end(); i++)
-	{
-		FileExtensions type = Importer::GetExtension(i->c_str());
-
-		std::string strPath = path;
-		strPath += "/";
-		strPath += i->c_str();
-
-		if (type == FileExtensions::Folder)
-		{
-			std::vector<std::string> tmp = GetFolderContentRecursive(strPath.c_str());
-			ret.insert(ret.end(), tmp.begin(), tmp.end());
-		}
-		else if (type != FileExtensions::Unsupported)
-		{
-			ret.push_back(strPath);
-		}
-	}
-
-	return ret;
 }
 
 // Read a whole file and put it in a new buffer
@@ -191,23 +134,6 @@ int close_sdl_rwops(SDL_RWops *rw)
 unsigned int ModuleFileSystem::Save(const char* file, const char* buffer, unsigned int size) const
 {
 	unsigned int ret = 0;
-	
-	std::string tmp = GetExecutableDirectory();
-	// If files are from Assets
-	Importer::FindAndReplace(tmp, "\\", "/");
-	tmp += file;
-
-	/*int pos = tmp.find("Assets");
-	if (pos != std::string::npos)
-	{
-	tmp = tmp.substr(pos + 7); // 7 being "Assets/"
-	}
-
-	pos = tmp.find("Library");
-	if (pos != std::string::npos)
-	{
-	tmp = tmp.substr(pos + 8); // 7 being "Assets/"
-	}*/
 
 	PHYSFS_file* fs_file = PHYSFS_openWrite(file);
 

@@ -32,10 +32,6 @@ public:
 	{
 		return "save/";
 	}
-	const char* GetExecutableDirectory() const;
-
-	std::vector<std::string> GetFolderContent(const char* path);
-	std::vector<std::string> GetFolderContentRecursive(const char* path);
 
 	// Open for Read/Write
 	unsigned int Load(const char* file, char** buffer) const;
@@ -44,6 +40,7 @@ public:
 	unsigned int Save(const char* file, const char* buffer, unsigned int size) const;
 	
 private:
+
 };
 
 #endif // __j1FILESYSTEM_H__

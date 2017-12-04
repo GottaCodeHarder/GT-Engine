@@ -36,7 +36,6 @@ public:
 
 	GameObject* CreateGameObject(std::string name = "GameObject", bool active = true, GameObject* parent = nullptr);
 	void CreateFbx(char* path);
-	void CreateGte(char* path);
 	void ResetScene();
 	RayCastHit RayCast(const float3& position, const float3& direction);
 	std::vector<GameObject*> GetDynamicGO(const GameObject* GO , std::vector<GameObject*>& posibleCol);
