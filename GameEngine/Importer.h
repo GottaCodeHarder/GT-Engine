@@ -25,6 +25,7 @@ enum FileExtensions
 {
 	Scene3D = 0,
 	Image,
+	Folder,
 	Unsupported
 };
 
@@ -33,10 +34,12 @@ class Importer
 
 public:
 
-	FileExtensions GetExtension(const char* path);
+	static FileExtensions GetExtension(const char* path);
 	bool FileExists(const std::string& name);
 	GLuint LoadImageFile(const char* file);
 	GLuint LoadImageFile(const char* file , cMaterial* material);
+
+	static void FindAndReplace(std::string& source, std::string const& toFind, std::string const& replace);
 
 	ImVec2 imageDimensions;
 

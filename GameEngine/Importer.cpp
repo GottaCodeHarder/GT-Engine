@@ -435,15 +435,29 @@ GLuint Importer::LoadImageFile(const char * theFileName, cMaterial * material)
 	return textureID;
 }
 
+void Importer::FindAndReplace(std::string & source, std::string const & toFind, std::string const & replace)
+{
+	for (std::string::size_type i = 0; (i = source.find(toFind, i)) != std::string::npos;)
+	{
+		source.replace(i, toFind.length(), replace);
+		i += replace.length();
+	}
+}
+
 FileExtensions Importer::GetExtension(const char *path)
 {
 	char* ptr = &(char)path[strlen(path)];
 
-	for (; *ptr != '.' && ptr != path; ptr--)
+	for (; *ptr != '.'; ptr--)
 	{
 		// You found a secret :D
+
+		if (ptr == path)
+		{
+			return FileExtensions::Folder;
+		}
 	}
-	
+
 	ptr++;
 
 	std::string supportedImageFormats("bmp dcx dds hdr icns ico cur iff gif jpg jpe jpeg jp2 lbm png PNG raw tif tga");
