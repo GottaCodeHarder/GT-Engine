@@ -122,6 +122,7 @@
     <ClInclude Include="glew\include\wglew.h" />
     <ClInclude Include="glmath.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="GTInterface\GTInterface.h" />
     <ClInclude Include="ImGuizmo.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
@@ -222,6 +223,7 @@
     <ClInclude Include="SDL\include\SDL.h" />
     <ClInclude Include="SDL\include\SDL_syswm.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="UIComponents.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -232,6 +234,7 @@
     <ClCompile Include="cTransform.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="glmath.cpp" />
+    <ClCompile Include="GTInterface\GTInterface.cpp" />
     <ClCompile Include="ImGuizmo.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />

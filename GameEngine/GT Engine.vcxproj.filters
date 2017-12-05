@@ -67,6 +67,12 @@
     <Filter Include="Sources\Resources">
       <UniqueIdentifier>{8579a55a-9f4e-4626-9e92-c82d3b295009}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\GTInterface">
+      <UniqueIdentifier>{c4544f65-53fa-4364-bfeb-6aff38877dbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\GameObjects\UIComponents">
+      <UniqueIdentifier>{4df1be4c-9cb8-440d-928c-72514354a2e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Module.h">
@@ -510,6 +516,12 @@
     <ClInclude Include="Resources.h">
       <Filter>Sources\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="GTInterface\GTInterface.h">
+      <Filter>Sources\GTInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="UIComponents.h">
+      <Filter>Sources\GameObjects\UIComponents</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleAudio.cpp">
@@ -724,6 +736,9 @@
     </ClCompile>
     <ClCompile Include="ModuleResourceManager.cpp">
       <Filter>Sources\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="GTInterface\GTInterface.cpp">
+      <Filter>Sources\GTInterface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
