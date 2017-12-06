@@ -6,6 +6,8 @@
 #include "ModuleScene.h"
 #include "ImGui/imgui_impl_sdl_gl3.h"
 
+#include "GTInterface/GTInterface.h"
+
 #define MAX_KEYS 300
 
 ModuleInput::ModuleInput(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -104,6 +106,7 @@ update_status ModuleInput::PreUpdate(float dt)
 	while(SDL_PollEvent(&e))
 	{
 		ImGui_ImplSdlGL3_ProcessEvent(&e);
+		GTI::GetEventSDL(e);
 
 		switch(e.type)
 		{

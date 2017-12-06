@@ -2,6 +2,8 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 
+#include "GTInterface/GTInterface.h"
+
 ModuleWindow::ModuleWindow(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	window = NULL;
@@ -73,6 +75,12 @@ bool ModuleWindow::Init()
 			screenSurface = SDL_GetWindowSurface(window);
 		}
 	}
+
+	int w, h;
+
+	SDL_GetWindowSize(window, &w, &h);
+
+	GTI::Init(w, h, 0.01f);
 
 	return ret;
 }

@@ -14,6 +14,7 @@
 #include "cTransform.h"
 #include "cCamera.h"
 
+#include "GTInterface/GTInterface.h"
 
 #include "glew/include/glew.h"
 #include "SDL/include/SDL_opengl.h"
@@ -41,7 +42,7 @@ bool ModuleRenderer3D::Init()
 {
 	MYLOG("Creating 3D Renderer context");
 	bool ret = true;
-	
+
 	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -199,6 +200,8 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	
 //----------------------------------------------------------------------------------------------------------------------------
 
+	// Drawing GTI
+	GTI::Render();
 
 	// Drawing UI
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -576,10 +579,12 @@ void ModuleRenderer3D::DirectCube()
 // =============================================
 void DebugDrawer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
 {
+	glDisable(GL_LIGHTING);
 	line.origin.Set(from.getX(), from.getY(), from.getZ());
 	line.destination.Set(to.getX(), to.getY(), to.getZ());
 	line.color.Set(color.getX(), color.getY(), color.getZ());
 	line.Render();
+	glEnable(GL_LIGHTING);
 }
 
 void DebugDrawer::drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color)
