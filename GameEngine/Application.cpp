@@ -14,6 +14,7 @@
 #include "ModuleHardware.h"
 #include "ModuleScene.h"
 #include "ModuleResourceManager.h"
+#include "ModuleGUI.h"
 
 Application::Application()
 {
@@ -28,6 +29,7 @@ Application::Application()
 	scene = new ModuleScene(this);
 	camera = new ModuleCamera3D(this);
 	resourceManager = new ResourceManager(this);
+	userinterface = new ModuleGUI(this);
 
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
@@ -44,6 +46,7 @@ Application::Application()
 	AddModule(resourceManager);
 	AddModule(scene);
 	AddModule(camera);
+	AddModule(userinterface);
 
 	// Renderer last!
 	AddModule(renderer3D);

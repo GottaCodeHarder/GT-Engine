@@ -4,8 +4,6 @@
 #include "../SDL/include/SDL.h"
 #include "../MathGeoLib/MathGeoLib.h"
 
-
-
 typedef unsigned int uint;
 
 
@@ -19,7 +17,7 @@ public:
 	~GTI();
 
 	static GTI GTInterface; // Brujeria
-
+	
 	static void Init(uint screenWidth, uint screenHeight, float scale = 0.5f);
 
 	//
@@ -65,6 +63,29 @@ private:
 		}
 	};
 
+	class Button : public UIElement
+	{
+		static UIElementType GetType()
+		{
+			return UIElementType::Button;
+		}
+	};
+
+	class Checkbox : public UIElement
+	{
+		static UIElementType GetType()
+		{
+			return UIElementType::Checkbox;
+		}
+	};
+
+	class Input : public UIElement
+	{
+		static UIElementType GetType()
+		{
+			return UIElementType::Input;
+		}
+	};
 };
 
 

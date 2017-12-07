@@ -16,6 +16,7 @@ class ModuleFileSystem;
 class ModuleHardware;
 class ModuleScene;
 class ResourceManager;
+class ModuleGUI;
 
 class Application
 {
@@ -31,6 +32,7 @@ public:
 	ModuleHardware* hardware;
 	ModuleScene* scene;
 	ResourceManager * resourceManager;
+	ModuleGUI* userinterface;
 
 private:
 

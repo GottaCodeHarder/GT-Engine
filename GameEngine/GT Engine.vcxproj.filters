@@ -522,6 +522,9 @@
     <ClInclude Include="UIComponents.h">
       <Filter>Sources\GameObjects\UIComponents</Filter>
     </ClInclude>
+    <ClInclude Include="ModuleGUI.h">
+      <Filter>Sources\Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ModuleAudio.cpp">
@@ -739,6 +742,9 @@
     </ClCompile>
     <ClCompile Include="GTInterface\GTInterface.cpp">
       <Filter>Sources\GTInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleGUI.cpp">
+      <Filter>Sources\Modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
