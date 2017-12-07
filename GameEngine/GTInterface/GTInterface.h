@@ -53,6 +53,9 @@ private:
 
 		virtual UIElementType GetType() = 0;
 
+		float3 positionLocal = { 0.f,0.f,0.f };
+		float3 scaleLocal = { 1.f,1.f,1.f };
+		Quat rotationLocal = Quat::identity;
 	};
 
 	class Image : public UIElement
@@ -87,6 +90,5 @@ private:
 		}
 	};
 };
-
 
 #endif
