@@ -9,7 +9,8 @@ enum componentType
 	MESH = 0,
 	TRANSFORM,
 	MATERIAL,
-	CAMERA
+	CAMERA,
+	UI
 };
 
 class GameObject;

@@ -3,6 +3,8 @@
 
 #include "../SDL/include/SDL.h"
 #include "../MathGeoLib/MathGeoLib.h"
+#include <string>
+#include "../Color.h"
 
 typedef unsigned int uint;
 
@@ -46,12 +48,19 @@ private:
 		Input
 	};
 
+public:
+
 	class UIElement
 	{
 	public:
 		UIElement();
+		UIElement(bool drag = false) : draggable(drag) {};
 
 		virtual UIElementType GetType() = 0;
+		virtual void UpdatePos() {};
+		virtual void OnClick() {};
+
+		bool draggable;
 
 		float3 positionLocal = { 0.f,0.f,0.f };
 		float3 scaleLocal = { 1.f,1.f,1.f };
@@ -60,26 +69,45 @@ private:
 
 	class Image : public UIElement
 	{
+		Image(bool drag = false) : UIElement(drag) {};
 		static UIElementType GetType()
 		{
 			return UIElementType::Image;
 		}
+
+		std::string source;
+		SDL_Surface surface;
+		Color color;
 	};
 
 	class Button : public UIElement
 	{
+		Button(bool drag = false) : UIElement(drag) {};
 		static UIElementType GetType()
 		{
 			return UIElementType::Button;
 		}
+
+		std::string source;
+		SDL_Surface surface;
+		// NEED A WAY TO SAVE FUNCTIONS
 	};
 
 	class Checkbox : public UIElement
 	{
+		Checkbox(bool* ref, bool drag = false) : UIElement(drag),
+			reference(ref) {};
 		static UIElementType GetType()
 		{
 			return UIElementType::Checkbox;
 		}
+
+		void OnClick()
+		{
+			(*reference) = !(*reference);
+		}
+
+		bool* reference;
 	};
 
 	class Input : public UIElement
@@ -88,6 +116,15 @@ private:
 		{
 			return UIElementType::Input;
 		}
+
+		void OnClick()
+		{
+			// set as focused and listen for keyboard events
+		}
+
+		SDL_Surface background;
+		SDL_Surface label;
+		std::string text;
 	};
 };
 

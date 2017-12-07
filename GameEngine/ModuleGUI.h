@@ -1,8 +1,7 @@
-#pragma once
-#include "Module.h"
-#include "Globals.h"
+#ifndef __MODULE_GUI__
+#define __MODULE_GUI__
 
-class Application;
+#include "Module.h"
 
 class ModuleGUI : public Module
 {
@@ -15,3 +14,5 @@ public:
 
 	void AddImGui();
 };
+
+#endif // !__MODULE_GUI__

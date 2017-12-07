@@ -8,6 +8,7 @@
 #include "cMaterial.h"
 #include "ResourceMesh.h"
 #include "cCamera.h"
+#include "UIComponents.h"
 #include "MathGeoLib/MathGeoLib.h"
 #include "JSON/parson.h"
 
@@ -59,6 +60,12 @@ void GameObject::Update()
 			if (((cCamera*)FindComponent(CAMERA)) != nullptr)
 			{
 				((cCamera*)FindComponent(CAMERA))->transformFrustum = true;
+			}
+
+			//IF has UI it is modified
+			if (((cUI*)FindComponent(UI)) != nullptr)
+			{
+				((cUI*)FindComponent(UI))->transformChanged = true;
 			}
 
 			((cTransform*)FindComponent(TRANSFORM))->transformChange = false;
