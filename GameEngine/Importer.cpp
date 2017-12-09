@@ -359,7 +359,7 @@ GLuint Importer::LoadImageFile(const char* theFileName)
 
 	//ilDeleteImages(1, &imageID);
 
-	MYLOG("Texture for mesh applied: %s", theFileName);
+	MYLOG("Texture applied: %s", theFileName);
 
 	return textureID;
 }

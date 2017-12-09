@@ -600,7 +600,22 @@ void ModuleEditor::LoadFile()
 
 	if (GetOpenFileName(&oFileName) != 0)
 	{
-		App->scene->CreateFbx(fileName);
+		Importer importer;
+		FileExtensions extension = importer.GetExtension(fileName);
+
+		switch (extension)
+		{
+		case FileExtensions::Scene3D:
+		{
+			App->scene->CreateFbx(fileName);
+			break;
+		}
+		case FileExtensions::Image:
+		{
+			importer.LoadImageFile(fileName);
+			break;
+		}
+		}
 	}
 
 	file_menu["Load File"] = false;
