@@ -31,6 +31,8 @@ GTI::~GTI()
 		GTInterface.frustum.SetKind(FrustumProjectiveSpace::FrustumSpaceGL, FrustumHandedness::FrustumRightHanded);
 
 		GTInterface.frustum.SetOrthographic(screenWidth * scale, screenHeight * scale);
+
+		GTInterface.GeneratePlane();
 	}
 
 	void GTI::Render()
@@ -47,11 +49,113 @@ GTI::~GTI()
 
 		// Todo lo que se pinte aqui dentro es UI
 		
+		for (UIElement* element : GTInterface.UIElements)
+		{
+			RenderUIElement(element, false);
+		}
+
+		for (auto blendElement : GTInterface.blendElements)
+		{
+			RenderUIElement(blendElement.second, true);
+		}
 
 		glPopMatrix();
 
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
+	}
+
+	void GTI::RenderUIElement(UIElement * element, bool paintBlend)
+	{
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+		glPushMatrix();
+		glLoadMatrixf(element->GetGlobalTransform().Transposed().ptr());
+
+		switch (element->blendsType)
+		{
+		case (TransparencyType::ALPHA_TEST):
+		{
+			glEnable(GL_ALPHA_TEST);
+			glAlphaFunc(GL_GREATER, element->alpha);
+			break;
+		}
+		case (TransparencyType::BLEND):
+		{
+			if (!paintBlend)
+			{
+				float3 tmp = element->GetGlobalPosition() - GTInterface.GetCameraTransform().TranslatePart();
+
+				GTInterface.blendElements.insert(std::pair<float, UIElement*>(tmp.LengthSq(), element));
+			}
+			else if (paintBlend)
+			{
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA, 0); // 0 blendType modifiable
+			}
+			break;
+		}
+		}
+		if ((element->buffTexture) > 0)
+		{
+			glEnableClientState(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, element->buffTexture);
+		}
+
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, GTInterface.vertexBuff);
+		glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+
+		glEnableClientState(GL_NORMAL_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, GTInterface.normalBuff);
+		glNormalPointer(GL_FLOAT, 0, NULL);
+
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, GTInterface.UVBuff);
+		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GTInterface.indexBuff);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+
+
+		// CleanUp
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		glDisable(GL_BLEND);
+		glDisable(GL_ALPHA_TEST);
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_NORMAL_ARRAY);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		glDisableClientState(GL_TEXTURE_2D);
+
+		glPopMatrix();
+	}
+
+	uint GTI::LoadTexture(char * fullPath)
+	{
+		uint textureID = ilutGLLoadImage(fullPath);
+
+		if (textureID != 0)
+		{
+			glBindTexture(GL_TEXTURE_2D, textureID);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		}
+		else
+		{
+			//ERROR
+		}
+		return textureID;
+	}
+
+	float4x4 GTI::GetCameraTransform() const
+	{
+		return frustum.WorldMatrix();
 	}
 
 	void GTI::ProcessEventSDL(SDL_Event & e)
@@ -83,6 +187,51 @@ GTI::~GTI()
 			}
 		}
 		}*/
+	}
+
+	void GTI::GeneratePlane()
+	{
+		float3 vertex[4];
+		vertex[0] = float3(-0.5f, -0.5f, 0.0f);
+		vertex[1] = float3(0.5f, -0.5f, 0.0f);
+		vertex[2] = float3(0.5f, 0.5f, 0.0f);
+		vertex[3] = float3(-0.5f, 0.5f, 0.0f);
+
+		float2 uvs[4]; // Warning
+		uvs[0] = float2(0.0f, 0.0f);
+		uvs[1] = float2(1.0f, 0.0f);
+		uvs[2] = float2(1.0f, 1.0f);
+		uvs[3] = float2(0.0f, 1.0f);
+		
+		float3 normals[4];
+		normals[0] = float3(0.0f, 0.0f, -1.0f);
+		normals[1] = float3(0.0f, 0.0f, -1.0f);
+		normals[2] = float3(0.0f, 0.0f, -1.0f);
+		normals[3] = float3(0.0f, 0.0f, -1.0f);
+
+		uint index[6];
+		index[0] = 0;
+		index[1] = 1;
+		index[2] = 3;
+		index[3] = 1;
+		index[4] = 2;
+		index[5] = 3;
+
+		glGenBuffers(1, (GLuint*) &(vertexBuff));
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBuff);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * 4, vertex, GL_STATIC_DRAW);
+
+		glGenBuffers(1, (GLuint*) &(normalBuff));
+		glBindBuffer(GL_ARRAY_BUFFER, normalBuff);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * 4, normals, GL_STATIC_DRAW);
+
+		glGenBuffers(1, (GLuint*) &(UVBuff));
+		glBindBuffer(GL_ARRAY_BUFFER, UVBuff);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float2) * 4, uvs, GL_STATIC_DRAW);
+
+		glGenBuffers(1, (GLuint*) &(indexBuff));
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuff);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, index, GL_STATIC_DRAW);
 	}
 
 	void GTI::DebugDraw::DrawLine(float3 &from, float3 &to, float3 color)
@@ -130,4 +279,39 @@ GTI::~GTI()
 	GTI::UIElement::UIElement()
 	{
 
+	}
+
+	float3 GTI::UIElement::GetGlobalPosition()
+	{
+		float3 ret = positionLocal;
+		if (parent != nullptr)
+		{
+			ret += parent->GetGlobalPosition();
+		}
+		return ret;
+	}
+
+	float3 GTI::UIElement::GetGlobalScale()
+	{
+		float3 ret = scaleLocal;
+		if (parent != nullptr)
+		{
+			float3 parentGScale = parent->GetGlobalScale();
+			ret = ret * parentGScale; //x * x y * y
+		}
+		return ret;
+	}
+
+	Quat GTI::UIElement::GetGlobalRotation()
+	{
+		Quat ret;
+		//multiply.
+		return ret;
+	}
+
+	float4x4 GTI::UIElement::GetGlobalTransform()
+	{
+		float4x4 ret;
+		// ret = composition GetGlobal x 3
+		return ret;
 	}
