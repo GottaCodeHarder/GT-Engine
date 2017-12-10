@@ -227,13 +227,13 @@ void ModuleRenderer3D::DrawGameObject(GameObject* go)
 	{
 		switch ((material)->type)
 		{
-		case (TransparencyType::ALPHA_TEST):
+		case (TransparencyType::MT_ALPHA_TEST):
 		{
 			glEnable(GL_ALPHA_TEST);
 			glAlphaFunc(GL_GREATER, (material)->alpha);
 			break;
 		}
-		case (TransparencyType::BLEND):
+		case (TransparencyType::MT_BLEND):
 		{
 			float z = 0;
 			cTransform* trans = (cTransform*)go->FindComponent(componentType::TRANSFORM);

@@ -6,9 +6,9 @@ class GameObject;
 
 enum class TransparencyType
 {
-	OPAQUE,
-	ALPHA_TEST,
-	BLEND
+	MT_OPAQUE,
+	MT_ALPHA_TEST,
+	MT_BLEND
 };
 
 class cMaterial : public Component
@@ -16,8 +16,6 @@ class cMaterial : public Component
 public:
 	cMaterial(GameObject* _gameObject);
 	~cMaterial();
-
-
 
 	ResourceTexture* resource;
 
@@ -29,7 +27,7 @@ public:
 	uint Serialize(char* &buffer);
 	uint DeSerialize(char* &buffer, GameObject* parent);
 
-	TransparencyType type = TransparencyType::OPAQUE;
+	TransparencyType type = TransparencyType::MT_OPAQUE;
 	float alpha = 0.3f;
 
 private:

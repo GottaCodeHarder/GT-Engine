@@ -22,9 +22,9 @@ class GTI
 
 	enum class TransparencyType
 	{
-		OPAQUE,
-		ALPHA_TEST,
-		BLEND
+		T_OPAQUE,
+		T_ALPHA_TEST,
+		T_BLEND
 	};
 
 #pragma region UI ELEMENTS
@@ -44,7 +44,7 @@ public:
 		bool draggable;
 
 		//TO TEST
-		TransparencyType blendsType = TransparencyType::ALPHA_TEST;
+		TransparencyType blendsType = TransparencyType::T_ALPHA_TEST;
 		float alpha = 0.8;
 		uint buffTexture = 0;
 

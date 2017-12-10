@@ -76,13 +76,13 @@ GTI::~GTI()
 
 		switch (element->blendsType)
 		{
-		case (TransparencyType::ALPHA_TEST):
+		case (TransparencyType::T_ALPHA_TEST):
 		{
 			glEnable(GL_ALPHA_TEST);
 			glAlphaFunc(GL_GREATER, element->alpha);
 			break;
 		}
-		case (TransparencyType::BLEND):
+		case (TransparencyType::T_BLEND):
 		{
 			if (!paintBlend)
 			{
@@ -138,7 +138,7 @@ GTI::~GTI()
 
 	uint GTI::LoadTexture(char * fullPath)
 	{
-		uint textureID = ilutGLLoadImage(fullPath);
+		uint textureID = 0;//FIX ilutGLLoadImage(fullPath);
 
 		if (textureID != 0)
 		{
@@ -299,7 +299,7 @@ GTI::~GTI()
 		if (parent != nullptr)
 		{
 			float3 parentGScale = parent->GetGlobalScale();
-			ret = ret * parentGScale; //x * x y * y
+			ret = ret.Mul(parentGScale); //x * x y * y
 		}
 		return ret;
 	}
