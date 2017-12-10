@@ -51,10 +51,10 @@ public:
 		//END TO TEST
 		UIElement* parent = nullptr;
 
-		float3 GetGlobalPosition(); //TODO
+		float3 GetGlobalPosition();
 		float3 GetGlobalScale();
 		Quat GetGlobalRotation();
-		float4x4 GetGlobalTransform(); //TODO
+		float4x4 GetGlobalTransform();
 
 		float3 positionLocal = { 0.f,0.f,0.f };
 		float3 scaleLocal = { 1.f,1.f,1.f };

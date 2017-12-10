@@ -312,21 +312,24 @@ GTI::~GTI()
 		if (parent != nullptr)
 		{
 			float3 parentGScale = parent->GetGlobalScale();
-			ret = ret.Mul(parentGScale); //x * x y * y
+			ret = ret.Mul(parentGScale);
 		}
 		return ret;
 	}
 
 	Quat GTI::UIElement::GetGlobalRotation()
 	{
-		Quat ret;
-		//multiply.
+		Quat ret = rotationLocal;
+		if (parent != nullptr)
+		{
+			ret = ret * (parent->GetGlobalRotation());
+		}
 		return ret;
 	}
 
 	float4x4 GTI::UIElement::GetGlobalTransform()
 	{
 		float4x4 ret;
-		// ret = composition GetGlobal x 3
+		ret.FromTRS(GetGlobalPosition(), GetGlobalRotation(), GetGlobalScale());
 		return ret;
 	}
