@@ -218,54 +218,75 @@ void ModuleRenderer3D::DrawGameObject(GameObject* go)
 
 	cMesh* mesh = (cMesh*)go->FindComponent(componentType::MESH);
 	cMaterial* material = (cMaterial*)go->FindComponent(componentType::MATERIAL);
-	if (mesh == nullptr) 
+	if (mesh == nullptr)
 	{
 		return;
 	}
 
-	//if ((material)->transparent == true)
+	if (material)
+	{
+		switch ((material)->type)
+		{
+		case (TransparencyType::ALPHA_TEST):
+		{
+			glEnable(GL_ALPHA_TEST);
+			glAlphaFunc(GL_GREATER, (material)->alpha);
+			break;
+		}
+		case (TransparencyType::BLEND):
+		{
+			float z = 0;
+			cTransform* trans = (cTransform*)go->FindComponent(componentType::TRANSFORM);
+			float3 tmp = trans->GetGlobalPos() - GTI::GTInterface.GetCameraTransform().TranslatePart();
+			z = tmp.LengthSq();
+			blendObjects.insert(std::pair<float, GameObject*>(z, go));
+			break;
+		}
+		}
 		if (((material)->resource->buffTexture) > 0)
 		{
 			glEnableClientState(GL_TEXTURE_2D);
 			glBindTexture(GL_TEXTURE_2D, (material)->resource->buffTexture);
 		}
+	}
+	if (((mesh)->resource->buffVertex) > 0)
+	{
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, (mesh)->resource->buffVertex);
+		glVertexPointer(3, GL_FLOAT, 0, NULL);
+	}
 
-		if (((mesh)->resource->buffVertex) > 0)
-		{
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glBindBuffer(GL_ARRAY_BUFFER, (mesh)->resource->buffVertex);
-			glVertexPointer(3, GL_FLOAT, 0, NULL);
-		}
+	if (((mesh)->resource->buffNormals) > 0)
+	{
+		glEnableClientState(GL_NORMAL_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, (mesh)->resource->buffNormals);
+		glNormalPointer(GL_FLOAT, 0, NULL);
+	}
 
-		if (((mesh)->resource->buffNormals) > 0)
-		{
-			glEnableClientState(GL_NORMAL_ARRAY);
-			glBindBuffer(GL_ARRAY_BUFFER, (mesh)->resource->buffNormals);
-			glNormalPointer(GL_FLOAT, 0, NULL);
-		}
+	if (((mesh)->resource->buffUv) > 0)
+	{
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, (mesh)->resource->buffUv);
+		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+	}
 
-		if (((mesh)->resource->buffUv) > 0)
-		{
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glBindBuffer(GL_ARRAY_BUFFER, (mesh)->resource->buffUv);
-			glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-		}
+	if (((mesh)->resource->buffIndex) > 0)
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (mesh)->resource->buffIndex);
+		glDrawElements(GL_TRIANGLES, (mesh)->resource->numIndex, GL_UNSIGNED_INT, NULL);
+	}
+	//float3 hola = ((cTransform*)mesh->gameObject->FindComponent(TRANSFORM))->positionLocal;
+	// CleanUp
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		if (((mesh)->resource->buffIndex) > 0)
-		{
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (mesh)->resource->buffIndex);
-			glDrawElements(GL_TRIANGLES, (mesh)->resource->numIndex, GL_UNSIGNED_INT, NULL);
-		}
-		//float3 hola = ((cTransform*)mesh->gameObject->FindComponent(TRANSFORM))->positionLocal;
-		// CleanUp
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-		glDisableClientState(GL_VERTEX_ARRAY);
-		glDisableClientState(GL_NORMAL_ARRAY);
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState(GL_TEXTURE_2D);
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_TEXTURE_2D);
 }
 
 void ModuleRenderer3D::DrawFrustum(const math::Frustum frustum)

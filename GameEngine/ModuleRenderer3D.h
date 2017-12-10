@@ -6,6 +6,8 @@
 #include "Primitive.h"
 #include "Bullet/src/btBulletDynamicsCommon.h"
 
+#include <map>
+
 #define MAX_LIGHTS 8
 class DebugDrawer;
 class GameObject;
@@ -37,6 +39,8 @@ public:
 	void DrawFrustum(const math::Frustum);
 	bool bEnableWireframe = false;
 	DebugDrawer* debugDraw = nullptr;
+
+	std::multimap<float, GameObject*> blendObjects;
 
 private:
 	bool bEnableDepthTest = true;
