@@ -59,6 +59,8 @@ GTI::~GTI()
 			RenderUIElement(blendElement.second, true);
 		}
 
+		GTInterface.blendElements.clear();
+
 		glPopMatrix();
 
 		glMatrixMode(GL_PROJECTION);
