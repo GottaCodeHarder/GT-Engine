@@ -1,15 +1,23 @@
-#include "GTInterface.h"
-
 #include "../glew/include/glew.h"
-#include "../SDL/include/SDL_opengl.h"
-#include <gl/GL.h>
-#include <gl/GLU.h>
-
 
 #pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 #pragma comment (lib, "glew/libx86/glew32.lib")
 
+#include "GTInterface.h"
+
+#include "../Devil/include/il.h"
+#include "../Devil/include/ilu.h"
+#include "../Devil/include/ilut.h"
+
+#include "../SDL/include/SDL_opengl.h"
+#include <gl/GL.h>
+#include <gl/GLU.h>
+
+
+#pragma comment (lib, "Devil/libx86/DevIL.lib")
+#pragma	comment (lib, "Devil/libx86/ILU.lib")
+#pragma	comment (lib, "Devil/libx86/ILUT.lib")
 
 GTI GTI::GTInterface = GTI();
 
@@ -33,6 +41,11 @@ GTI::~GTI()
 		GTInterface.frustum.SetOrthographic(screenWidth * scale, screenHeight * scale);
 
 		GTInterface.GeneratePlane();
+	}
+
+	void GTI::CleanUp()
+	{
+		
 	}
 
 	void GTI::Render()
@@ -76,13 +89,13 @@ GTI::~GTI()
 
 		switch (element->blendsType)
 		{
-		case (TransparencyType::T_ALPHA_TEST):
+		case (TransparencyType::ALPHA_TEST):
 		{
 			glEnable(GL_ALPHA_TEST);
 			glAlphaFunc(GL_GREATER, element->alpha);
 			break;
 		}
-		case (TransparencyType::T_BLEND):
+		case (TransparencyType::BLEND):
 		{
 			if (!paintBlend)
 			{
@@ -138,7 +151,7 @@ GTI::~GTI()
 
 	uint GTI::LoadTexture(char * fullPath)
 	{
-		uint textureID = 0;//FIX ilutGLLoadImage(fullPath);
+		uint textureID = ilutGLLoadImage(fullPath);
 
 		if (textureID != 0)
 		{
@@ -219,20 +232,20 @@ GTI::~GTI()
 		index[4] = 2;
 		index[5] = 3;
 
-		glGenBuffers(1, (GLuint*) &(vertexBuff));
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBuff);
+		glGenBuffers(1, (GLuint*) &(GTInterface.vertexBuff));
+		glBindBuffer(GL_ARRAY_BUFFER, GTInterface.vertexBuff);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * 4, vertex, GL_STATIC_DRAW);
 
-		glGenBuffers(1, (GLuint*) &(normalBuff));
-		glBindBuffer(GL_ARRAY_BUFFER, normalBuff);
+		glGenBuffers(1, (GLuint*) &(GTInterface.normalBuff));
+		glBindBuffer(GL_ARRAY_BUFFER, GTInterface.normalBuff);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float3) * 4, normals, GL_STATIC_DRAW);
 
-		glGenBuffers(1, (GLuint*) &(UVBuff));
-		glBindBuffer(GL_ARRAY_BUFFER, UVBuff);
+		glGenBuffers(1, (GLuint*) &(GTInterface.UVBuff));
+		glBindBuffer(GL_ARRAY_BUFFER, GTInterface.UVBuff);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float2) * 4, uvs, GL_STATIC_DRAW);
 
-		glGenBuffers(1, (GLuint*) &(indexBuff));
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuff);
+		glGenBuffers(1, (GLuint*) &(GTInterface.indexBuff));
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GTInterface.indexBuff);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, index, GL_STATIC_DRAW);
 	}
 

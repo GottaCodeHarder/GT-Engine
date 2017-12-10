@@ -22,9 +22,9 @@ class GTI
 
 	enum class TransparencyType
 	{
-		T_OPAQUE,
-		T_ALPHA_TEST,
-		T_BLEND
+		NONE,
+		ALPHA_TEST,
+		BLEND
 	};
 
 #pragma region UI ELEMENTS
@@ -44,7 +44,7 @@ public:
 		bool draggable;
 
 		//TO TEST
-		TransparencyType blendsType = TransparencyType::T_ALPHA_TEST;
+		TransparencyType blendsType = TransparencyType::ALPHA_TEST;
 		float alpha = 0.8;
 		uint buffTexture = 0;
 
@@ -137,7 +137,7 @@ public:
 	static GTI GTInterface; // Brujeria
 	
 	static void Init(uint screenWidth, uint screenHeight, float scale = 0.5f);
-
+	static void CleanUp();
 	
 	static void Render();
 	static void RenderUIElement(UIElement* element, bool paintBlend = false);

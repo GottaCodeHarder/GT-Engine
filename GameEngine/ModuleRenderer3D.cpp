@@ -150,6 +150,12 @@ bool ModuleRenderer3D::Init()
 	//glBindBuffer(GL_ARRAY_BUFFER, myId);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 36 * 3, vertices, GL_STATIC_DRAW);
 
+	// Initialize GTInterface
+	int w, h;
+	SDL_GetWindowSize(App->window->GetWindow(), &w, &h);
+
+	GTI::Init(w, h, 0.01f);
+
 	return ret;
 }
 

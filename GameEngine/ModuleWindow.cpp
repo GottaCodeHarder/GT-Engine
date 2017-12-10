@@ -76,12 +76,6 @@ bool ModuleWindow::Init()
 		}
 	}
 
-	int w, h;
-
-	SDL_GetWindowSize(window, &w, &h);
-
-	GTI::Init(w, h, 0.01f);
-
 	return ret;
 }
 
