@@ -4,18 +4,24 @@
 class ResourceTexture;
 class GameObject;
 
+enum class TransparencyType
+{
+	OPAQUE,
+	ALPHA_TEST,
+	BLEND
+};
+
 class cMaterial : public Component
 {
 public:
 	cMaterial(GameObject* _gameObject);
 	~cMaterial();
 
+
+
 	ResourceTexture* resource;
 
-	void RealUpdate()
-	{
-		int i = 5;
-	};
+	void RealUpdate() {};
 
 	void DrawUI();
 	void LoadTexture();
@@ -23,7 +29,8 @@ public:
 	uint Serialize(char* &buffer);
 	uint DeSerialize(char* &buffer, GameObject* parent);
 
-	bool transparent;
+	TransparencyType type = TransparencyType::OPAQUE;
+	float alpha = 0.3f;
 
 private:
 };
