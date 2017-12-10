@@ -21,7 +21,6 @@ public:
 	ImVec2 imageDimensions;
 	std::string path;
 	float3 color;
-
 };
 
 #endif // !__RESOURCES__

@@ -44,6 +44,7 @@ private:
 	bool bEnableLighting = true;
 	bool bEnableColorMaterial = true;
 	bool bEnableGLTexture = true;
+	bool bEnableBlending = true;
 
 	float vertices[108] = {};
 

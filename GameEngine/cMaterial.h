@@ -23,5 +23,7 @@ public:
 	uint Serialize(char* &buffer);
 	uint DeSerialize(char* &buffer, GameObject* parent);
 
+	bool transparent;
+
 private:
 };

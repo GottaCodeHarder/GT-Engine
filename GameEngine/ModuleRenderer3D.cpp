@@ -129,6 +129,7 @@ bool ModuleRenderer3D::Init()
 		GLfloat MaterialDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialDiffuse);
 		
+		glEnable(GL_ALPHA_TEST);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		lights[0].Active(true);
@@ -221,6 +222,8 @@ void ModuleRenderer3D::DrawGameObject(GameObject* go)
 	{
 		return;
 	}
+
+	//if ((material)->transparent == true)
 		if (((material)->resource->buffTexture) > 0)
 		{
 			glEnableClientState(GL_TEXTURE_2D);
@@ -338,6 +341,16 @@ void ModuleRenderer3D::AddImGui()
 				glEnable(GL_TEXTURE_2D);
 			else
 				glDisable(GL_TEXTURE_2D);
+		}
+		if (ImGui::Checkbox("GL Blending", &bEnableBlending))
+		{
+			if (bEnableBlending)
+			{
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			}
+			else
+				glDisable(GL_BLEND);
 		}
 		if (ImGui::Checkbox("Wireframe Mode", &bEnableWireframe))
 		{
