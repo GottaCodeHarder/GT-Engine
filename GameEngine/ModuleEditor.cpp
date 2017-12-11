@@ -538,18 +538,43 @@ void ModuleEditor::PlayPause()
 	ImGuiWindowFlags flag = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_ShowBorders;
 	ImGui::Begin("Play/Pause", 0, ImVec2(500, 1000), 0.8f, flag);
 	{
-		if (ImGui::Button("Play"))
+		if (ImGui::Button(playLabel.c_str()))
 		{
-			App->isPlaying = true;
+			bool once = false;
 
-			App->GetGameTimer()->Start();
+			// set to PAUSE
+			if (App->isPlaying && !once)
+			{
+				App->isPlaying = false;
+	
+				playLabel = "Play";
 
-			App->isStopped = false;
+				once = true;
+			}
+			// set to PLAY
+			if (!App->isPlaying && !once)
+			{
+				App->isPlaying = true;
+				if (App->GetGameTimer()->GetTimerState() == Timer::TimerState::STOP)
+				{
+					App->GetGameTimer()->Start();
+				}
+				else if (App->GetGameTimer()->GetTimerState() == Timer::TimerState::PLAY)
+				{
+					App->GetGameTimer()->Continue();
+				}
+
+				playLabel = "Pause";
+
+				once = true;
+			}
+
+			App->isStopped = !App->isPlaying;
 		}
 		ImGui::SameLine();
-		if (ImGui::Button("Pause"))
+		if (ImGui::Button("Stop"))
 		{
-			App->GetGameTimer()->Stop();
+			App->GetGameTimer()->Start();
 			App->isStopped = true;
 			App->isPlaying = false;
 		}

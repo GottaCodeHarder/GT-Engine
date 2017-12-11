@@ -9,29 +9,41 @@
 Timer::Timer()
 {
 	//Start();
+	state = TimerState::STOP;
 }
 
 // ---------------------------------------------
 void Timer::Start()
 {
-	memory = NULL;
-	running = true;
-	startedAt = (SDL_GetTicks());
+	if (state == TimerState::STOP)
+	{
+		startedAt = (SDL_GetTicks());
+		state = TimerState::PLAY;
+	}
+}
+
+void Timer::Continue()
+{	
+	startedAt = stoppedAt;
+	state = TimerState::PLAY;
 }
 
 // ---------------------------------------------
 void Timer::Stop()
 {
-	running = false;
-	stoppedAt = (SDL_GetTicks() );
+	if (state == TimerState::PLAY)
+		memory = NULL;
+
+	state = TimerState::STOP;
+	stoppedAt = (SDL_GetTicks());
 }
 
 // ---------------------------------------------
 Uint32 Timer::Read() const
 {
-	if(running == true)
+	if(state == TimerState::PLAY)
 	{
-		return ((SDL_GetTicks() ) - startedAt);
+		return ((SDL_GetTicks()) - startedAt);
 	}
 	else
 	{
@@ -42,6 +54,11 @@ Uint32 Timer::Read() const
 float Timer::readSec() const
 {
 	return (float)Read() / 1000.0f;
+}
+
+Timer::TimerState Timer::GetTimerState() const
+{
+	return state;
 }
 
 bool Timer::SoundsTimer()

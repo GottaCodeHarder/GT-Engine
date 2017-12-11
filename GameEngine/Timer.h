@@ -8,10 +8,17 @@ class Timer
 {
 public:
 
+	enum class TimerState
+	{
+		PLAY,
+		STOP
+	};
+
 	// Constructor
 	Timer();
 
 	void Start();
+	void Continue();
 	void Stop();
 
 	bool SoundsTimer(); 
@@ -22,10 +29,13 @@ public:
 
 	float readSec() const;
 
+	TimerState GetTimerState() const;
+
 private:
 
-	int memory;
-	bool	running;
+	TimerState state;
+
+	int		memory;
 	Uint32	startedAt;
 	Uint32	stoppedAt;
 	Uint32	timeStartSeconds;

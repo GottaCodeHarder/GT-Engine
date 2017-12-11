@@ -75,6 +75,8 @@ private:
 
 private:
 
+	std::string playLabel = "Play";
+
 	// Random
 	float fRandomMin = 0.0f;
 	float fRandomMax = 0.0f;
