@@ -548,7 +548,7 @@ void ModuleEditor::PlayPause()
 			if (App->isPlaying)
 			{
 				App->isPlaying = false;
-				App->GetGameTimer()->Start(true);
+				App->GetGameTimer()->Pause();
 
 				playLabel = "Play";
 			}
@@ -556,7 +556,7 @@ void ModuleEditor::PlayPause()
 			else if (!App->isPlaying)
 			{
 				App->isPlaying = true;
-				App->GetGameTimer()->Start(true);
+				App->GetGameTimer()->Start();
 
 				playLabel = "Pause";
 			}
@@ -565,7 +565,7 @@ void ModuleEditor::PlayPause()
 		ImGui::SameLine();
 		if (ImGui::Button("Stop"))
 		{
-			App->GetGameTimer()->Stop(true);
+			App->GetGameTimer()->Stop();
 			App->SetGameDt(0.f);
 			playLabel = "Play";
 			App->isPlaying = false;

@@ -8,76 +8,46 @@
 // ---------------------------------------------
 Timer::Timer()
 {
-	//Start();
-	state = TimerState::STOP;
+	Stop();
 }
 
 // ---------------------------------------------
-void Timer::Start(bool toggle)
+void Timer::Start()
 {
-	if (toggle)
-	{
-		if (state == TimerState::STOP)
-		{
-			startedAt = SDL_GetTicks();
-			state = TimerState::PLAY;
-		}
-		else if (state == TimerState::PLAY)
-		{
-			stoppedAt = SDL_GetTicks();
-			state = TimerState::PLAY_PAUSE;
-		}
-		else if (state == TimerState::PLAY_PAUSE)
-		{
-			startedAt = SDL_GetTicks() + (stoppedAt - SDL_GetTicks());
-			state = TimerState::PLAY;
-		}
-	}
-	else if (!toggle)
-	{
-		memory = NULL;
-		state = TimerState::PLAY;
-		startedAt = (SDL_GetTicks());
-	}
+	if (pausedAt == 0.f)
+		startedAt = SDL_GetTicks();
+	else
+		startedAt += SDL_GetTicks() - pausedAt;
+	
+	pausedAt = 0.f;
 }
 
 // ---------------------------------------------
-void Timer::Stop(bool toggle)
+void Timer::Pause()
 {
-	if (toggle)
-	{
-		if (state == TimerState::PLAY)
-			memory = NULL;
-	}
-	state = TimerState::STOP;
-	stoppedAt = (SDL_GetTicks());
+	if(pausedAt == 0.f)
+		pausedAt = SDL_GetTicks();
+}
+
+// ---------------------------------------------
+void Timer::Stop()
+{
+	startedAt = pausedAt = 0.f;
+	memory = NULL;
 }
 
 // ---------------------------------------------
 Uint32 Timer::Read() const
 {
-	if(state == TimerState::PLAY)
-	{
+	if (pausedAt == 0.f)
 		return (SDL_GetTicks() - startedAt);
-	}
-	else if (state == TimerState::PLAY_PAUSE)
-	{
-		return (SDL_GetTicks() - stoppedAt);
-	}
-	else if (state == TimerState::STOP)
-	{
-		return stoppedAt - startedAt;
-	}
+	else
+		return (pausedAt - startedAt);
 }
 
 float Timer::readSec() const
 {
 	return (float)Read() / 1000.0f;
-}
-
-Timer::TimerState Timer::GetTimerState() const
-{
-	return state;
 }
 
 bool Timer::SoundsTimer()
@@ -93,7 +63,7 @@ bool Timer::SoundsTimer()
 void Timer::ResetTimer()
 {
 	startedAt = 0.f;
-	stoppedAt = 0.f;
+	pausedAt = 0.f;
 	timeStartSeconds = 0.f;
 	timeStartMinutes = 0.f;
 }

@@ -369,16 +369,6 @@ void ModuleRenderer3D::AddImGui()
 			else
 				glDisable(GL_TEXTURE_2D);
 		}
-		if (ImGui::Checkbox("GL Blending", &bEnableBlending))
-		{
-			if (bEnableBlending)
-			{
-				glEnable(GL_BLEND);
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			}
-			else
-				glDisable(GL_BLEND);
-		}
 		if (ImGui::Checkbox("Wireframe Mode", &bEnableWireframe))
 		{
 		}
