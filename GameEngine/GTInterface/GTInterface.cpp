@@ -194,8 +194,8 @@ GTI::~GTI()
 
 		case SDL_MOUSEMOTION:
 		{
-			mouseX = e.motion.x / SCREEN_SIZE;
-			mouseY = e.motion.y / SCREEN_SIZE;
+			float mouseX = e.motion.x / SCREEN_SIZE;
+			float mouseY = e.motion.y / SCREEN_SIZE;
 
 			mouseXMotion = e.motion.xrel / SCREEN_SIZE;
 			mouseYMotion = e.motion.yrel / SCREEN_SIZE;
@@ -339,6 +339,6 @@ GTI::~GTI()
 	float4x4 GTI::UIElement::GetGlobalTransform()
 	{
 		float4x4 ret;
-		ret.FromTRS(GetGlobalPosition(), GetGlobalRotation(), GetGlobalScale());
+		ret = ret.FromTRS(GetGlobalPosition(), GetGlobalRotation(), GetGlobalScale());
 		return ret;
 	}
