@@ -16,11 +16,22 @@ public:
 
 	bool transformChanged;
 };
+class cCanvas : public cUI
+{
+public:
+	cCanvas(GameObject* _gameObject) : cUI(_gameObject) {}
+	~cCanvas() {};
+
+	bool interactable = true;
+};
 
 class cImage : public cUI
 {
 public:
-	cImage(GameObject* _gameObject) : cUI(_gameObject) {}
+	cImage(GameObject* _gameObject) : cUI(_gameObject)
+	{
+		image = GTI::GTInterface.AddImage();
+	}
 	~cImage()
 	{
 		delete image;

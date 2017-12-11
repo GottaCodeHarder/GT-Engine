@@ -11,6 +11,7 @@
 #include <gl/GLU.h>
 #include "ImGuizmo.h"
 
+#include "ModuleGUI.h"
 #include "GTInterface/GTInterface.h"
 
 #include "GameObject.h"
@@ -625,7 +626,7 @@ void ModuleEditor::LoadFile(bool select)
 		}
 		else if (!select)
 		{
-			GTI::GTInterface.LoadTexture(fileName);
+			App->userinterface->AddUIImage(fileName);
 		}
 	}
 }

@@ -170,6 +170,13 @@ GTI::~GTI()
 		return textureID;
 	}
 
+	GTI::Image* GTI::AddImage()
+	{
+		Image* ret = new Image();
+		UIElements.push_back(ret);
+		return ret;
+	}
+
 	float4x4 GTI::GetCameraTransform() const
 	{
 		return frustum.WorldMatrix();
@@ -293,7 +300,7 @@ GTI::~GTI()
 
 
 
-	GTI::UIElement::UIElement()
+	GTI::UIElement::UIElement(bool drag) : draggable(drag)
 	{
 
 	}

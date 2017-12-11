@@ -14,6 +14,7 @@ class GTI
 {
 	enum class UIElementType
 	{
+		NONE,
 		Image,
 		Button,
 		Checkbox,
@@ -34,10 +35,9 @@ public:
 	class UIElement
 	{
 	public:
-		UIElement();
-		UIElement(bool drag = false) : draggable(drag) {};
+		UIElement(bool drag = false);
 
-		virtual UIElementType GetType() = 0;
+		virtual UIElementType GetType() { return UIElementType::NONE; }
 		virtual void UpdatePos() {};
 		virtual void OnClick() {};
 
@@ -63,6 +63,7 @@ public:
 
 	class Image : public UIElement
 	{
+	public:
 		Image(bool drag = false) : UIElement(drag) {};
 		static UIElementType GetType()
 		{
@@ -145,6 +146,8 @@ public:
 	//To Test
 	uint LoadTexture(char* path);
 	//End To Test
+
+	Image* AddImage();
 
 	static void GetEventSDL(SDL_Event &e) { GTInterface.ProcessEventSDL(e); };
 	
