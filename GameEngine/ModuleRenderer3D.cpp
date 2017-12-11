@@ -154,7 +154,7 @@ bool ModuleRenderer3D::Init()
 	int w, h;
 	SDL_GetWindowSize(App->window->GetWindow(), &w, &h);
 
-	GTI::Init(w, h, 0.01f);
+	GTI::Init(w, h, 0.005f);
 
 	return ret;
 }

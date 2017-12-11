@@ -180,6 +180,7 @@ public:
 	Image* AddImage();
 
 	static void GetEventSDL(SDL_Event &e) { GTInterface.ProcessEventSDL(e); };
+	static void UpdateWindowSize(int w, int h);
 
 	float4x4 GetCameraTransform() const;
 

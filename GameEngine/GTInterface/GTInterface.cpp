@@ -32,12 +32,15 @@ GTI::~GTI()
 
 	void GTI::Init(uint screenWidth, uint screenHeight, float scale)
 	{
-		GTInterface.frustum.SetViewPlaneDistances(0.01f, FAR_PLANE_DISTANCE);
-		GTInterface.frustum.SetWorldMatrix(float3x4::identity);
-		GTInterface.frustum.SetPos(vec(0.0f, 0.0f, -FAR_PLANE_DISTANCE/2.0f));
+		GTInterface.frustum.SetViewPlaneDistances(0.1f, FAR_PLANE_DISTANCE);
+		GTInterface.frustum.SetWorldMatrix(float3x4::identity * float3x4::RotateY(3.14159265));
+		
+		GTInterface.frustum.SetPos(vec(0.0f, 0.0f, FAR_PLANE_DISTANCE/2.0f));
 		GTInterface.frustum.SetKind(FrustumProjectiveSpace::FrustumSpaceGL, FrustumHandedness::FrustumRightHanded);
 
 		GTInterface.frustum.SetOrthographic(screenWidth * scale, screenHeight * scale);
+
+		GTInterface.scale = scale;
 
 		GTInterface.GeneratePlane();
 	}
@@ -51,13 +54,15 @@ GTI::~GTI()
 	{
 		DebugDraw::DrawFrustum(GTInterface.frustum);
 
+		glDisable(GL_LIGHTING);
+
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
 		glLoadMatrixf(GTInterface.frustum.ProjectionMatrix().Transposed().ptr());
 
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
-		glLoadIdentity();
+		glLoadMatrixf(float4x4(GTInterface.frustum.ViewMatrix()).Transposed().ptr());
 
 		// Todo lo que se pinte aqui dentro es UI
 		
@@ -77,6 +82,8 @@ GTI::~GTI()
 
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
+
+		glEnable(GL_LIGHTING);
 	}
 
 	void GTI::RenderUIElement(UIElement * element, bool paintBlend)
@@ -84,7 +91,7 @@ GTI::~GTI()
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 		glPushMatrix();
-		glLoadMatrixf(element->GetGlobalTransform().Transposed().ptr());
+		glMultMatrixf(element->GetGlobalTransform().Transposed().ptr());
 
 		switch (element->blendsType)
 		{
@@ -177,6 +184,11 @@ GTI::~GTI()
 		return ret;
 	}
 
+	void GTI::UpdateWindowSize(int w, int h)
+	{
+		GTInterface.frustum.SetOrthographic(w*GTInterface.scale, h*GTInterface.scale);
+	}
+
 	float4x4 GTI::GetCameraTransform() const
 	{
 		return frustum.WorldMatrix();
@@ -184,21 +196,20 @@ GTI::~GTI()
 
 	void GTI::ProcessEventSDL(SDL_Event & e)
 	{
-		/*switch (e.type)
+		switch (e.type)
 		{
 		case SDL_MOUSEWHEEL:
-		{
-			
+		{	
 			break;
 		}
 
 		case SDL_MOUSEMOTION:
 		{
-			mouseX = e.motion.x / SCREEN_SIZE;
-			mouseY = e.motion.y / SCREEN_SIZE;
+			//mouseX = e.motion.x / SCREEN_SIZE;
+			//mouseY = e.motion.y / SCREEN_SIZE;
 
-			mouseXMotion = e.motion.xrel / SCREEN_SIZE;
-			mouseYMotion = e.motion.yrel / SCREEN_SIZE;
+			//mouseXMotion = e.motion.xrel / SCREEN_SIZE;
+			//mouseYMotion = e.motion.yrel / SCREEN_SIZE;
 			break;
 		}
 
@@ -206,11 +217,10 @@ GTI::~GTI()
 		{
 			if (e.window.event == SDL_WINDOWEVENT_RESIZED)
 			{
-				App->window->UpdateWindowSize();
-				App->renderer3D->OnResize(e.window.data1, e.window.data2);
+				UpdateWindowSize(e.window.data1, e.window.data2);
 			}
 		}
-		}*/
+		}
 	}
 
 	void GTI::GeneratePlane()
@@ -339,6 +349,6 @@ GTI::~GTI()
 	float4x4 GTI::UIElement::GetGlobalTransform()
 	{
 		float4x4 ret;
-		ret.FromTRS(GetGlobalPosition(), GetGlobalRotation(), GetGlobalScale());
+		ret = ret.FromTRS(GetGlobalPosition(), GetGlobalRotation(), GetGlobalScale());
 		return ret;
 	}
