@@ -144,7 +144,7 @@ public:
 			Register([object = object, memFunc = memFunc](in arg) { (object->*(memFunc))(arg); });
 		}
 
-		void Ping(in param)
+		void CallFunction(in param)
 		{
 			for (auto func : funcList)
 			{
