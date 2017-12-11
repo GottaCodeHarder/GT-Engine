@@ -3,10 +3,11 @@
 
 #include "../SDL/include/SDL.h"
 #include "../MathGeoLib/MathGeoLib.h"
-#include <string>
 #include "../Color.h"
 
 #include <map>
+#include <string>
+#include <functional>
 
 typedef unsigned int uint;
 
@@ -14,7 +15,7 @@ class GTI
 {
 	enum class UIElementType
 	{
-		NONE,
+		Unidentified,
 		Image,
 		Button,
 		Checkbox,
@@ -37,7 +38,7 @@ public:
 	public:
 		UIElement(bool drag = false);
 
-		virtual UIElementType GetType() { return UIElementType::NONE; }
+		virtual UIElementType GetType() { return UIElementType::Unidentified; }
 		virtual void UpdatePos() {};
 		virtual void OnClick() {};
 
@@ -65,10 +66,7 @@ public:
 	{
 	public:
 		Image(bool drag = false) : UIElement(drag) {};
-		static UIElementType GetType()
-		{
-			return UIElementType::Image;
-		}
+		static UIElementType GetType() { return UIElementType::Image; }
 
 		std::string source;
 		SDL_Surface surface;
@@ -128,6 +126,38 @@ public:
 
 #pragma endregion
 
+#pragma region EMITTER
+
+	template <typename in>
+
+	class Emitter
+	{
+	public:
+		void Register(std::function<void(in)> func)
+		{
+			funcList.push_back(func);
+		}
+
+		template <typename C>
+		void Register(C* object, void(C::* memFunc)(in))
+		{
+			Register([object = object, memFunc = memFunc](in arg) { (object->*(memFunc))(arg); });
+		}
+
+		void Ping(in param)
+		{
+			for (auto func : funcList)
+			{
+				func(param);
+			}
+		}
+
+	private:
+		std::vector<std::function<void(in)>> funcList;
+	};
+
+
+#pragma endregion
 
 #define FAR_PLANE_DISTANCE 100.0f
 private:
@@ -136,10 +166,10 @@ public:
 	~GTI();
 
 	static GTI GTInterface; // Brujeria
-	
+
 	static void Init(uint screenWidth, uint screenHeight, float scale = 0.5f);
 	static void CleanUp();
-	
+
 	static void Render();
 	static void RenderUIElement(UIElement* element, bool paintBlend = false);
 
@@ -150,7 +180,7 @@ public:
 	Image* AddImage();
 
 	static void GetEventSDL(SDL_Event &e) { GTInterface.ProcessEventSDL(e); };
-	
+
 	float4x4 GetCameraTransform() const;
 
 private:
