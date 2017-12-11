@@ -181,7 +181,7 @@ GTI::~GTI()
 		{
 		case SDL_MOUSEWHEEL:
 		{
-			mouseZ = e.wheel.y;
+			
 			break;
 		}
 

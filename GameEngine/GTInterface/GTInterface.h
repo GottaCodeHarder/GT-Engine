@@ -88,7 +88,7 @@ public:
 		//	Emitter<bool> emitter;
 
 		// NEED A WAY TO CHANGE THE IMAGE BUFF
-		// std::vector<de 0 a 3> donde 0 es click, 1 hover, 2 no click
+		// std::vector<de 0 a 3> donde 0 es normal, 1 hover, 2 click
 	};
 
 	class Checkbox : public UIElement
