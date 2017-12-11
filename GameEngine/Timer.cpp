@@ -32,7 +32,7 @@ void Timer::Pause()
 // ---------------------------------------------
 void Timer::Stop()
 {
-	startedAt = pausedAt = 0.f;
+	startedAt = pausedAt = SDL_GetTicks();
 	memory = NULL;
 }
 

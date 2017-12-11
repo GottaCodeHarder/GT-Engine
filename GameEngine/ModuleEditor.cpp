@@ -566,7 +566,6 @@ void ModuleEditor::PlayPause()
 		if (ImGui::Button("Stop"))
 		{
 			App->GetGameTimer()->Stop();
-			App->SetGameDt(0.f);
 			playLabel = "Play";
 			App->isPlaying = false;
 		}
@@ -574,8 +573,10 @@ void ModuleEditor::PlayPause()
 		ImGui::SameLine();
 		if (ImGui::Button("Restart"))
 		{
-			App->isPlaying = false;
-			App->SetGameDt(0.f);
+			App->GetGameTimer()->Stop();
+			App->GetGameTimer()->Start();
+			App->isPlaying = true;
+			playLabel = "Pause";
 		}
 		ImGui::Text("Time: %.2f", App->GetGameDt());
 	}
