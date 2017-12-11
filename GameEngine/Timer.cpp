@@ -13,27 +13,42 @@ Timer::Timer()
 }
 
 // ---------------------------------------------
-void Timer::Start()
+void Timer::Start(bool toggle)
 {
-	if (state == TimerState::STOP)
+	if (toggle)
 	{
-		startedAt = (SDL_GetTicks());
+		if (state == TimerState::STOP)
+		{
+			startedAt = SDL_GetTicks();
+			state = TimerState::PLAY;
+		}
+		else if (state == TimerState::PLAY)
+		{
+			stoppedAt = SDL_GetTicks();
+			state = TimerState::PLAY_PAUSE;
+		}
+		else if (state == TimerState::PLAY_PAUSE)
+		{
+			startedAt = SDL_GetTicks() + (stoppedAt - SDL_GetTicks());
+			state = TimerState::PLAY;
+		}
+	}
+	else if (!toggle)
+	{
+		memory = NULL;
 		state = TimerState::PLAY;
+		startedAt = (SDL_GetTicks());
 	}
 }
 
-void Timer::Continue()
-{	
-	startedAt = stoppedAt;
-	state = TimerState::PLAY;
-}
-
 // ---------------------------------------------
-void Timer::Stop()
+void Timer::Stop(bool toggle)
 {
-	if (state == TimerState::PLAY)
-		memory = NULL;
-
+	if (toggle)
+	{
+		if (state == TimerState::PLAY)
+			memory = NULL;
+	}
 	state = TimerState::STOP;
 	stoppedAt = (SDL_GetTicks());
 }
@@ -43,9 +58,13 @@ Uint32 Timer::Read() const
 {
 	if(state == TimerState::PLAY)
 	{
-		return ((SDL_GetTicks()) - startedAt);
+		return (SDL_GetTicks() - startedAt);
 	}
-	else
+	else if (state == TimerState::PLAY_PAUSE)
+	{
+		return (SDL_GetTicks() - stoppedAt);
+	}
+	else if (state == TimerState::STOP)
 	{
 		return stoppedAt - startedAt;
 	}
@@ -75,7 +94,7 @@ void Timer::ResetTimer()
 {
 	startedAt = 0.f;
 	stoppedAt = 0.f;
-	timeStartMinutes = 0.f;
+	timeStartSeconds = 0.f;
 	timeStartMinutes = 0.f;
 }
 

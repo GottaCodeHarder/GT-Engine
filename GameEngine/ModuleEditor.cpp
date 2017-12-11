@@ -530,63 +530,56 @@ void ModuleEditor::PlayPause()
 
 	if (setPlay)
 	{
-		ImGui::SetNextWindowPos(ImVec2(App->window->screenSurface->w/2 - sizeX/2, 20));
+		ImGui::SetNextWindowPos(ImVec2(App->window->screenSurface->w / 2 - sizeX / 2, 20));
 		ImGui::SetNextWindowSize(ImVec2(sizeX, 70.f));
 		setPlay = false;
 	}
 
+	ImGuiStyle &style = ImGui::GetStyle();;
+	style.WindowTitleAlign = ImGuiAlign_Center;
 
-	ImGuiWindowFlags flag = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_ShowBorders;
-	ImGui::Begin("Play/Pause", 0, ImVec2(500, 1000), 0.8f, flag);
+	ImGuiWindowFlags flag = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize;
+	ImGui::Begin("PLAY", 0, ImVec2(500, 1000), 0.8f, flag);
 	{
+		// ---------------------------------------------< PLAY BUTTON
 		if (ImGui::Button(playLabel.c_str()))
 		{
-			bool once = false;
-
 			// set to PAUSE
-			if (App->isPlaying && !once)
+			if (App->isPlaying)
 			{
 				App->isPlaying = false;
-	
-				playLabel = "Play";
+				App->GetGameTimer()->Start(true);
 
-				once = true;
+				playLabel = "Play";
 			}
 			// set to PLAY
-			if (!App->isPlaying && !once)
+			else if (!App->isPlaying)
 			{
 				App->isPlaying = true;
-				if (App->GetGameTimer()->GetTimerState() == Timer::TimerState::STOP)
-				{
-					App->GetGameTimer()->Start();
-				}
-				else if (App->GetGameTimer()->GetTimerState() == Timer::TimerState::PLAY)
-				{
-					App->GetGameTimer()->Continue();
-				}
+				App->GetGameTimer()->Start(true);
 
 				playLabel = "Pause";
-
-				once = true;
 			}
-
-			App->isStopped = !App->isPlaying;
 		}
+		// ---------------------------------------------< STOP BUTTON
 		ImGui::SameLine();
 		if (ImGui::Button("Stop"))
 		{
-			App->GetGameTimer()->Start();
-			App->isStopped = true;
+			App->GetGameTimer()->Stop(true);
+			App->SetGameDt(0.f);
+			playLabel = "Play";
 			App->isPlaying = false;
 		}
+
 		ImGui::SameLine();
 		if (ImGui::Button("Restart"))
 		{
 			App->isPlaying = false;
 			App->SetGameDt(0.f);
 		}
-		ImGui::Text("Time: %f", App->GetGameDt());
+		ImGui::Text("Time: %.2f", App->GetGameDt());
 	}
+	style.WindowTitleAlign = ImGuiAlign_Default;
 	ImGui::End();
 }
 

@@ -83,7 +83,6 @@ bool Application::Init()
 
 	msTimer.Start();
 	//msTimerGame.Start();
-	isStopped = false;
 	dtGame = 0.f;
 	return ret;
 }
@@ -112,10 +111,6 @@ void Application::PrepareUpdate()
 		Timer timer = msTimerGame;
 		//timer.Start();
 		SetGameDt((float)msTimerGame.Read() / 1000.0f);
-	}
-	else
-	{
-		GetGameTimer()->Stop();
 	}
 }
 

@@ -11,15 +11,15 @@ public:
 	enum class TimerState
 	{
 		PLAY,
+		PLAY_PAUSE,
 		STOP
 	};
 
 	// Constructor
 	Timer();
 
-	void Start();
-	void Continue();
-	void Stop();
+	void Start(bool toggle = false);
+	void Stop(bool toggle = false);
 
 	bool SoundsTimer(); 
 	void ResetTimer();
