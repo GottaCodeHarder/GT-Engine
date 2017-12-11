@@ -108,8 +108,6 @@ void Application::PrepareUpdate()
 	//Game Timer
 	if (isPlaying)
 	{
-		Timer timer = msTimerGame;
-		//timer.Start();
 		SetGameDt((float)msTimerGame.Read() / 1000.0f);
 	}
 }
