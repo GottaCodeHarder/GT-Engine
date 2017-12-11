@@ -2,6 +2,7 @@
 #include "MathGeoLib/MathGeoLib.h"
 
 class GameObject;
+
 class cTransform : public Component
 {
 public:
@@ -24,18 +25,24 @@ public:
 	void SetGlobalScale(float3 globalScale);
 	void SetGlobalRot(Quat globalRot);
 
+	// Rect Transform
+	void SetRectTransform(uint w, uint h);
+	void SetTransform();
+
 	void RealUpdate()
 	{
 		int i = 5;
 	};
 
 	void DrawUI();
+	void DrawUITransform();
+	void DrawUIRectTransform();
 
 	bool transformChange = false;
 
 	uint Serialize(char* &buffer);
 	uint DeSerialize(char* &buffer, GameObject* parent);
-
-private:
-
+	
+	uint w = 0;
+	uint h = 0;
 };

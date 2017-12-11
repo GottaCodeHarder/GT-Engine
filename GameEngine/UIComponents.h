@@ -31,6 +31,9 @@ public:
 	cImage(GameObject* _gameObject) : cUI(_gameObject)
 	{
 		image = GTI::GTInterface.AddImage();
+
+		// Load Default Texture & set Transform's width and height
+		_gameObject->SetRectTransform(1, 1);
 	}
 	~cImage()
 	{

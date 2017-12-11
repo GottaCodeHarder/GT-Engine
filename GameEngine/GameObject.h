@@ -27,6 +27,8 @@ public:
 	bool SonHasMesh();
 
 	void AddComponent(Component*);
+	void SetRectTransform(uint w, uint h);
+	void SetNormalTransform();
 
 	void Save(JSON_Object *go) const;
 	void Load(const JSON_Object *go);

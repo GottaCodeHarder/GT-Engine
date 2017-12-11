@@ -250,6 +250,20 @@ void GameObject::AddComponent(Component* addComponent)
 	components.insert(std::pair<componentType, Component*>(addComponent->type, addComponent));
 }
 
+void GameObject::SetRectTransform(uint w, uint h)
+{
+	cTransform* transform = (cTransform*)FindComponent(componentType::TRANSFORM);
+	if (transform)
+		transform->SetRectTransform(w, h);
+}
+
+void GameObject::SetNormalTransform()
+{
+	cTransform* transform = (cTransform*)FindComponent(componentType::TRANSFORM);
+	if (transform)
+		transform->SetTransform();
+}
+
 void GameObject::Save(JSON_Object *go) const
 {
 	json_object_set_string(go, "Name", name.data());
