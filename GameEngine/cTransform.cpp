@@ -250,35 +250,35 @@ void cTransform::DrawUIRectTransform()
 			ImGui::Columns(4, "localColumns", false);
 			ImGui::NextColumn();
 			ImGui::Text("Pos X");
-			ImGui::Text("%g", positionLocal.x);
+			if (ImGui::DragFloat("##plx", &positionLocal.x, 0.2f, 0.0f, 0.0f, "%g")) { transformChange = true; }
 			ImGui::NextColumn();
 			ImGui::Text("Pos Y");
-			ImGui::Text("%g", positionLocal.y);
+			if (ImGui::DragFloat("##ply", &positionLocal.y, 0.2f, 0.0f, 0.0f, "%g")) { transformChange = true; }
 			ImGui::NextColumn();
 			ImGui::Text("Pos Z");
-			ImGui::Text("%g", positionLocal.z);
+			if (ImGui::DragFloat("##plz", &positionLocal.z, 0.2f, 0.0f, 0.0f, "%g")) { transformChange = true; }
 			ImGui::NextColumn();
 
 			ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 
 			ImGui::Columns(4, "scaleRotationColumns", false);
-			ImGui::Text("");	ImGui::Text("Rotation");
-			ImGui::Text("");	ImGui::Text("Scale");
+			ImGui::Text("Rotation");
+			ImGui::Text("Scale");
 			ImGui::NextColumn();
-			ImGui::Text("X");
+			ImGui::Text("X"); ImGui::SameLine();
 			ImGui::Text("%g", rotationLocal.x);
-			ImGui::Text("X");
-			ImGui::Text("%g", scaleLocal.x);
+			ImGui::Text("X"); ImGui::SameLine();
+			if (ImGui::DragFloat("##slx", &scaleLocal.x, 0.1f, 0.01f, 1000.0f, "%g")) { transformChange = true; }
 			ImGui::NextColumn();
-			ImGui::Text("Y");
+			ImGui::Text("Y"); ImGui::SameLine();
 			ImGui::Text("%g", rotationLocal.y);
-			ImGui::Text("Y");
-			ImGui::Text("%g", scaleLocal.y);
+			ImGui::Text("Y"); ImGui::SameLine();
+			if (ImGui::DragFloat("##sly", &scaleLocal.y, 0.1f, 0.01f, 1000.0f, "%g")) { transformChange = true; }
 			ImGui::NextColumn();
-			ImGui::Text("Z");
+			ImGui::Text("Z"); ImGui::SameLine();
 			ImGui::Text("%g", rotationLocal.z);
-			ImGui::Text("Z");
-			ImGui::Text("%g", scaleLocal.z);
+			ImGui::Text("Z"); ImGui::SameLine();
+			if (ImGui::DragFloat("##slz", &scaleLocal.z, 0.1f, 0.01f, 1000.0f, "%g")) { transformChange = true; }
 			ImGui::NextColumn();
 
 			ImGui::Columns(1);
@@ -301,24 +301,6 @@ void cTransform::DrawUIRectTransform()
 		{
 			if (!gameObject->statiC)
 			{
-				if (ImGui::TreeNodeEx("Modify Local Position"))
-				{
-					if (ImGui::DragFloat("x", &positionLocal.x, 0.5f))
-					{
-						transformChange = true;
-					}
-					if (ImGui::DragFloat("y", &positionLocal.y, 0.5f)) { transformChange = true; }
-					if (ImGui::DragFloat("z", &positionLocal.z, 0.5f)) { transformChange = true; }
-
-					ImGui::TreePop();
-				}
-				if (ImGui::TreeNodeEx("Modify Local Scale"))
-				{
-					if (ImGui::DragFloat("x", &scaleLocal.x, 0.5f)) { transformChange = true; }
-					if (ImGui::DragFloat("y", &scaleLocal.y, 0.5f)) { transformChange = true; }
-					if (ImGui::DragFloat("z", &scaleLocal.z, 0.5f)) { transformChange = true; }
-					ImGui::TreePop();
-				}
 				if (ImGui::TreeNodeEx("Modify Local Rotation"))
 				{
 					float x = 0.f;
