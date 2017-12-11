@@ -197,6 +197,7 @@ private:
 	{
 	public:
 		static void DrawLine(float3 &from, float3 &to, float3 color = float3::one);
+		static void DrawPlane(float3 planeVertex[]);
 		static void DrawFrustum(Frustum &frustum);
 	};
 

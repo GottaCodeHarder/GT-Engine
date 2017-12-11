@@ -283,6 +283,15 @@ GTI::~GTI()
 		glEnable(GL_LIGHTING);
 	}
 
+	void GTI::DebugDraw::DrawPlane(float3 planeVertex[])
+	{
+		float3 planeColor = float3(0, 1, 1);
+		DrawLine(float3(planeVertex[0].x, planeVertex[0].y, planeVertex[0].z), float3(planeVertex[1].x, planeVertex[1].y, planeVertex[1].z), planeColor);
+		DrawLine(float3(planeVertex[2].x, planeVertex[2].y, planeVertex[2].z), float3(planeVertex[3].x, planeVertex[3].y, planeVertex[3].z), planeColor);
+		DrawLine(float3(planeVertex[0].x, planeVertex[0].y, planeVertex[0].z), float3(planeVertex[3].x, planeVertex[3].y, planeVertex[3].z), planeColor);
+		DrawLine(float3(planeVertex[1].x, planeVertex[1].y, planeVertex[1].z), float3(planeVertex[2].x, planeVertex[2].y, planeVertex[2].z), planeColor);
+	}
+
 	void GTI::DebugDraw::DrawFrustum(Frustum &frustum)
 	{
 		vec vector[8];
