@@ -52,7 +52,6 @@ private:
 
 	std::list<AABB> box_list;
 	std::map<std::string, bool> window_menu;
-	std::map<std::string, bool> file_menu;
 	std::map<std::string, bool> help_menu;
 	std::map<std::string, bool> tools_menu;
 
@@ -64,7 +63,7 @@ private:
 	void Configuration();
 	void Heriarchy();
 	void Properties();
-	void LoadFile();
+	void LoadFile(bool select);
 	void StyleEditor();
 	void ToolRandom();
 	void ViewGeometry();
@@ -76,11 +75,13 @@ private:
 
 private:
 
-	// Random Temporal
+	// Random
 	float fRandomMin = 0.0f;
 	float fRandomMax = 0.0f;
 	float fResult = 0.0f;
 	int iSelectedRand = 0;
+
+	bool bExit = false;
 
 	// Config Temporal
 	float fpsArr[100] = {};

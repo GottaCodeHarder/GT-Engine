@@ -11,6 +11,8 @@
 #include <gl/GLU.h>
 #include "ImGuizmo.h"
 
+#include "GTInterface/GTInterface.h"
+
 #include "GameObject.h"
 #include "Random.h"
 
@@ -33,11 +35,6 @@ bool ModuleEditor::Start()
 	InitStyles();
 	SetStyle(mintStyle);
 	blueStyle.active = arcStyle.active = gteStyle.active = false;
-	
-	//Insert File Menu
-	file_menu.insert(std::pair<std::string, bool>("Exit(esc)", false));
-	file_menu.insert(std::pair<std::string, bool>("Load File", false));
-	file_menu.insert(std::pair<std::string, bool>("Reset Scene", false));
 
 	//Insert Tools Menu
 	tools_menu.insert(std::pair<std::string, bool>("Style Editor", false));
@@ -118,25 +115,8 @@ update_status ModuleEditor::Update(float dt)
 		}
 	}
 
-	//Show File Menu
-	if (file_menu["Load File"])
-	{
-		LoadFile();
-	}
-
-	if (file_menu["Reset Scene"])
-	{
-		App->scene->ResetScene();
-		
-		std::map<std::string, bool>::iterator it = file_menu.find("Reset Scene");
-		if (it->second == true)
-		{
-			it->second = false;
-		}
-		App->scene->quad.EmtpyQuad();
-	}
-
-	if (file_menu["Exit(esc)"])
+	// File -> Exit
+	if (bExit)
 	{
 		return UPDATE_STOP;
 	}
@@ -311,42 +291,6 @@ void ModuleEditor::ConfigApplication(Timer &startUp, float &capFramerate)
 	}
 }
 
-// ---------------------------------------------< FILE
-void ModuleEditor::MenuFile()
-{
-	if (ImGui::BeginMenu("File"))
-	{
-		std::map<std::string, bool>::iterator it = file_menu.begin();
-		int n = 0;
-		char check_box_n[50];
-
-		for (; it != file_menu.end(); it++)
-		{
-			if (it != file_menu.begin())
-			{
-				ImGui::Spacing();
-				ImGui::Separator();
-				ImGui::Spacing();
-			}
-
-			sprintf(check_box_n, " ##%d", n);
-			if (ImGui::SmallButton(check_box_n))
-			{
-				it->second = !it->second;
-			}
-			ImGui::SameLine();
-
-			if (ImGui::MenuItem(it->first.c_str(), NULL, it->second))
-			{
-				it->second = !it->second;
-			}
-			n++;
-		}
-
-		ImGui::EndMenu();
-	}
-}
-
 // ---------------------------------------------< TOOLS
 void ModuleEditor::MenuTools()
 {
@@ -379,6 +323,41 @@ void ModuleEditor::MenuTools()
 			n++;
 		}
 
+		ImGui::EndMenu();
+	}
+}
+
+void ModuleEditor::MenuFile()
+{
+	//Show File Menu
+	if (ImGui::BeginMenu("File"))
+	{
+		if (ImGui::BeginMenu(" Load File"))
+		{
+			if (ImGui::MenuItem("To Engine"))
+			{
+				LoadFile(true);
+			}
+			ImGui::Spacing();
+			if (ImGui::MenuItem("To GT Interface"))
+			{
+				LoadFile(false);
+			}
+			ImGui::EndMenu();
+		}
+		ImGui::Spacing(); ImGui::Spacing();		
+
+		if (ImGui::MenuItem(" Reset Scene"))
+		{
+			App->scene->ResetScene();
+			App->scene->quad.EmtpyQuad();
+		}
+		ImGui::Spacing(); ImGui::Spacing();
+
+		if (ImGui::MenuItem(" Exit", "	Esc"))
+		{
+			bExit = true;
+		}
 		ImGui::EndMenu();
 	}
 }
@@ -585,7 +564,7 @@ void ModuleEditor::PlayPause()
 	ImGui::End();
 }
 
-void ModuleEditor::LoadFile()
+void ModuleEditor::LoadFile(bool select)
 {
 	char fileName[1024];
 	ZeroMemory(&fileName, sizeof(fileName));
@@ -600,25 +579,30 @@ void ModuleEditor::LoadFile()
 
 	if (GetOpenFileName(&oFileName) != 0)
 	{
-		Importer importer;
-		FileExtensions extension = importer.GetExtension(fileName);
+		if (select)
+		{
+			Importer importer;
+			FileExtensions extension = importer.GetExtension(fileName);
 
-		switch (extension)
-		{
-		case FileExtensions::Scene3D:
-		{
-			App->scene->CreateFbx(fileName);
-			break;
+			switch (extension)
+			{
+			case FileExtensions::Scene3D:
+			{
+				App->scene->CreateFbx(fileName);
+				break;
+			}
+			case FileExtensions::Image:
+			{
+				importer.LoadImageFile(fileName);
+				break;
+			}
+			}
 		}
-		case FileExtensions::Image:
+		else if (!select)
 		{
-			importer.LoadImageFile(fileName);
-			break;
-		}
+			GTI::GTInterface.LoadTexture(fileName);
 		}
 	}
-
-	file_menu["Load File"] = false;
 }
 
 void ModuleEditor::StyleEditor()

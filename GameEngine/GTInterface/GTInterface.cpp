@@ -1,9 +1,5 @@
 #include "../glew/include/glew.h"
 
-#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
-#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
-#pragma comment (lib, "glew/libx86/glew32.lib")
-
 #include "GTInterface.h"
 
 #include "../Devil/include/il.h"
@@ -14,6 +10,9 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 
+#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
+#pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
+#pragma comment (lib, "glew/libx86/glew32.lib")
 
 #pragma comment (lib, "Devil/libx86/DevIL.lib")
 #pragma	comment (lib, "Devil/libx86/ILU.lib")
@@ -163,7 +162,8 @@ GTI::~GTI()
 		}
 		else
 		{
-			//ERROR
+			// For Debug Only at the moment
+			ILenum error = ilGetError();
 		}
 		return textureID;
 	}
