@@ -132,9 +132,9 @@ void cTransform::DrawUI()
 	{
 		if (ImGui::TreeNodeEx("Local Information", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			ImGui::Text("Position: %f, %f, %f", positionLocal.x, positionLocal.y, positionLocal.z);
-			ImGui::Text("Scale: %f, %f, %f", scaleLocal.x, scaleLocal.y, scaleLocal.z);
-			ImGui::Text("Rotation: %f, %f, %f, %f ", rotationLocal.x, rotationLocal.y, rotationLocal.z, rotationLocal.w);
+			ImGui::Text("Position: %.3f, %.3f, %.3f", positionLocal.x, positionLocal.y, positionLocal.z);
+			ImGui::Text("Scale: %.3f, %.3f, %.3f", scaleLocal.x, scaleLocal.y, scaleLocal.z);
+			ImGui::Text("Rotation: %.3f, %.3f, %.3f, %.3f ", rotationLocal.x, rotationLocal.y, rotationLocal.z, rotationLocal.w);
 			ImGui::TreePop();
 		}
 		ImGui::Spacing();
@@ -143,9 +143,9 @@ void cTransform::DrawUI()
 			float3 globalPos = GetGlobalPos();
 			float3 globalScale = GetGlobalScale();
 			Quat globalRot = GetGlobalRoatation();
-			ImGui::Text("Position: %f, %f, %f", globalPos.x, globalPos.y, globalPos.z);
-			ImGui::Text("Scale: %f, %f, %f", globalScale.x, globalScale.y, globalScale.z);
-			ImGui::Text("Rotation: %f, %f, %f, %f ", globalRot.x, globalRot.y, globalRot.z, globalRot.w);
+			ImGui::Text("Position: %.3f, %.3f, %.3f", globalPos.x, globalPos.y, globalPos.z);
+			ImGui::Text("Scale: %.3f, %.3f, %.3f", globalScale.x, globalScale.y, globalScale.z);
+			ImGui::Text("Rotation: %.3f, %.3f, %.3f, %.3f ", globalRot.x, globalRot.y, globalRot.z, globalRot.w);
 			ImGui::TreePop();
 		}
 		ImGui::Spacing();
