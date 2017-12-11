@@ -150,6 +150,8 @@ GTI::~GTI()
 
 	uint GTI::LoadTexture(char * fullPath)
 	{
+		ilInit();
+
 		uint textureID = ilutGLLoadImage(fullPath);
 
 		if (textureID != 0)
