@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModuleWindow.h"
 #include "ModuleScene.h"
+#include "cTransform.h"
 #include "UIComponents.h"
 
 #include "GTInterface/GTInterface.h"
@@ -39,12 +40,15 @@ bool ModuleGUI::AddUIImage(char* path)
 {
 	if (!canvas)
 	{
-		GameObject* canvas_go = App->scene->CreateGameObject("Canvas");
+		GameObject* canvas_go = App->scene->CreateGameObject("Canvas", true, nullptr, true);
 		canvas = new cCanvas(canvas_go);
+		((cTransform*)canvas_go->FindComponent(TRANSFORM))->SetRectSource(canvas);
 	}
 
-	GameObject* image_go = App->scene->CreateGameObject("Image", true, canvas->gameObject);
+	GameObject* image_go = App->scene->CreateGameObject("Image", true, canvas->gameObject, true);
 	cImage* image = new cImage(image_go);
+	((cTransform*)image_go->FindComponent(TRANSFORM))->SetRectSource(image);
+
 	image->image->buffTexture = GTI::GTInterface.LoadTexture(path);
 	return image->image->buffTexture != 0;
 }

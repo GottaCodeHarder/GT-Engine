@@ -41,7 +41,7 @@ void cCamera::RealUpdate()
 
 	if (transformFrustum)
 	{
-		frustum.pos = ((cTransform*)gameObject->FindComponent(TRANSFORM))->positionLocal;
+		frustum.pos = ((cTransform*)gameObject->FindComponent(TRANSFORM))->GetLocalPos();
 		frustum.front = ((cTransform*)gameObject->FindComponent(TRANSFORM))->GetLocalMatrixTransf().Row3(2);
 		frustum.up = ((cTransform*)gameObject->FindComponent(TRANSFORM))->GetLocalMatrixTransf().Row3(1);
 	}
@@ -106,7 +106,7 @@ void cCamera::AttachCamera()
 void cCamera::TransformCamera()
 {	
 	cTransform* transformTMP = ((cTransform*)gameObject->FindComponent(TRANSFORM));
-	transformTMP->positionLocal = float3(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z);
+	transformTMP->SetLocalPos(float3(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z));
 	frustum.SetPos(float3(App->camera->Position.x, App->camera->Position.y, App->camera->Position.z));
 
 	frustum.front = ((cTransform*)gameObject->FindComponent(TRANSFORM))->GetLocalMatrixTransf().Row3(2);

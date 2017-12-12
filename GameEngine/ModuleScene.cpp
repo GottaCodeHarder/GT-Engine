@@ -13,6 +13,8 @@
 #include "ResourceMesh.h"
 #include "ImGuizmo.h"
 
+#include "UIComponents.h"
+
 #include "glew/include/glew.h"
 #include "SDL/include/SDL_opengl.h"
 #include <gl/GL.h>
@@ -117,9 +119,9 @@ update_status ModuleScene::Update(float dt)
 			float2 pointNearPlane = cameraTMP->frustum.ScreenToViewportSpace(App->input->GetMouseX(), App->input->GetMouseY(), SCREEN_WIDTH, SCREEN_HEIGHT);
 			float3 dir = cameraTMP->frustum.UnProject(pointNearPlane).dir;
 			float3 dir1 = cameraTMP->frustum.UnProjectFromNearPlane(pointNearPlane.x, pointNearPlane.y).dir;
-			point1 = ((cTransform*)cameraTMP->gameObject->FindComponent(TRANSFORM))->GetGlobalPos();
+			point1 = ((Transform*)cameraTMP->gameObject->FindComponent(TRANSFORM))->GetGlobalPos();
 			point2 = point1 + dir * 1000;
-			RayCastHit goSelected = RayCast(((cTransform*)cameraTMP->gameObject->FindComponent(TRANSFORM))->GetGlobalPos(), dir);
+			RayCastHit goSelected = RayCast(((Transform*)cameraTMP->gameObject->FindComponent(TRANSFORM))->GetGlobalPos(), dir);
 			position = goSelected.position;
 			destination = goSelected.position + goSelected.normal * 3;
 
@@ -135,21 +137,22 @@ update_status ModuleScene::Update(float dt)
 	return UPDATE_CONTINUE;
 }
 
-GameObject * ModuleScene::CreateGameObject(std::string name, bool active, GameObject * parent)
+GameObject * ModuleScene::CreateGameObject(std::string name, bool active, GameObject * parent, bool rTrans)
 {
 	GameObject* ret = nullptr;
-	if (parent == nullptr)
-	{
-		ret = new GameObject(name, active, root);
-		root->sons.push_back(ret);
-	}
+	GameObject* ret_parent = (parent == nullptr) ? root : parent;
+
+	ret = new GameObject(name, active, ret_parent);
+	ret_parent->sons.push_back(ret);
+
+	cTransform* transform = nullptr;
+
+	if(rTrans)
+		transform = (cTransform*)(new RectTransform(ret));
 	else
-	{
-		ret = new GameObject(name, active, parent);
-		parent->sons.push_back(ret);
-	}
-	cTransform* trs = new cTransform(ret);
-	ret->AddComponent(trs);
+		transform = (cTransform*)(new Transform(ret));
+
+	ret->AddComponent((Component*)transform);
 
 	return ret;
 }
@@ -174,7 +177,7 @@ void ModuleScene::CreateFbx(char* path)
 		App->camera->Position.x = importer.maxBox.maxPoint.x * 2;
 		App->camera->Position.y = importer.maxBox.maxPoint.y * 2;
 		App->camera->Position.z = importer.maxBox.maxPoint.z * 2;
-		cameraTmp->positionLocal = { App->camera->Position.x, App->camera->Position.y, App->camera->Position.z };
+		cameraTmp->SetLocalPos({ App->camera->Position.x, App->camera->Position.y, App->camera->Position.z });
 		App->camera->LookAt(vec(importer.maxBox.CenterPoint().x, importer.maxBox.CenterPoint().y, importer.maxBox.CenterPoint().z));
 		tmp = nullptr;
 		delete tmp;
@@ -190,7 +193,7 @@ void ModuleScene::ResetScene()
 	}
 	root = new GameObject("root", true, nullptr);
 
-	root->AddComponent(new cTransform(root));
+	root->AddComponent(new Transform(root));
 	App->editor->selected = nullptr;
 
 }

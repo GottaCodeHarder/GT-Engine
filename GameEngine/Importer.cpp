@@ -69,7 +69,7 @@ GameObject* Importer::LegacyLoadFbx(const char * path)
 					}
 
 					cMesh* mesh = new cMesh(gameObject);
-					cTransform* transform = new cTransform(gameObject);
+					Transform* transform = new Transform(gameObject);
 					cMaterial* material = new cMaterial(gameObject);
 
 					//LOAD MESH
@@ -85,9 +85,9 @@ GameObject* Importer::LegacyLoadFbx(const char * path)
 					aiVector3D vectorPosition;
 
 					loading->mTransformation.Decompose(vectorScale, quaternionTransform, vectorPosition);
-					transform->scaleLocal = { vectorScale.x , vectorScale.y , vectorScale.z };
-					transform->positionLocal = { vectorPosition.x , vectorPosition.y , vectorPosition.z };
-					transform->rotationLocal = { quaternionTransform.x,quaternionTransform.y, quaternionTransform.z, quaternionTransform.w };
+					transform->SetLocalScale({ vectorScale.x , vectorScale.y , vectorScale.z });
+					transform->SetLocalPos({ vectorPosition.x , vectorPosition.y , vectorPosition.z });
+					transform->SetLocalRot({ quaternionTransform.x,quaternionTransform.y, quaternionTransform.z, quaternionTransform.w });
 
 					//LOAD TEXTURE/MATERIAL
 					material->resource = (ResourceTexture*)App->resourceManager->LoadResourceTexture(scene, i, path, gameObject->name + path , material);
@@ -111,15 +111,15 @@ GameObject* Importer::LegacyLoadFbx(const char * path)
 			{
 				GameObject* gameObject = new GameObject(loading->mName.data, true, parent);
 				me = gameObject;
-				cTransform* transform = new cTransform(gameObject);
+				Transform* transform = new Transform(gameObject);
 				aiVector3D vectorScale;
 				aiQuaternion quaternionTransform;
 				aiVector3D vectorPosition;
 				gameObject->AddComponent(transform);
 				loading->mTransformation.Decompose(vectorScale, quaternionTransform, vectorPosition);
-				transform->scaleLocal = { vectorScale.x , vectorScale.y , vectorScale.z };
-				transform->positionLocal = { vectorPosition.x , vectorPosition.y , vectorPosition.z };
-				transform->rotationLocal = { quaternionTransform.x,quaternionTransform.y, quaternionTransform.z, quaternionTransform.w };
+				transform->SetLocalScale({ vectorScale.x , vectorScale.y , vectorScale.z });
+				transform->SetLocalPos({ vectorPosition.x , vectorPosition.y , vectorPosition.z });
+				transform->SetLocalRot({ quaternionTransform.x,quaternionTransform.y, quaternionTransform.z, quaternionTransform.w });
 
 				if (bCalcRet)
 				{

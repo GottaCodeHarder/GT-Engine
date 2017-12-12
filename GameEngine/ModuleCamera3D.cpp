@@ -22,7 +22,7 @@ ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(ap
 	defaultCamera->frustum.ComputeViewProjMatrix();
 
 
-	((cTransform*)defaultCamera->gameObject->FindComponent(TRANSFORM))->positionLocal = { 0.f,0.f,5.f };
+	((cTransform*)defaultCamera->gameObject->FindComponent(TRANSFORM))->SetLocalPos({ 0.f,0.f,5.f });
 
 	X = vec(1.0f, 0.0f, 0.0f);
 	Y = vec(0.0f, 1.0f, 0.0f);
@@ -102,7 +102,7 @@ update_status ModuleCamera3D::Update(float dt)
 						Position.x = App->editor->selected->aabbBox.maxPoint.x * 2;
 						Position.y = App->editor->selected->aabbBox.maxPoint.y * 2;
 						Position.z = App->editor->selected->aabbBox.maxPoint.z * 2;
-						cameraTmp->positionLocal = { Position.x, Position.y, Position.z };
+						cameraTmp->SetLocalPos({ Position.x, Position.y, Position.z });
 						LookAt(vec(App->editor->selected->aabbBox.CenterPoint().x, App->editor->selected->aabbBox.CenterPoint().y, App->editor->selected->aabbBox.CenterPoint().z));
 					
 					}
@@ -112,7 +112,7 @@ update_status ModuleCamera3D::Update(float dt)
 						Position.x = tmp->GetGlobalPos().x + 2;
 						Position.y = tmp->GetGlobalPos().y + 2;
 						Position.z = tmp->GetGlobalPos().z + 2;
-						cameraTmp->positionLocal = { Position.x, Position.y, Position.z };
+						cameraTmp->SetLocalPos({ Position.x, Position.y, Position.z });
 						LookAt(vec(tmp->GetGlobalPos().x, tmp->GetGlobalPos().y, tmp->GetGlobalPos().z));
 					}
 				}
@@ -120,7 +120,9 @@ update_status ModuleCamera3D::Update(float dt)
 		}
 
 
-		((cTransform*)defaultCamera->gameObject->FindComponent(TRANSFORM))->positionLocal += newPos;
+		cTransform* transform = (cTransform*)defaultCamera->gameObject->FindComponent(TRANSFORM);
+		transform->SetLocalPos(transform->GetLocalPos() + newPos);
+
 		Position += newPos;
 		Reference += newPos;
 
@@ -211,7 +213,7 @@ update_status ModuleCamera3D::Update(float dt)
 				}
 
 				Position = Reference + Z * Position.Length();
-				cameraTmp->positionLocal = Position;
+				cameraTmp->SetLocalPos(Position);
 			}
 		}
 	}

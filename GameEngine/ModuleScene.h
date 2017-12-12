@@ -34,7 +34,7 @@ public:
 	update_status PreUpdate(float dt);
 	update_status Update(float dt);
 
-	GameObject* CreateGameObject(std::string name = "GameObject", bool active = true, GameObject* parent = nullptr);
+	GameObject* CreateGameObject(std::string name = "GameObject", bool active = true, GameObject* parent = nullptr, bool rTrans = false);
 	void CreateFbx(char* path);
 	void ResetScene();
 	RayCastHit RayCast(const float3& position, const float3& direction);

@@ -37,18 +37,23 @@ void GameObject::PreUpdate()
 
 void GameObject::Update()
 {
-	if (active)
+	if (!active)
+		return;
+
+	cTransform* transform = (cTransform*)FindComponent(TRANSFORM);
+
+	if (transform->GetType() == TransformType::NORMAL)
 	{
 		//Multiply all the matrixTransform with their sons
 		glPushMatrix();
 
-		glMultMatrixf(((cTransform*)FindComponent(TRANSFORM))->GetLocalMatrixTransf().Transposed().ptr());
+		glMultMatrixf(transform->GetLocalMatrixTransf().Transposed().ptr());
 
-		//Update AABB BOX for Game Objects
-		if (((cTransform*)FindComponent(TRANSFORM))->transformChange)
+		//Update AABB BOX for Game Objects if transform has changed
+		if (transform->transformChange)
 		{
-			float4x4 matrix = ((cTransform*)FindComponent(TRANSFORM))->GetGlobalMatrixTransf();
-			float4x4 matrix1 = ((cTransform*)FindComponent(TRANSFORM))->GetLocalMatrixTransf();
+			float4x4 matrix = transform->GetGlobalMatrixTransf();
+			float4x4 matrix1 = transform->GetLocalMatrixTransf();
 
 			//if has a mesh it is modified
 			if (SonHasMesh() || resizeAABB)
@@ -56,57 +61,51 @@ void GameObject::Update()
 				UpdateAABB(matrix);
 				resizeAABB = false;
 			}
+
 			//IF has frustum it is modified
-			if (((cCamera*)FindComponent(CAMERA)) != nullptr)
-			{
-				((cCamera*)FindComponent(CAMERA))->transformFrustum = true;
-			}
+			cCamera* cam = (cCamera*)FindComponent(CAMERA);
+			if (cam != nullptr)
+				cam->transformFrustum = true;
 
-			//IF has UI it is modified
-			if (((cUI*)FindComponent(UI)) != nullptr)
-			{
-				((cUI*)FindComponent(UI))->transformChanged = true;
-			}
-
-			((cTransform*)FindComponent(TRANSFORM))->transformChange = false;
+			transform->transformChange = false;
 		}
+	}
 
-		//UPDATE COMPONENTS
-		for (auto comp : components)
+	//UPDATE COMPONENTS
+	for (auto comp : components)
+	{
+		comp.second->Update();
+	}
+
+	if (!sons.empty())
+
+	{
+		for (auto itSons : sons)
 		{
-			comp.second->Update();
+			itSons->Update();
 		}
+	}
 
-		if (!sons.empty())
+	if (App->renderer3D->bEnableWireframe)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	else
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-		{
-			for (auto itSons : sons)
-			{
-				itSons->Update();
-			}
-		}
+	if (insideFrustum)
+		App->renderer3D->DrawGameObject(this);
 
-		if (App->renderer3D->bEnableWireframe)
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		else
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	if (!isInsideQuad && statiC)
+	{
+		//QUADTREE
+		App->scene->quad.AddGameObject(this);
+		isInsideQuad = true;
+	}
 
-		if(insideFrustum)
-			App->renderer3D->DrawGameObject(this);
+	glPopMatrix();
 
-		if (!isInsideQuad && statiC)
-		{
-			//QUADTREE
-			App->scene->quad.AddGameObject(this);
-			isInsideQuad = true;
-		}
-
-		glPopMatrix();
-
-		if (App->isPlaying)
-		{
-			IsPlaying(App->GetGameDt());
-		}
+	if (App->isPlaying)
+	{
+		IsPlaying(App->GetGameDt());
 	}
 }
 
@@ -248,20 +247,6 @@ bool GameObject::SonHasMesh()
 void GameObject::AddComponent(Component* addComponent)
 {
 	components.insert(std::pair<componentType, Component*>(addComponent->type, addComponent));
-}
-
-void GameObject::SetRectTransform(uint w, uint h)
-{
-	cTransform* transform = (cTransform*)FindComponent(componentType::TRANSFORM);
-	if (transform)
-		transform->SetRectTransform(w, h);
-}
-
-void GameObject::SetNormalTransform()
-{
-	cTransform* transform = (cTransform*)FindComponent(componentType::TRANSFORM);
-	if (transform)
-		transform->SetTransform();
 }
 
 void GameObject::Save(JSON_Object *go) const
