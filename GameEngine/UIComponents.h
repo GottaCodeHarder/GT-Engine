@@ -5,24 +5,29 @@ class GameObject;
 class cUI : public Component
 {
 public:
-	cUI(GameObject* _gameObject) : Component(UI, _gameObject), transformChanged(true){}
+	cUI(GameObject* _gameObject) : Component(UI, _gameObject) {}
 	virtual ~cUI(){}
 
 	virtual void Save(JSON_Object &object) const {};
 	virtual void Load(const JSON_Object &object) {};
 	virtual uint Serialize(char* buffer) { return 0; };
 
-public:
-
-	bool transformChanged;
+	virtual GTI::RectTransform* getTransform() const { return nullptr; }
 };
+
 class cCanvas : public cUI
 {
 public:
-	cCanvas(GameObject* _gameObject) : cUI(_gameObject) {}
+	cCanvas(GameObject* _gameObject) : cUI(_gameObject)
+	{
+		canvas = new GTI::Canvas();
+	}
 	~cCanvas() {};
 
-	bool interactable = true;
+	GTI::RectTransform* getTransform() const { return canvas->transform; }
+
+public:
+	GTI::Canvas* canvas;
 };
 
 class cImage : public cUI
@@ -33,22 +38,14 @@ public:
 		image = GTI::GTInterface.AddImage();
 
 		// Load Default Texture & set Transform's width and height
-		_gameObject->SetRectTransform(1, 1);
+		//_gameObject->SetRectTransform(1, 1);
 	}
 	~cImage()
 	{
 		delete image;
 	}
 
-	void RealUpdate()
-	{
-		if (transformChanged)
-		{
-			// image->UpdatePos(...); UPDATE PRINTING POSITION
-
-			transformChanged = false;
-		}
-	}
+	GTI::RectTransform* getTransform() const { return image->transform; }
 
 	void DrawUI()
 	{
@@ -70,15 +67,7 @@ public:
 		delete button;
 	}
 
-	void RealUpdate()
-	{
-		if (transformChanged)
-		{
-			// button->UpdatePos(...); UPDATE PRINTING POSITION
-
-			transformChanged = false;
-		}
-	}
+	GTI::RectTransform* getTransform() const { return button->transform; }
 
 	void DrawUI()
 	{
@@ -98,15 +87,7 @@ public:
 		delete checkbox;
 	}
 
-	void RealUpdate()
-	{
-		if (transformChanged)
-		{
-			// checkbox->UpdatePos(...); UPDATE PRINTING POSITION
-
-			transformChanged = false;
-		}
-	}
+	GTI::RectTransform* getTransform() const { return checkbox->transform; }
 
 	void DrawUI()
 	{
@@ -126,15 +107,7 @@ public:
 		delete input;
 	}
 
-	void RealUpdate()
-	{
-		if (transformChanged)
-		{
-			// input->UpdatePos(...); UPDATE PRINTING POSITION
-
-			transformChanged = false;
-		}
-	}
+	GTI::RectTransform* getTransform() const { return input->transform; }
 
 	void DrawUI()
 	{
@@ -144,7 +117,4 @@ public:
 public:
 	GTI::Input* input;
 };
-
-
-
 
