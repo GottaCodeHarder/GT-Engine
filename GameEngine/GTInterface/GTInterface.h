@@ -33,10 +33,23 @@ class GTI
 
 public:
 
+	struct RectTransform
+	{
+		uint w = 0;
+		uint h = 0;
+
+		float3 positionLocal = float3(0.0f);
+		float3 scaleLocal = float3(1.0f);
+		Quat rotationLocal = Quat::identity;
+
+		// Unity also sets pivot & anchor variables here
+	};
+
 	class UIElement
 	{
 	public:
 		UIElement(bool drag = false);
+		~UIElement();
 
 		virtual UIElementType GetType() { return UIElementType::Unidentified; }
 		virtual void UpdatePos() {};
@@ -57,9 +70,16 @@ public:
 		Quat GetGlobalRotation();
 		float4x4 GetGlobalTransform();
 
-		float3 positionLocal = { 0.f,0.f,0.f };
-		float3 scaleLocal = { 1.f,1.f,1.f };
-		Quat rotationLocal = Quat::identity;
+		RectTransform* transform;
+	};
+
+	class Canvas : public UIElement
+	{
+	public:
+		Canvas(bool drag = false) : UIElement(drag) {};
+		static UIElementType GetType() { return UIElementType::Image; }
+
+		Frustum* frustum;
 	};
 
 	class Image : public UIElement
