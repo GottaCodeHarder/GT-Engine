@@ -36,9 +36,11 @@ void GTI::Init(uint screenWidth, uint screenHeight, float scale)
 
 	GTInterface.frustum.SetOrthographic(screenWidth * scale, screenHeight * scale);
 
-	GTInterface.scale = scale;
-
 	GTInterface.GeneratePlane();
+
+	GTInterface.scale = scale;
+	GTInterface.lastError = GTIError::NONE;
+	GTInterface.currentDir = "";
 }
 
 void GTI::CleanUp()
@@ -87,7 +89,8 @@ void GTI::RenderUIElement(UIElement * element, bool paintBlend)
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 	glPushMatrix();
-	glMultMatrixf(element->GetGlobalTransform().Transposed().ptr());
+	float4x4 transform = element->GetGlobalTransform();
+	glMultMatrixf(transform.Transposed().ptr());
 
 	switch (element->blendsType)
 	{
@@ -151,7 +154,7 @@ void GTI::RenderUIElement(UIElement * element, bool paintBlend)
 	glPopMatrix();
 }
 
-uint GTI::LoadTexture(char * fullPath)
+uint GTI::LoadTexture(const char * fullPath, RectTransform* transform)
 {
 	ilInit();
 
@@ -191,20 +194,78 @@ uint GTI::LoadTexture(char * fullPath)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), 0, GL_RGBA, GL_UNSIGNED_BYTE, ilGetData());
+		
+		if (transform != nullptr)
+		{
+			transform->w = ilGetInteger(IL_IMAGE_WIDTH);
+			transform->h = ilGetInteger(IL_IMAGE_HEIGHT);
+		}
 	}
 	else
 	{
 		error = ilGetError();
 		return -1;
 	}
+
 	return textureID;
 }
 
-GTI::Image* GTI::AddImage()
+GTI::UIElement* GTI::GetRoot() const
 {
-	Image* ret = new Image();
-	UIElements.push_back(ret);
+	return &GTInterface.root;
+}
+
+GTI::Image* GTI::CreateImage(UIElement* parent, char* path)
+{
+	Image* image = new Image(parent, path);
+	UIElements.push_back(image);
+	return image;
+}
+
+GTI::Label* GTI::CreateLabel(UIElement* parent)
+{
+	Label* label = new Label(parent);
+	UIElements.push_back(label);
+	return label;
+}
+
+GTI::Button* GTI::CreateButton(UIElement* parent)
+{
+	Button* button = new Button(parent);
+	UIElements.push_back(button);
+	return button;
+}
+
+GTI::Checkbox* GTI::CreateCheckbox(bool* ref, UIElement* parent)
+{
+	Checkbox* cbox = new Checkbox(ref, parent);
+	UIElements.push_back(cbox);
+	return cbox;
+}
+
+GTI::Input* GTI::CreateInput(UIElement* parent)
+{
+	Input* input = new Input(parent);
+	UIElements.push_back(input);
+	return input;
+}
+
+std::string GTI::GetPath(const char* filename) const
+{
+	std::string ret = currentDir + filename;
 	return ret;
+}
+
+std::string GTI::GetLastError() const
+{
+	std::string error;
+	switch(lastError)
+	{
+	case GTIError::NONE: error = "GTInterface encountered no errors"; break;
+	case GTIError::IL_LOAD_IMG: error = "Il couldn't load image"; break;
+	case GTIError::IL_CONVERT: error = "Il couldn't convert image to RGB"; break;
+	}
+	return error;
 }
 
 void GTI::UpdateWindowSize(int w, int h)
@@ -219,36 +280,35 @@ float4x4 GTI::GetCameraTransform() const
 
 void GTI::ProcessEventSDL(SDL_Event & e)
 {
-	for (UIElement element : GTInterface.UIElements)
+	for (UIElement* element : GTInterface.UIElements)
 	{
 		switch (e.type)
 		{
 		case SDL_MOUSEBUTTONDOWN:
 		{
-			element.HandleEvent(e);
+			element->HandleEvent(e);
 			break;
 		}
 		case SDL_MOUSEBUTTONUP:
 		{
-			element.HandleEvent(e);
+			element->HandleEvent(e);
 			break;
 		}
 		case SDL_MOUSEMOTION:
 		{
 			// Button Hover and Image Drag
-			if (element.GetType() == UIElementType::Button || element.GetType() == UIElementType::Image)
+			if (element->GetType() == UIElementType::Button || element->GetType() == UIElementType::Image)
 			{
-				element.HandleEvent(e);
+				element->HandleEvent(e);
 			}
 			break;
 		}
-
 		case SDL_WINDOWEVENT:
-		{
+  		{
 			if (e.window.event == SDL_WINDOWEVENT_RESIZED)
-			{
-				//UpdateWindowSize(e.window.data1, e.window.data2);
-			}
+ 			{
+ 				//UpdateWindowSize(e.window.data1, e.window.data2);
+ 			}
 		}
 		}
 	}
@@ -349,8 +409,36 @@ void GTI::DebugDraw::DrawFrustum(Frustum &frustum)
 
 
 
-GTI::UIElement::UIElement(bool drag) : draggable(drag)
+
+
+GTI::RectTransform::RectTransform()
 {
+	Reset();
+}
+void GTI::RectTransform::Reset()
+{
+	w = 0;
+	h = 0;
+	positionLocal = float3(0.0f);
+	scaleLocal = float3(1.0f);
+	rotationLocal = Quat::identity;
+}
+
+GTI::UIElement::UIElement(UIElementType t, UIElement* _parent, bool drag)
+{
+	type = t;
+	parent = _parent;
+	draggable = drag;
+
+	blendsType = TransparencyType::ALPHA_TEST;
+	buffTexture = 0;
+	alpha = 0.8f;
+
+	if (_parent == nullptr && t > UIElementType::Canvas)
+		parent = GTI::GTInterface.GetRoot();
+	else
+		parent = nullptr;
+
 	transform = new RectTransform();
 }
 
@@ -396,3 +484,61 @@ float4x4 GTI::UIElement::GetGlobalTransform()
 	ret = ret.FromTRS(GetGlobalPosition(), GetGlobalRotation(), GetGlobalScale());
 	return ret;
 }
+
+
+
+GTI::Canvas::Canvas() : GTI::UIElement(UIElementType::Canvas), frustum(nullptr)
+{}
+
+GTI::Image::Image(UIElement* _parent, char* path,  bool drag) : UIElement(UIElementType::Image, _parent, drag)
+{
+	SetImage(path);
+}
+
+void GTI::Image::SetImage(char* path)
+{
+	/*std::string fullpath;
+	if (path == nullptr)
+		fullpath = GTInterface.GetPath("default_img.png");
+	else
+		fullpath = path;*/
+
+	buffTexture = LoadTexture(path, transform);
+}
+
+GTI::Label::Label(UIElement* _parent, bool drag) : UIElement(UIElementType::Button, _parent, drag)
+{
+	text = "";
+	UpdateBuffer();
+}
+
+void GTI::Label::SetText(const char* t)
+{
+	if (t == nullptr)
+	{
+		if (text.compare("") != 0)
+		{
+			text = "";
+			UpdateBuffer();
+		}
+	}
+	else if (text.compare(t) != 0)
+	{
+		text = t;
+		UpdateBuffer();
+	}
+}
+
+void GTI::Label::UpdateBuffer()
+{
+	// TODO change buffer to other text
+}
+
+GTI::Button::Button(UIElement* _parent, bool drag) : UIElement(UIElementType::Button, _parent, drag)
+{}
+
+GTI::Checkbox::Checkbox(bool* ref, UIElement* _parent, bool drag) : UIElement(UIElementType::Input, _parent, drag), reference(ref)
+{}
+
+GTI::Input::Input(UIElement* _parent, bool drag) : UIElement(UIElementType::Checkbox, _parent, drag)
+{}

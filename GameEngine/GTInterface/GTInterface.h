@@ -3,7 +3,6 @@
 
 #include "../SDL/include/SDL.h"
 #include "../MathGeoLib/MathGeoLib.h"
-#include "../Color.h"
 
 #include <map>
 #include <string>
@@ -15,8 +14,10 @@ class GTI
 {
 	enum class UIElementType
 	{
-		Unidentified,
+		Unidentified = -1,
+		Canvas,
 		Image,
+		Label,
 		Button,
 		Checkbox,
 		Input
@@ -35,12 +36,14 @@ public:
 
 	struct RectTransform
 	{
-		uint w = 0;
-		uint h = 0;
+		RectTransform();
+		void Reset();
 
-		float3 positionLocal = float3(0.0f);
-		float3 scaleLocal = float3(1.0f);
-		Quat rotationLocal = Quat::identity;
+		uint w;
+		uint h;
+		float3 positionLocal;
+		float3 scaleLocal;
+		Quat rotationLocal;
 
 		// Unity also sets pivot & anchor variables here
 	};
@@ -48,64 +51,64 @@ public:
 	class UIElement
 	{
 	public:
-		UIElement(bool drag = false);
+		UIElement(UIElementType t, UIElement* _parent = nullptr, const bool drag = false);
 		~UIElement();
 
-		virtual UIElementType GetType() { return UIElementType::Unidentified; }
-		virtual void UpdatePos() {};
-		virtual void OnClick() {};
+		UIElementType GetType() const { return type; }
 		virtual void HandleEvent(SDL_Event & e) {};
-		bool draggable;
-
-		//TO TEST
-		TransparencyType blendsType = TransparencyType::ALPHA_TEST;
-		float alpha = 0.8;
-		uint buffTexture = 0;
-
-		//END TO TEST
-		UIElement* parent = nullptr;
 
 		float3 GetGlobalPosition();
 		float3 GetGlobalScale();
 		Quat GetGlobalRotation();
 		float4x4 GetGlobalTransform();
 
+	public:
+		bool draggable;
+		TransparencyType blendsType;
+		float alpha;
+		uint buffTexture;
+		UIElement* parent;
+
 		RectTransform* transform;
+
+	private:
+		UIElementType type;
 	};
 
 	class Canvas : public UIElement
 	{
 	public:
-		Canvas(bool drag = false) : UIElement(drag) {};
-		static UIElementType GetType() { return UIElementType::Image; }
+		Canvas();
 		void HandleEvent(SDL_Event & e) {};
-
 		Frustum* frustum;
 	};
 
 	class Image : public UIElement
 	{
 	public:
-		Image(bool drag = false) : UIElement(drag) {};
+		Image(UIElement* _parent = nullptr, char* path = nullptr, bool drag = false);
 		static UIElementType GetType() { return UIElementType::Image; }
 		void HandleEvent(SDL_Event & e) {};
-
+		void SetImage(char* path = nullptr);
 		std::string source;
-		SDL_Surface surface;
-		Color color;
+	};
+
+	class Label : public UIElement
+	{
+	public:
+		Label(UIElement* _parent = nullptr, bool drag = false);
+		void HandleEvent(SDL_Event & e) {};
+		void SetText(const char* t = nullptr);
+		std::string text;
+	private:
+		void UpdateBuffer();
 	};
 
 	class Button : public UIElement
 	{
-		Button(bool drag = false) : UIElement(drag) {};
-		static UIElementType GetType()
-		{
-			return UIElementType::Button;
-		}
+	public:
+		Button(UIElement* _parent = nullptr, bool drag = false);
 		void HandleEvent(SDL_Event & e) {};
-
-		std::string source;
-		SDL_Surface surface;
 		// NEED A WAY TO SAVE FUNCTIONS
 		//	Emitter<bool> emitter;
 
@@ -115,37 +118,17 @@ public:
 
 	class Checkbox : public UIElement
 	{
-		Checkbox(bool* ref, bool drag = false) : UIElement(drag),
-			reference(ref) {};
-		static UIElementType GetType()
-		{
-			return UIElementType::Checkbox;
-		}
+	public:
+		Checkbox(bool* ref, UIElement* _parent = nullptr, bool drag = false);
 		void HandleEvent(SDL_Event & e) {};
-
-		void OnClick()
-		{
-			(*reference) = !(*reference);
-		}
-
 		bool* reference;
 	};
 
 	class Input : public UIElement
 	{
-		static UIElementType GetType()
-		{
-			return UIElementType::Input;
-		}
+	public:
+		Input(UIElement* _parent = nullptr, bool drag = false);
 		void HandleEvent(SDL_Event & e) {};
-
-		void OnClick()
-		{
-			// set as focused and listen for keyboard events
-		}
-
-		SDL_Surface background;
-		SDL_Surface label;
 		std::string text;
 	};
 
@@ -198,11 +181,18 @@ public:
 	static void Render();
 	static void RenderUIElement(UIElement* element, bool paintBlend = false);
 
-	//To Test
-	uint LoadTexture(char* path);
-	//End To Test
+	static uint LoadTexture(const char* path, RectTransform* transform);
 
-	Image* AddImage();
+	UIElement* GetRoot() const;
+
+	Image* CreateImage(UIElement* parent = nullptr, char* path = nullptr);
+	Label* CreateLabel(UIElement* parent = nullptr);
+	Button* CreateButton(UIElement* parent = nullptr);
+	Checkbox* CreateCheckbox(bool* ref = nullptr, UIElement* parent = nullptr);
+	Input* CreateInput(UIElement* parent = nullptr);
+
+	std::string GetPath(const char* filename) const;
+	std::string GetLastError() const;
 
 	static void GetEventSDL(SDL_Event &e) { GTInterface.ProcessEventSDL(e); };
 	static void UpdateWindowSize(int w, int h);
@@ -215,6 +205,19 @@ private:
 
 	float scale;
 	Frustum frustum;
+	std::string currentDir;
+
+	Canvas root;
+
+	// Error
+	enum class GTIError
+	{
+		NONE = 0,
+		IL_LOAD_IMG,
+		IL_CONVERT
+	} lastError;
+
+
 
 	void ProcessEventSDL(SDL_Event &e);
 
