@@ -219,30 +219,38 @@ float4x4 GTI::GetCameraTransform() const
 
 void GTI::ProcessEventSDL(SDL_Event & e)
 {
-	switch (e.type)
+	for (UIElement element : GTInterface.UIElements)
 	{
-	case SDL_MOUSEWHEEL:
-	{
-		break;
-	}
-
-	case SDL_MOUSEMOTION:
-	{
-		//mouseX = e.motion.x / SCREEN_SIZE;
-		//mouseY = e.motion.y / SCREEN_SIZE;
-
-		//mouseXMotion = e.motion.xrel / SCREEN_SIZE;
-		//mouseYMotion = e.motion.yrel / SCREEN_SIZE;
-		break;
-	}
-
-	case SDL_WINDOWEVENT:
-	{
-		if (e.window.event == SDL_WINDOWEVENT_RESIZED)
+		switch (e.type)
 		{
-			UpdateWindowSize(e.window.data1, e.window.data2);
+		case SDL_MOUSEBUTTONDOWN:
+		{
+			element.HandleEvent(e);
+			break;
 		}
-	}
+		case SDL_MOUSEBUTTONUP:
+		{
+			element.HandleEvent(e);
+			break;
+		}
+		case SDL_MOUSEMOTION:
+		{
+			// Button Hover and Image Drag
+			if (element.GetType() == UIElementType::Button || element.GetType() == UIElementType::Image)
+			{
+				element.HandleEvent(e);
+			}
+			break;
+		}
+
+		case SDL_WINDOWEVENT:
+		{
+			if (e.window.event == SDL_WINDOWEVENT_RESIZED)
+			{
+				//UpdateWindowSize(e.window.data1, e.window.data2);
+			}
+		}
+		}
 	}
 }
 

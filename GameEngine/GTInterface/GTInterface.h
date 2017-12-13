@@ -54,7 +54,7 @@ public:
 		virtual UIElementType GetType() { return UIElementType::Unidentified; }
 		virtual void UpdatePos() {};
 		virtual void OnClick() {};
-
+		virtual void HandleEvent(SDL_Event & e) {};
 		bool draggable;
 
 		//TO TEST
@@ -78,6 +78,7 @@ public:
 	public:
 		Canvas(bool drag = false) : UIElement(drag) {};
 		static UIElementType GetType() { return UIElementType::Image; }
+		void HandleEvent(SDL_Event & e) {};
 
 		Frustum* frustum;
 	};
@@ -87,6 +88,7 @@ public:
 	public:
 		Image(bool drag = false) : UIElement(drag) {};
 		static UIElementType GetType() { return UIElementType::Image; }
+		void HandleEvent(SDL_Event & e) {};
 
 		std::string source;
 		SDL_Surface surface;
@@ -100,6 +102,7 @@ public:
 		{
 			return UIElementType::Button;
 		}
+		void HandleEvent(SDL_Event & e) {};
 
 		std::string source;
 		SDL_Surface surface;
@@ -118,6 +121,7 @@ public:
 		{
 			return UIElementType::Checkbox;
 		}
+		void HandleEvent(SDL_Event & e) {};
 
 		void OnClick()
 		{
@@ -133,6 +137,7 @@ public:
 		{
 			return UIElementType::Input;
 		}
+		void HandleEvent(SDL_Event & e) {};
 
 		void OnClick()
 		{
