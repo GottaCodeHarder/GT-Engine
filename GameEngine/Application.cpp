@@ -91,7 +91,7 @@ void Application::AddImGui()
 {
 	std::vector<Module*>::iterator it = modulesList.begin();
 
-	editor->ConfigApplication(startUp, capFramerate);
+	editor->ConfigApplication(startUp, capFramerate, vSync);
 
 	for (it = modulesList.begin(); it != modulesList.end(); it++)
 	{

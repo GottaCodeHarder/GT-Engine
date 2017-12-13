@@ -181,7 +181,14 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 
 update_status ModuleRenderer3D::Update(float dt)
 {
-
+	if (App->GetVSync() && SDL_GL_GetSwapInterval() == 0)
+	{
+		SDL_GL_SetSwapInterval(1);
+	}
+	else if (!App->GetVSync() && SDL_GL_GetSwapInterval() == 1)
+	{
+		SDL_GL_SetSwapInterval(0);
+	}
 
 	return UPDATE_CONTINUE;
 }

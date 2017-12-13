@@ -238,7 +238,7 @@ void ModuleEditor::Draw()
 	ImGui::Render();
 }
 
-void ModuleEditor::ConfigApplication(Timer &startUp, float &capFramerate)
+void ModuleEditor::ConfigApplication(Timer &startUp, float &capFramerate, bool &vsync)
 {
 	if (!bFreeze)
 	{
@@ -275,6 +275,8 @@ void ModuleEditor::ConfigApplication(Timer &startUp, float &capFramerate)
 		{
 			App->organization.assign(input);
 		}
+
+		ImGui::Checkbox("VSync", &vsync);
 
 		ImGui::PushItemWidth(250);
 		ImGui::SliderFloat("Max FPS", &capFramerate, 20.0f, 144.0f, "%.1f");

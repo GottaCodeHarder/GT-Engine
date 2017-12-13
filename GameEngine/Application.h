@@ -61,6 +61,9 @@ public:
 	void RequestBrowser(std::string link);
 	bool isPlaying = false;
 
+	bool GetVSync() const { return vSync; };
+	void SetVSync(bool set) { vSync = set; };
+
 private:
 
 	void AddModule(Module* mod);
@@ -71,7 +74,7 @@ private:
 	Timer startUp;
 	float capFramerate = 60.0f;
 
-
+	bool vSync = false;
 
 	void LoadConfiguration();
 	void SaveConfiguration();

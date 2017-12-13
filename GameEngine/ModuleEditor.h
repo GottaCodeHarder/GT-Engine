@@ -35,7 +35,7 @@ public:
 
 	void Draw();
 
-	void ConfigApplication( Timer &start, float &cap);
+	void ConfigApplication(Timer &start, float &cap, bool &vsync);
 
 	GameObject* selected = nullptr;
 
