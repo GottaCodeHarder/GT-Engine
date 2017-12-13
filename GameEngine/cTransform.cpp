@@ -555,10 +555,44 @@ void RectTransform::DrawUI()
 
 		if (ImGui::TreeNodeEx("Local Information", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			ImGui::Text("Position: %g, %g, %g", rect->positionLocal.x, rect->positionLocal.y, rect->positionLocal.z);
-			ImGui::Text("Scale: %g, %g, %g", rect->scaleLocal.x, rect->scaleLocal.y, rect->scaleLocal.z);
-			ImGui::Text("Rotation: %g, %g, %g, %g ", rect->rotationLocal.x, rect->rotationLocal.y, rect->rotationLocal.z, rect->rotationLocal.w);
+			ImGui::Columns(4, "localColumns", false);
+			ImGui::NextColumn();
+			ImGui::Text("Pos X");
+			ImGui::Text("%g", rect->positionLocal.x);
+			ImGui::NextColumn();
+			ImGui::Text("Pos Y");
+			ImGui::Text("%g", rect->positionLocal.y);
+			ImGui::NextColumn();
+			ImGui::Text("Pos Z");
+			ImGui::Text("%g", rect->positionLocal.z);
+			ImGui::NextColumn();
+
+			ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
+
+			ImGui::Columns(4, "scaleRotationColumns", false);
+			ImGui::Text("");	ImGui::Text("Rotation");
+			ImGui::Text("");	ImGui::Text("Scale");
+			ImGui::NextColumn();
+			ImGui::Text("X");
+			ImGui::Text("%g", rect->rotationLocal.x);
+			ImGui::Text("X");
+			ImGui::Text("%g", rect->scaleLocal.x);
+			ImGui::NextColumn();
+			ImGui::Text("Y");
+			ImGui::Text("%g", rect->rotationLocal.y);
+			ImGui::Text("Y");
+			ImGui::Text("%g", rect->scaleLocal.y);
+			ImGui::NextColumn();
+			ImGui::Text("Z");
+			ImGui::Text("%g", rect->rotationLocal.z);
+			ImGui::Text("Z");
+			ImGui::Text("%g", rect->scaleLocal.z);
+			ImGui::NextColumn();
+
+			ImGui::Columns(1);
+
 			ImGui::TreePop();
+			ImGui::Spacing();
 		}
 		ImGui::Spacing();
 		if (ImGui::TreeNodeEx("Global Information", ImGuiTreeNodeFlags_DefaultOpen))
@@ -572,54 +606,28 @@ void RectTransform::DrawUI()
 			ImGui::TreePop();
 		}
 		ImGui::Spacing();
-		
-		
-		/* Camera Settings
-		if (gameObject->name != "DefaultCamera")
-		{
-			if (!gameObject->statiC)
-			{
-				if (ImGui::TreeNodeEx("Modify Local Position"))
-				{
-					if (ImGui::DragFloat("x", &positionLocal.x, 0.5f))
-					{
-						transformChange = true;
-					}
-					if (ImGui::DragFloat("y", &positionLocal.y, 0.5f)) { transformChange = true; }
-					if (ImGui::DragFloat("z", &positionLocal.z, 0.5f)) { transformChange = true; }
+	}
 
-					ImGui::TreePop();
-				}
-				if (ImGui::TreeNodeEx("Modify Local Scale"))
-				{
-					if (ImGui::DragFloat("x", &scaleLocal.x, 0.5f)) { transformChange = true; }
-					if (ImGui::DragFloat("y", &scaleLocal.y, 0.5f)) { transformChange = true; }
-					if (ImGui::DragFloat("z", &scaleLocal.z, 0.5f)) { transformChange = true; }
-					ImGui::TreePop();
-				}
-				if (ImGui::TreeNodeEx("Modify Local Rotation"))
-				{
-					float x = 0.f;
-					if (ImGui::DragFloat("x", &x, 0.00005f))
-					{
-						rotationLocal = rotationLocal * Quat::RotateX(x);
-						transformChange = true;
-					}
-					float y = 0.f;
-					if (ImGui::DragFloat("y", &y, 0.00005f))
-					{
-						rotationLocal = rotationLocal * Quat::RotateY(y);
-						transformChange = true;
-					}
-					float z = 0.f;
-					if (ImGui::DragFloat("z", &z, 0.00005f))
-					{
-						rotationLocal = rotationLocal * Quat::RotateZ(z);
-						transformChange = true;
-					}
-					ImGui::TreePop();
-				}
-			}
-		}*/
+	//GUIZMO
+	if (App->editor->selected == gameObject && !App->input->GetKey(SDL_SCANCODE_LALT) == KEY_DOWN)
+	{
+		static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
+		static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
+		if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN)
+			mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+		if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
+			mCurrentGizmoOperation = ImGuizmo::SCALE;
+		if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
+			mCurrentGizmoOperation = ImGuizmo::ROTATE;
+
+		if (ImGuizmo::IsUsing())
+		{
+			transformChange = true;
+		}
+		ImGuiIO& io = ImGui::GetIO();
+		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+		float4x4 matrix = GetGlobalMatrixTransf().Transposed();
+		ImGuizmo::Manipulate(App->camera->GetViewMatrixFloat(), App->renderer3D->projectionMatrix.M, mCurrentGizmoOperation, mCurrentGizmoMode, matrix.ptr(), NULL);
+		SetGlobalTransform(matrix.Transposed());
 	}
 }

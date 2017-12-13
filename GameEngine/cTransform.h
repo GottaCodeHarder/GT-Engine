@@ -123,6 +123,6 @@ public:
 private:
 	bool HasUIRect() const;
 
-public:
+private:
 	cUI* ui;
 };
