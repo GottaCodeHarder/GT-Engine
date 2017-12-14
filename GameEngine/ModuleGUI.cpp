@@ -65,17 +65,29 @@ void ModuleGUI::AddImGui()
 
 }
 
+void ModuleGUI::CreateCanvas()
+{
+	GameObject* canvas_go = App->scene->CreateGameObject("Canvas", true, nullptr, true);
+	canvas = new cCanvas(canvas_go);
+	((cTransform*)canvas_go->FindComponent(TRANSFORM))->SetRectSource(canvas);
+}
+
 bool ModuleGUI::AddUIImage(char* path)
 {
 	if (!canvas)
 	{
-		GameObject* canvas_go = App->scene->CreateGameObject("Canvas", true, nullptr, true);
-		canvas = new cCanvas(canvas_go);
-		((cTransform*)canvas_go->FindComponent(TRANSFORM))->SetRectSource(canvas);
+		CreateCanvas();
 	}
 
 	GameObject* image_go = App->scene->CreateGameObject("Image", true, canvas->gameObject, true);
 	cImage* image = new cImage(image_go, path);
 	((cTransform*)image_go->FindComponent(TRANSFORM))->SetRectSource(image);
 	return image->GetUI()->buffTexture != 0;
+}
+
+bool ModuleGUI::AddUIFont(char * path)
+{
+	// TODO - Ventana contextual pidiendo el nombre
+	
+	return GTI::GTInterface.LoadFont(path, 24, "test");
 }
