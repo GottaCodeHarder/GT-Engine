@@ -1,6 +1,8 @@
 #ifndef GTInterface_H
 #define GTInterface_H
 
+#include "GTITimer.h"
+
 #include "../SDL/include/SDL.h"
 #include "../MathGeoLib/MathGeoLib.h"
 
@@ -35,15 +37,12 @@ class GTI
 #pragma region EMITTER
 
 	template <typename in>
-
 	class Emitter
 	{
 	public:
-		/* Register adds the function on a map so it can be used later.
-		Name is a given string to store the function and be able to call it.*/
-		void Register(std::string name, std::function<void(in)> func)
+		void Register(std::function<void(in)> func)
 		{
-			funcMap.insert(std::pair<std::string, std::function<void(in)>(name, func));
+			funcList.push_back(func);
 		}
 
 		template <typename C>
@@ -60,16 +59,8 @@ class GTI
 			}
 		}
 
-		void OldCallFunction(in param)
-		{
-			for (auto func : funcList)
-			{
-				func(param);
-			}
-		}
-
 	private:
-		std::map<std::string, std::function<void(in)>> funcMap;
+		std::list<std::function<void(in)>> funcList;
 	};
 
 #pragma endregion
@@ -115,8 +106,15 @@ public:
 
 		RectTransform* transform;
 
+		void StartFade(float msDuration);
+		void UpdateFade();
+
 	private:
 		UIElementType type;
+
+		float fadeDuration = 0; // With the End in ms of the Fade
+		float fadeStart = 0;
+		float fadeAlpha = 0;
 	};
 
 	class Canvas : public UIElement
@@ -212,6 +210,8 @@ public:
 	float4x4 GetCameraTransform() const;
 
 	Emitter<bool> emitter;
+
+	GTITimer timer;
 
 private:
 	std::vector<UIElement*> UIElements;

@@ -51,6 +51,8 @@ void GTI::Init(uint screenWidth, uint screenHeight, float scale)
 	GTInterface.scale = scale;
 	GTInterface.lastError = GTIError::NONE;
 	GTInterface.currentDir = "";
+
+	GTInterface.timer.Start();
 }
 
 void GTI::CleanUp()
@@ -121,7 +123,9 @@ void GTI::RenderUIElement(UIElement * element, bool paintBlend)
 		else if (paintBlend)
 		{
 			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, 0); // 0 blendType modifiable
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // 0 blendType modifiable
+
+			element->UpdateFade();
 		}
 		break;
 	}
@@ -150,6 +154,8 @@ void GTI::RenderUIElement(UIElement * element, bool paintBlend)
 
 
 	// CleanUp
+	glColor4f(1.0, 1.0, 1.0, 1.0);
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -564,6 +570,33 @@ float4x4 GTI::UIElement::GetGlobalTransform()
 	float4x4 ret;
 	ret = ret.FromTRS(GetGlobalPosition(), GetGlobalRotation(), GetGlobalScale());
 	return ret;
+}
+
+void GTI::UIElement::StartFade(float msDuration)
+{
+	fadeDuration = msDuration;
+	fadeStart = GTInterface.timer.Read() + msDuration;
+}
+
+void GTI::UIElement::UpdateFade()
+{
+	float time = GTInterface.timer.Read();
+
+	if (time <= fadeStart && fadeDuration != 0.0f)
+	{
+		for (; fadeAlpha > 0.0f; alpha = (1.0f - (time - fadeStart) / fadeDuration)))
+		{
+			if (fadeAlpha < 0.0f)
+			{
+				fadeAlpha = 0.0f;
+			}
+			glColor4f(1.0f, 1.0f, 1.0f, fadeAlpha);
+		}
+	}
+	else
+	{
+		fadeDuration = 0.0f;
+	}
 }
 
 

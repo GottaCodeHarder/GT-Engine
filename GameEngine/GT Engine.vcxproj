@@ -123,6 +123,7 @@
     <ClInclude Include="glmath.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="GTInterface\GTInterface.h" />
+    <ClInclude Include="GTInterface\GTITimer.h" />
     <ClInclude Include="ImGuizmo.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
