@@ -344,12 +344,12 @@ void ModuleEditor::MenuFile()
 			ImGui::Spacing();
 			if (ImGui::MenuItem("To GT Interface"))
 			{
-				LoadFile(LoadType::GTEngineFILE);
+				LoadFile(LoadType::GTInterfaceIMAGE);
 			}
 			ImGui::Spacing();
 			if (ImGui::MenuItem("Font To GT Interface"))
 			{
-				LoadFile(LoadType::GTEngineFILE);
+				LoadFile(LoadType::GTInterfaceFONT);
 			}
 			ImGui::EndMenu();
 		}
