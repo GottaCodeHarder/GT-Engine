@@ -18,6 +18,13 @@ struct Style
 	float3 cPops;
 };
 
+enum class LoadType
+{
+	GTEngineFILE,
+	GTInterfaceIMAGE,
+	GTInterfaceFONT
+};
+
 class ModuleEditor : public Module
 {
 public:
@@ -63,7 +70,7 @@ private:
 	void Configuration();
 	void Heriarchy();
 	void Properties();
-	void LoadFile(bool select);
+	void LoadFile(LoadType select);
 	void StyleEditor();
 	void ToolRandom();
 	void ViewGeometry();

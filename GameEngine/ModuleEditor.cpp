@@ -339,12 +339,17 @@ void ModuleEditor::MenuFile()
 		{
 			if (ImGui::MenuItem("To Engine"))
 			{
-				LoadFile(true);
+				LoadFile(LoadType::GTEngineFILE);
 			}
 			ImGui::Spacing();
 			if (ImGui::MenuItem("To GT Interface"))
 			{
-				LoadFile(false);
+				LoadFile(LoadType::GTEngineFILE);
+			}
+			ImGui::Spacing();
+			if (ImGui::MenuItem("Font To GT Interface"))
+			{
+				LoadFile(LoadType::GTEngineFILE);
 			}
 			ImGui::EndMenu();
 		}
@@ -586,7 +591,7 @@ void ModuleEditor::PlayPause()
 	ImGui::End();
 }
 
-void ModuleEditor::LoadFile(bool select)
+void ModuleEditor::LoadFile(LoadType select)
 {
 	char fileName[1024];
 	ZeroMemory(&fileName, sizeof(fileName));
@@ -601,7 +606,7 @@ void ModuleEditor::LoadFile(bool select)
 
 	if (GetOpenFileName(&oFileName) != 0)
 	{
-		if (select)
+		if (select == LoadType::GTEngineFILE)
 		{
 			Importer importer;
 			FileExtensions extension = importer.GetExtension(fileName);
@@ -620,9 +625,16 @@ void ModuleEditor::LoadFile(bool select)
 			}
 			}
 		}
-		else if (!select)
+		else if (select == LoadType::GTInterfaceIMAGE)
 		{
 			App->userinterface->AddUIImage(fileName);
+		}
+		else if (select == LoadType::GTInterfaceFONT)
+		{
+			if (!App->userinterface->AddUIFont(fileName))
+			{
+				MYLOG("GTInterface < ! > Failed to load Font");
+			}
 		}
 	}
 }

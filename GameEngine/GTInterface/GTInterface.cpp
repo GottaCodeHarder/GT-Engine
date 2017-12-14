@@ -585,7 +585,8 @@ void GTI::Image::SetImage(char* path)
 		fullpath = path;*/
 
 	// TODO
-	buffTexture = LoadTexture(path, transform); //GenerateText("lol", "test", transform, { 255, 0, 255 });
+//	buffTexture = LoadTexture(path, transform); 
+	buffTexture = GenerateText("This is a line", "test", transform, { 255, 0, 255 });
 }
 
 GTI::Label::Label(UIElement* _parent, bool drag) : UIElement(UIElementType::Button, _parent, drag)
