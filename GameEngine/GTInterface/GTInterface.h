@@ -9,6 +9,7 @@
 #include "SDL_ttf/include/SDL_ttf.h"
 
 #include <map>
+#include <list>
 #include <string>
 #include <functional>
 
@@ -105,6 +106,8 @@ public:
 		UIElement* parent;
 
 		RectTransform* transform;
+
+		Emitter<bool> emitter;
 
 		void StartFade(float msDuration);
 		void UpdateFade();
@@ -209,7 +212,29 @@ public:
 
 	float4x4 GetCameraTransform() const;
 
-	Emitter<bool> emitter;
+	std::map<std::string, std::function<void(bool)>> boolFunctionsMap;
+	std::map<std::string, std::function<void(char)>> charFunctionsMap;
+	std::map<std::string, std::function<void(int)>> intFunctionsMap;
+
+	void Register(std::string givenName, std::function<void(bool)> func)
+	{
+		boolFunctionsMap.insert(std::pair<std::string, std::function<void(bool)>>(givenName, func));
+	};
+
+	void Register(std::string givenName, std::function<void(char)> func)
+	{
+		charFunctionsMap.insert(std::pair<std::string, std::function<void(char)>>(givenName, func));
+	};
+
+	void Register(std::string givenName, std::function<void(int)> func)
+	{
+		intFunctionsMap.insert(std::pair<std::string, std::function<void(int)>>(givenName, func));
+	};
+
+	void Func1(int value)
+	{
+		std::cout << "Func 1 pinging a " << value << std::endl;
+	}
 
 	GTITimer timer;
 

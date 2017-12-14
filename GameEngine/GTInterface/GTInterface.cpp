@@ -52,6 +52,8 @@ void GTI::Init(uint screenWidth, uint screenHeight, float scale)
 	GTInterface.lastError = GTIError::NONE;
 	GTInterface.currentDir = "";
 
+	//GTInterface.Register(GTInterface.Func1());
+
 	GTInterface.timer.Start();
 }
 
@@ -584,7 +586,7 @@ void GTI::UIElement::UpdateFade()
 
 	if (time <= fadeStart && fadeDuration != 0.0f)
 	{
-		for (; fadeAlpha > 0.0f; alpha = (1.0f - (time - fadeStart) / fadeDuration)))
+		for (; fadeAlpha > 0.0f; fadeAlpha = (1.0f - (time - fadeStart) / fadeDuration))
 		{
 			if (fadeAlpha < 0.0f)
 			{
@@ -618,8 +620,8 @@ void GTI::Image::SetImage(char* path)
 		fullpath = path;*/
 
 	// TODO
-//	buffTexture = LoadTexture(path, transform); 
-	buffTexture = GenerateText("This is a line", "test", transform, { 255, 0, 255 });
+	buffTexture = LoadTexture(path, transform); 
+//	buffTexture = GenerateText("This is a line", "test", transform, { 255, 0, 255 });
 }
 
 GTI::Label::Label(UIElement* _parent, bool drag) : UIElement(UIElementType::Button, _parent, drag)
