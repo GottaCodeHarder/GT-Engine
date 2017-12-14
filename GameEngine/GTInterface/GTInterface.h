@@ -32,6 +32,48 @@ class GTI
 		BLEND
 	};
 
+#pragma region EMITTER
+
+	template <typename in>
+
+	class Emitter
+	{
+	public:
+		/* Register adds the function on a map so it can be used later.
+		Name is a given string to store the function and be able to call it.*/
+		void Register(std::string name, std::function<void(in)> func)
+		{
+			funcMap.insert(std::pair<std::string, std::function<void(in)>(name, func));
+		}
+
+		template <typename C>
+		void Register(C* object, void(C::* memFunc)(in))
+		{
+			Register([object = object, memFunc = memFunc](in arg) { (object->*(memFunc))(arg); });
+		}
+
+		void CallFunction(in param)
+		{
+			for (auto func : funcList)
+			{
+				func(param);
+			}
+		}
+
+		void OldCallFunction(in param)
+		{
+			for (auto func : funcList)
+			{
+				func(param);
+			}
+		}
+
+	private:
+		std::map<std::string, std::function<void(in)>> funcMap;
+	};
+
+#pragma endregion
+
 #pragma region UI ELEMENTS
 
 public:
@@ -111,8 +153,6 @@ public:
 	public:
 		Button(UIElement* _parent = nullptr, bool drag = false);
 		void HandleEvent(SDL_Event & e) {};
-		// NEED A WAY TO SAVE FUNCTIONS
-		//	Emitter<bool> emitter;
 
 		// NEED A WAY TO CHANGE THE IMAGE BUFF
 		// std::vector<de 0 a 3> donde 0 es normal, 1 hover, 2 click
@@ -133,39 +173,6 @@ public:
 		void HandleEvent(SDL_Event & e) {};
 		std::string text;
 	};
-
-#pragma endregion
-
-#pragma region EMITTER
-
-	template <typename in>
-
-	class Emitter
-	{
-	public:
-		void Register(std::function<void(in)> func)
-		{
-			funcList.push_back(func);
-		}
-
-		template <typename C>
-		void Register(C* object, void(C::* memFunc)(in))
-		{
-			Register([object = object, memFunc = memFunc](in arg) { (object->*(memFunc))(arg); });
-		}
-
-		void CallFunction(in param)
-		{
-			for (auto func : funcList)
-			{
-				func(param);
-			}
-		}
-
-	private:
-		std::vector<std::function<void(in)>> funcList;
-	};
-
 
 #pragma endregion
 
@@ -203,6 +210,8 @@ public:
 	static void UpdateWindowSize(int w, int h);
 
 	float4x4 GetCameraTransform() const;
+
+	Emitter<bool> emitter;
 
 private:
 	std::vector<UIElement*> UIElements;
