@@ -4,6 +4,8 @@
 #include "../SDL/include/SDL.h"
 #include "../MathGeoLib/MathGeoLib.h"
 
+#include "SDL_ttf/include/SDL_ttf.h"
+
 #include <map>
 #include <string>
 #include <functional>
@@ -182,6 +184,9 @@ public:
 	static void RenderUIElement(UIElement* element, bool paintBlend = false);
 
 	static uint LoadTexture(const char* path, RectTransform* transform);
+	static uint GenerateText(const char* text, std::string font, RectTransform* transform, SDL_Color color);
+	static void UpdateText(uint textureBuffer, const char* text, std::string font, RectTransform* transform, SDL_Color color);
+	static bool LoadFont(const char* path, uint size, std::string fontName);
 
 	UIElement* GetRoot() const;
 
@@ -202,6 +207,7 @@ public:
 private:
 	std::vector<UIElement*> UIElements;
 	std::multimap<float, UIElement*> blendElements;
+	std::map<std::string, TTF_Font*> availableFonts;
 
 	float scale;
 	Frustum frustum;

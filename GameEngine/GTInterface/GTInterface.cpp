@@ -10,7 +10,7 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 
-#pragma comment (lib, "glu32.lib")    /* link OpenGL Utility lib     */
+#pragma comment (lib, "glu32.lib")    
 #pragma comment (lib, "opengl32.lib") /* link Microsoft OpenGL lib   */
 #pragma comment (lib, "glew/libx86/glew32.lib")
 
@@ -18,16 +18,26 @@
 #pragma	comment (lib, "Devil/libx86/ILU.lib")
 #pragma	comment (lib, "Devil/libx86/ILUT.lib")
 
+#pragma comment (lib, "GTInterface/SDL_ttf/lib/x86/SDL2_ttf.lib")
+
 GTI GTI::GTInterface = GTI();
 
 GTI::GTI()
 {}
 
 GTI::~GTI()
-{}
+{
+	for (auto fonts : availableFonts)
+	{
+		TTF_CloseFont(fonts.second);
+	}
+}
 
 void GTI::Init(uint screenWidth, uint screenHeight, float scale)
 {
+	TTF_Init();
+	ilInit();
+
 	GTInterface.frustum.SetViewPlaneDistances(0.1f, FAR_PLANE_DISTANCE);
 	GTInterface.frustum.SetWorldMatrix(float3x4::identity * float3x4::RotateY(3.14159265));
 
@@ -156,8 +166,6 @@ void GTI::RenderUIElement(UIElement * element, bool paintBlend)
 
 uint GTI::LoadTexture(const char * fullPath, RectTransform* transform)
 {
-	ilInit();
-
 	ILuint imageID = 0;
 	GLuint textureID;
 
@@ -173,7 +181,7 @@ uint GTI::LoadTexture(const char * fullPath, RectTransform* transform)
 	{
 		ILinfo ImageInfo;
 		iluGetImageInfo(&ImageInfo);
-		if (ImageInfo.Origin == IL_ORIGIN_UPPER_LEFT)
+		if (ImageInfo.Origin != IL_ORIGIN_UPPER_LEFT)
 		{
 			iluFlipImage();
 		}
@@ -208,6 +216,79 @@ uint GTI::LoadTexture(const char * fullPath, RectTransform* transform)
 	}
 
 	return textureID;
+}
+
+uint GTI::GenerateText(const char * text, std::string fontName, RectTransform * transform, SDL_Color color)
+{
+	std::map<std::string, TTF_Font*>::iterator font = GTInterface.availableFonts.find(fontName);
+
+	if (font != GTInterface.availableFonts.end())
+	{
+		SDL_Surface* surface = TTF_RenderUTF8_Blended(font->second, text, color);
+
+		GLuint textureID;
+		
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glGenTextures(1, &textureID);
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+
+		if (transform != nullptr)
+		{
+			transform->w = surface->w;
+			transform->h = surface->h;
+		}
+
+		SDL_FreeSurface(surface);
+
+		return textureID;
+	}
+
+	return NULL;
+}
+
+void GTI::UpdateText(uint textureBuffer, const char * text, std::string fontName, RectTransform * transform, SDL_Color color)
+{
+	std::map<std::string, TTF_Font*>::iterator font = GTInterface.availableFonts.find(fontName);
+
+	if (font != GTInterface.availableFonts.end())
+	{
+		SDL_Surface* surface = TTF_RenderUTF8_Blended(font->second, text, color);
+		
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glBindTexture(GL_TEXTURE_2D, textureBuffer);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+
+		if (transform != nullptr)
+		{
+			transform->w = surface->w;
+			transform->h = surface->h;
+		}
+
+		SDL_FreeSurface(surface);
+	}
+}
+
+bool  GTI::LoadFont(const char * path, uint size, std::string fontName)
+{
+	if (GTInterface.availableFonts.find(fontName) == GTInterface.availableFonts.end())
+	{
+		TTF_Font* font = TTF_OpenFont(path, size);
+		if (font != nullptr && fontName.length() > 0)
+		{
+			GTInterface.availableFonts.insert(std::pair<std::string, TTF_Font*>(fontName, font));
+			return true;
+		}
+	}
+	return false;
 }
 
 GTI::UIElement* GTI::GetRoot() const
@@ -323,10 +404,10 @@ void GTI::GeneratePlane()
 	vertex[3] = float3(-0.5f, 0.5f, 0.0f);
 
 	float2 uvs[4]; // Warning
-	uvs[0] = float2(0.0f, 0.0f);
-	uvs[1] = float2(1.0f, 0.0f);
-	uvs[2] = float2(1.0f, 1.0f);
-	uvs[3] = float2(0.0f, 1.0f);
+	uvs[0] = float2(0.0f, 1.0f);
+	uvs[1] = float2(1.0f, 1.0f);
+	uvs[2] = float2(1.0f, 0.0f);
+	uvs[3] = float2(0.0f, 0.0f);
 
 	float3 normals[4];
 	normals[0] = float3(0.0f, 0.0f, -1.0f);
@@ -503,7 +584,8 @@ void GTI::Image::SetImage(char* path)
 	else
 		fullpath = path;*/
 
-	buffTexture = LoadTexture(path, transform);
+	// TODO
+	buffTexture = LoadTexture(path, transform); //GenerateText("lol", "test", transform, { 255, 0, 255 });
 }
 
 GTI::Label::Label(UIElement* _parent, bool drag) : UIElement(UIElementType::Button, _parent, drag)
