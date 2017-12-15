@@ -28,9 +28,7 @@ GTI::GTI()
 GTI::~GTI()
 {
 	for (auto fonts : availableFonts)
-	{
-		TTF_CloseFont(fonts.second);
-	}
+		TTF_CloseFont(fonts.second.second);
 }
 
 void GTI::Init(uint screenWidth, uint screenHeight, float scale)
@@ -48,9 +46,11 @@ void GTI::Init(uint screenWidth, uint screenHeight, float scale)
 
 	GTInterface.GeneratePlane();
 
+	GTInterface.root.transform->w = screenWidth;
+	GTInterface.root.transform->h = screenHeight;
 	GTInterface.scale = scale;
 	GTInterface.lastError = GTIError::NONE;
-	GTInterface.currentDir = "";
+	GTInterface.mouseLBDown = false;
 
 	//GTInterface.Register(GTInterface.Func1());
 
@@ -58,9 +58,7 @@ void GTI::Init(uint screenWidth, uint screenHeight, float scale)
 }
 
 void GTI::CleanUp()
-{
-
-}
+{}
 
 void GTI::Render()
 {
@@ -226,16 +224,16 @@ uint GTI::LoadTexture(const char * fullPath, RectTransform* transform)
 	return textureID;
 }
 
-uint GTI::GenerateText(const char * text, std::string fontName, RectTransform * transform, SDL_Color color)
+uint GTI::GenerateText(std::string text, std::string fontName, uint size, SDL_Color color, RectTransform * transform)
 {
-	std::map<std::string, TTF_Font*>::iterator font = GTInterface.availableFonts.find(fontName);
+	uint ret = 0;
+	TTF_Font* font = FindFont(fontName, size);
 
-	if (font != GTInterface.availableFonts.end())
+	if (font != nullptr)
 	{
-		SDL_Surface* surface = TTF_RenderUTF8_Blended(font->second, text, color);
-
 		GLuint textureID;
-		
+		SDL_Surface* surface = TTF_RenderUTF8_Blended(font, text.c_str(), color);
+
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glGenTextures(1, &textureID);
 		glBindTexture(GL_TEXTURE_2D, textureID);
@@ -252,23 +250,22 @@ uint GTI::GenerateText(const char * text, std::string fontName, RectTransform * 
 		}
 
 		SDL_FreeSurface(surface);
-
-		return textureID;
+		ret = textureID;
 	}
 
-	return NULL;
+	return ret;
 }
 
-void GTI::UpdateText(uint textureBuffer, const char * text, std::string fontName, RectTransform * transform, SDL_Color color)
+void GTI::UpdateText(uint texBuffer, std::string text, std::string fontName, uint size, SDL_Color color, RectTransform * transform)
 {
-	std::map<std::string, TTF_Font*>::iterator font = GTInterface.availableFonts.find(fontName);
+	TTF_Font* font = FindFont(fontName, size);
 
-	if (font != GTInterface.availableFonts.end())
+	if (font != nullptr)
 	{
-		SDL_Surface* surface = TTF_RenderUTF8_Blended(font->second, text, color);
-		
+		SDL_Surface* surface = TTF_RenderUTF8_Blended(font, text.c_str(), color);
+
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		glBindTexture(GL_TEXTURE_2D, textureBuffer);
+		glBindTexture(GL_TEXTURE_2D, texBuffer);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -285,23 +282,60 @@ void GTI::UpdateText(uint textureBuffer, const char * text, std::string fontName
 	}
 }
 
-bool  GTI::LoadFont(const char * path, uint size, std::string fontName)
+std::string GTI::LoadFont(const char * path, uint size)
 {
-	if (GTInterface.availableFonts.find(fontName) == GTInterface.availableFonts.end())
+	TTF_Font* font = nullptr;
+	std::vector<std::string> split = Splitpath(path, std::set<char>({ '\\' }));
+	std::string name = split.back();
+
+	if (GTInterface.availableFonts.count(name) > 0)
 	{
-		TTF_Font* font = TTF_OpenFont(path, size);
-		if (font != nullptr && fontName.length() > 0)
+		// check for different size
+		std::pair <std::multimap<std::string, std::pair< uint, TTF_Font*>>::iterator,
+			std::multimap<std::string, std::pair< uint, TTF_Font*>>::iterator>
+			range = GTInterface.availableFonts.equal_range(name);
+
+		for (std::multimap<std::string, std::pair< uint, TTF_Font*>>::iterator
+			it = range.first; it != range.second; ++it)
 		{
-			GTInterface.availableFonts.insert(std::pair<std::string, TTF_Font*>(fontName, font));
-			return true;
+			if (it->second.first == size)
+				font = it->second.second;
+		}
+
+		if (font == nullptr)
+		{
+			font = TTF_OpenFont(path, size);
+			GTInterface.availableFonts.insert({ name.c_str(),{ size, font } });
 		}
 	}
-	return false;
+	else
+	{
+		font = TTF_OpenFont(path, size);
+
+		if (font != nullptr)
+			GTInterface.availableFonts.insert({ name.c_str(),{ size, font } });
+	}
+
+	if (font == nullptr)
+		name = "";
+
+	return name;
 }
 
-GTI::UIElement* GTI::GetRoot() const
+GTI::UIElement* GTI::GetRoot()
 {
-	return &GTInterface.root;
+	return (UIElement*)&GTInterface.root;
+}
+
+GTI::UIElement* GTI::GetFocus()
+{
+	return ((Canvas*)GTInterface.GetRoot())->focus;
+}
+
+void GTI::SetFocus(UIElement* focus, float gPosZ)
+{
+	GTInterface.root.focus = focus;
+	((Canvas*)GTInterface.GetRoot())->minZ = focus == nullptr ? -FAR_PLANE_DISTANCE : gPosZ;
 }
 
 GTI::Image* GTI::CreateImage(UIElement* parent, char* path)
@@ -311,10 +345,27 @@ GTI::Image* GTI::CreateImage(UIElement* parent, char* path)
 	return image;
 }
 
-GTI::Label* GTI::CreateLabel(UIElement* parent)
+GTI::Label* GTI::CreateLabel(std::string text, std::string font, uint size, SDL_Color color, UIElement* parent)
 {
-	Label* label = new Label(parent);
-	UIElements.push_back(label);
+	Label* label = nullptr;
+
+	if (FindFont(font, size) == nullptr)
+	{
+		if (!availableFonts.empty())
+		{
+			label = new Label(text, availableFonts.begin()->first, availableFonts.begin()->second.first, color, parent);
+			UIElements.push_back(label);
+		}
+		else
+		{
+			// ERROR: font not found & no other fonts loaded
+		}
+	}
+	else
+	{
+		label = new Label(text, font, size, color, parent);
+		UIElements.push_back(label);
+	}
 	return label;
 }
 
@@ -339,12 +390,6 @@ GTI::Input* GTI::CreateInput(UIElement* parent)
 	return input;
 }
 
-std::string GTI::GetPath(const char* filename) const
-{
-	std::string ret = currentDir + filename;
-	return ret;
-}
-
 std::string GTI::GetLastError() const
 {
 	std::string error;
@@ -357,50 +402,24 @@ std::string GTI::GetLastError() const
 	return error;
 }
 
+void GTI::GetEventSDL(SDL_Event &e)
+{
+	GTInterface.root.HandleEvent(e);
+}
+
 void GTI::UpdateWindowSize(int w, int h)
 {
 	GTInterface.frustum.SetOrthographic(w*GTInterface.scale, h*GTInterface.scale);
 }
 
+bool GTI::GetMLBDown() const
+{
+	return mouseLBDown;
+}
+
 float4x4 GTI::GetCameraTransform() const
 {
 	return frustum.WorldMatrix();
-}
-
-void GTI::ProcessEventSDL(SDL_Event & e)
-{
-	for (UIElement* element : GTInterface.UIElements)
-	{
-		switch (e.type)
-		{
-		case SDL_MOUSEBUTTONDOWN:
-		{
-			element->HandleEvent(e);
-			break;
-		}
-		case SDL_MOUSEBUTTONUP:
-		{
-			element->HandleEvent(e);
-			break;
-		}
-		case SDL_MOUSEMOTION:
-		{
-			// Button Hover and Image Drag
-			if (element->GetType() == UIElementType::Button || element->GetType() == UIElementType::Image)
-			{
-				element->HandleEvent(e);
-			}
-			break;
-		}
-		case SDL_WINDOWEVENT:
-  		{
-			if (e.window.event == SDL_WINDOWEVENT_RESIZED)
- 			{
- 				//UpdateWindowSize(e.window.data1, e.window.data2);
- 			}
-		}
-		}
-	}
 }
 
 void GTI::GeneratePlane()
@@ -497,6 +516,55 @@ void GTI::DebugDraw::DrawFrustum(Frustum &frustum)
 }
 
 
+// Code author: Anders K.'s
+// https://stackoverflow.com/questions/8520560/get-a-file-name-from-a-path
+std::vector<std::string> GTI::Splitpath(const std::string& str, const std::set<char> delimiters)
+{
+	std::vector<std::string> result;
+
+	char const* pch = str.c_str();
+	char const* start = pch;
+	for (; *pch; ++pch)
+	{
+		if (delimiters.find(*pch) != delimiters.end())
+		{
+			if (start != pch)
+			{
+				std::string str(start, pch);
+				result.push_back(str);
+			}
+			else
+			{
+				result.push_back("");
+			}
+			start = pch + 1;
+		}
+	}
+	result.push_back(start);
+
+	return result;
+}
+
+TTF_Font* GTI::FindFont(std::string fontName, uint size)
+{
+	if (GTInterface.availableFonts.count(fontName) > 0)
+	{
+		std::pair <std::multimap<std::string, std::pair< uint, TTF_Font*>>::iterator,
+			std::multimap<std::string, std::pair< uint, TTF_Font*>>::iterator>
+			range = GTInterface.availableFonts.equal_range(fontName);
+
+		for (std::multimap<std::string, std::pair< uint, TTF_Font*>>::iterator
+			it = range.first; it != range.second; ++it)
+		{
+			if (it->second.first == size)
+			{
+				return it->second.second;
+			}
+		}
+	}
+	return nullptr;
+}
+
 
 
 
@@ -511,22 +579,29 @@ void GTI::RectTransform::Reset()
 	positionLocal = float3(0.0f);
 	scaleLocal = float3(1.0f);
 	rotationLocal = Quat::identity;
+	anchorMin = { 0.5f, 0.5f };
+	anchorMax = { 0.5f, 0.5f };
+	pivot = { 0.5f, 0.5f };
 }
 
-GTI::UIElement::UIElement(UIElementType t, UIElement* _parent, bool drag)
+GTI::UIElement::UIElement(UIElementType t, UIElement* _parent)
 {
 	type = t;
 	parent = _parent;
-	draggable = drag;
 
 	blendsType = TransparencyType::ALPHA_TEST;
 	buffTexture = 0;
 	alpha = 0.8f;
 
-	if (_parent == nullptr && t > UIElementType::Canvas)
-		parent = GTI::GTInterface.GetRoot();
+	if (_parent != nullptr)
+		parent = _parent;
+	else if (t > UIElementType::Canvas)
+		parent = &GTI::GTInterface.root;
 	else
 		parent = nullptr;
+
+	if (parent != nullptr)
+		parent->AddSon(this);
 
 	transform = new RectTransform();
 }
@@ -536,7 +611,139 @@ GTI::UIElement::~UIElement()
 	delete transform;
 }
 
-float3 GTI::UIElement::GetGlobalPosition()
+
+GTI::UIElementType GTI::UIElement::GetType() const
+{
+	return type;
+}
+
+void GTI::UIElement::AddSon(UIElement* son)
+{
+	if (son != nullptr)
+	{
+		son->parent = this;
+		sons.push_back(son);
+	}
+}
+
+void GTI::UIElement::OnClick()
+{}
+
+void GTI::UIElement::CheckMouseClick(SDL_MouseButtonEvent &e)
+{
+	if (Contains(e.x, e.y))
+	{
+		float3 gPos = GetGlobalPosition();
+
+		for (std::vector<UIElement*>::iterator it = sons.begin(); it != sons.end(); ++it)
+			(*it)->CheckMouseClick(e);
+
+		if (GTInterface.GetFocus() == nullptr)
+		{
+			GTInterface.SetFocus(this, gPos.z);
+		}
+		else
+		{
+			Canvas* root = (Canvas*)GTInterface.GetRoot();
+			if (gPos.z >= root->minZ)
+				GTInterface.SetFocus(this, gPos.z);
+		}
+	}
+}
+
+void GTI::UIElement::CheckMouseMove(SDL_MouseMotionEvent &e)
+{
+	if (GTInterface.GetFocus() == this
+		&& GTInterface.GetMLBDown()
+		&& draggable)
+	{
+		mouseHover = true;
+		// drag rectTransform
+	}
+	else if (Contains(e.x, e.y))
+	{
+		mouseHover = true;
+
+		/*		x	- X coordinate, relative to window
+		y	- Y coordinate, relative to window
+		xrel	- relative motion in the X direction
+		yrel	- relative motion in the Y direction*/
+
+		for (std::vector<UIElement*>::iterator it = sons.begin(); it != sons.end(); ++it)
+			(*it)->CheckMouseMove(e);
+	}
+	else
+	{
+		MouseHoverLeave();
+	}
+}
+
+void GTI::UIElement::MouseHoverLeave()
+{
+	mouseHover = false;
+
+	for (std::vector<UIElement*>::iterator it = sons.begin(); it != sons.end(); ++it)
+		(*it)->MouseHoverLeave();
+}
+
+bool GTI::UIElement::Contains(int x, int y) const
+{
+	return (x >= MinX() && x <= MaxX() && y >= MinY() && y <= MaxY());
+}
+
+int GTI::UIElement::MinX() const
+{
+	int ret = 0;
+	float3 pos = GetGlobalPosition();
+	float3 scale = GetGlobalScale();
+
+	ret = (GTInterface.GetRoot()->transform->w / 2) + pos.x; // center
+	ret -= transform->w * transform->pivot.x * scale.x; // displace
+														// TODO?? Apply rotation??
+
+	return ret;
+}
+
+int GTI::UIElement::MinY() const
+{
+	int ret = 0;
+	float3 pos = GetGlobalPosition();
+	float3 scale = GetGlobalScale();
+
+	ret = (GTInterface.GetRoot()->transform->h / 2) + pos.y; // center
+	ret -= transform->h * transform->pivot.y * scale.y; // displace
+														// TODO?? Apply rotation??
+
+	return ret;
+}
+
+int GTI::UIElement::MaxX() const
+{
+	int ret = 0;
+	float3 pos = GetGlobalPosition();
+	float3 scale = GetGlobalScale();
+
+	ret = (GTInterface.GetRoot()->transform->w / 2) + pos.x; // center
+	ret += transform->w * transform->pivot.x * scale.x; // displace
+														// TODO?? Apply rotation??
+
+	return ret;
+}
+
+int GTI::UIElement::MaxY() const
+{
+	int ret = 0;
+	float3 pos = GetGlobalPosition();
+	float3 scale = GetGlobalScale();
+
+	ret = (GTInterface.GetRoot()->transform->h / 2) + pos.y; // center
+	ret += transform->h * transform->pivot.y * scale.y; // displace
+														// TODO?? Apply rotation??
+
+	return ret;
+}
+
+float3 GTI::UIElement::GetGlobalPosition() const
 {
 	float3 ret = transform->positionLocal;
 	if (parent != nullptr)
@@ -546,7 +753,7 @@ float3 GTI::UIElement::GetGlobalPosition()
 	return ret;
 }
 
-float3 GTI::UIElement::GetGlobalScale()
+float3 GTI::UIElement::GetGlobalScale() const
 {
 	float3 ret = transform->scaleLocal;
 	if (parent != nullptr)
@@ -557,7 +764,7 @@ float3 GTI::UIElement::GetGlobalScale()
 	return ret;
 }
 
-Quat GTI::UIElement::GetGlobalRotation()
+Quat GTI::UIElement::GetGlobalRotation() const
 {
 	Quat ret = transform->rotationLocal;
 	if (parent != nullptr)
@@ -567,12 +774,14 @@ Quat GTI::UIElement::GetGlobalRotation()
 	return ret;
 }
 
-float4x4 GTI::UIElement::GetGlobalTransform()
+float4x4 GTI::UIElement::GetGlobalTransform() const
 {
 	float4x4 ret;
 	ret = ret.FromTRS(GetGlobalPosition(), GetGlobalRotation(), GetGlobalScale());
 	return ret;
 }
+
+
 
 void GTI::UIElement::StartFade(float msDuration)
 {
@@ -603,31 +812,96 @@ void GTI::UIElement::UpdateFade()
 
 
 
-GTI::Canvas::Canvas() : GTI::UIElement(UIElementType::Canvas), frustum(nullptr)
-{}
+GTI::Canvas::Canvas() : GTI::UIElement(UIElementType::Canvas)
+{
+	frustum = nullptr;
+	interactable = true;
+	focus = nullptr;
+	minZ = -FAR_PLANE_DISTANCE;
+}
 
-GTI::Image::Image(UIElement* _parent, char* path,  bool drag) : UIElement(UIElementType::Image, _parent, drag)
+void GTI::Canvas::HandleEvent(SDL_Event & e)
+{
+	if (!interactable)
+		return;
+
+	switch (e.type)
+	{
+	case SDL_MOUSEBUTTONDOWN:
+	{
+		if (e.button.button == SDL_BUTTON_LEFT)
+		{
+			focus = nullptr;
+
+			for (std::vector<UIElement*>::iterator it = sons.begin(); it != sons.end(); ++it)
+				(*it)->CheckMouseClick(e.button);
+
+			if (focus != nullptr)
+				focus->OnClick();
+		}
+		break;
+	}
+	case SDL_MOUSEBUTTONUP:
+	{
+		if (focus != nullptr && focus->GetType() != UIElementType::Input)
+			focus = nullptr;
+		break;
+	}
+	case SDL_MOUSEMOTION:
+	{
+		// Button Hover and Image Drag
+		for (std::vector<UIElement*>::iterator it = sons.begin(); it != sons.end(); ++it)
+			(*it)->CheckMouseMove(e.motion);
+
+		break;
+	}
+	case SDL_TEXTINPUT:
+	{
+		if (focus != nullptr && focus->GetType() == UIElementType::Input)
+		{
+			Input* input = (Input*)focus;
+			input->Write(e.text.text);
+		}
+
+		break;
+	}
+	case SDL_WINDOWEVENT:
+	{
+		if (e.window.event == SDL_WINDOWEVENT_RESIZED)
+		{
+			// 1. Change transform w and h
+			// 2. ResizeSons(...)
+
+			// new width  = e.window.data1
+			// new height = e.window.data2
+		}
+	}
+	}
+}
+
+GTI::Image::Image(UIElement* _parent, char* path) : UIElement(UIElementType::Image, _parent)
 {
 	SetImage(path);
 }
 
 void GTI::Image::SetImage(char* path)
 {
-	/*std::string fullpath;
-	if (path == nullptr)
-		fullpath = GTInterface.GetPath("default_img.png");
-	else
-		fullpath = path;*/
-
-	// TODO
 	buffTexture = LoadTexture(path, transform); 
-//	buffTexture = GenerateText("This is a line", "test", transform, { 255, 0, 255 });
 }
 
-GTI::Label::Label(UIElement* _parent, bool drag) : UIElement(UIElementType::Button, _parent, drag)
+void GTI::Image::OnClick()
 {
-	text = "";
-	UpdateBuffer();
+	// TODO SAMU
+	transform->scaleLocal.x *= 1.25f;
+}
+
+GTI::Label::Label(std::string _text, std::string _font, uint _size, SDL_Color _color, UIElement* _parent) : UIElement(UIElementType::Button, _parent)
+{
+	text = _text;
+	font = _font;
+	size = _size;
+	color = _color;
+	buffTexture = GenerateText(text, font, size, color, transform);
 }
 
 void GTI::Label::SetText(const char* t)
@@ -637,26 +911,48 @@ void GTI::Label::SetText(const char* t)
 		if (text.compare("") != 0)
 		{
 			text = "";
-			UpdateBuffer();
+			UpdateText(buffTexture, text, font, size, color, transform);
 		}
 	}
 	else if (text.compare(t) != 0)
 	{
 		text = t;
-		UpdateBuffer();
+		UpdateText(buffTexture, text, font, size, color, transform);
 	}
 }
 
-void GTI::Label::UpdateBuffer()
+bool GTI::Label::SetFont(std::string _font, uint _size)
 {
-	// TODO change buffer to other text
+	bool ret;
+
+	if (FindFont(_font, _size) != nullptr)
+	{
+		font = _font;
+		size = _size;
+		UpdateText(buffTexture, text, font, size, color, transform);
+		ret = true;
+	}
+
+	return ret;
 }
 
-GTI::Button::Button(UIElement* _parent, bool drag) : UIElement(UIElementType::Button, _parent, drag)
+void GTI::Label::OnClick()
+{
+	// TODO SAMU
+	SetText("Hola Samu");
+}
+
+GTI::Button::Button(UIElement* _parent) : UIElement(UIElementType::Button, _parent)
 {}
 
-GTI::Checkbox::Checkbox(bool* ref, UIElement* _parent, bool drag) : UIElement(UIElementType::Input, _parent, drag), reference(ref)
+GTI::Checkbox::Checkbox(bool* ref, UIElement* _parent) : UIElement(UIElementType::Input, _parent), reference(ref)
 {}
 
-GTI::Input::Input(UIElement* _parent, bool drag) : UIElement(UIElementType::Checkbox, _parent, drag)
+GTI::Input::Input(UIElement* _parent) : UIElement(UIElementType::Checkbox, _parent)
 {}
+
+void GTI::Input::Write(char* key)
+{
+	// if we had a cursor, we could write at specific position
+	text += key;
+}

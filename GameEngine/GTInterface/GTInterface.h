@@ -5,13 +5,13 @@
 
 #include "../SDL/include/SDL.h"
 #include "../MathGeoLib/MathGeoLib.h"
-
 #include "SDL_ttf/include/SDL_ttf.h"
 
 #include <map>
 #include <list>
 #include <string>
 #include <functional>
+#include <set>
 
 typedef unsigned int uint;
 
@@ -74,43 +74,66 @@ public:
 	{
 		RectTransform();
 		void Reset();
-
-		uint w;
-		uint h;
+		
 		float3 positionLocal;
 		float3 scaleLocal;
 		Quat rotationLocal;
 
-		// Unity also sets pivot & anchor variables here
+		uint w;
+		uint h;
+		float2 anchorMin;
+		float2 anchorMax;
+		float2 pivot;
 	};
 
 	class UIElement
 	{
 	public:
-		UIElement(UIElementType t, UIElement* _parent = nullptr, const bool drag = false);
+		UIElement(UIElementType t, UIElement* _parent = nullptr);
 		~UIElement();
 
-		UIElementType GetType() const { return type; }
-		virtual void HandleEvent(SDL_Event & e) {};
+		UIElementType GetType() const;
+		void AddSon(UIElement* son);
 
-		float3 GetGlobalPosition();
-		float3 GetGlobalScale();
-		Quat GetGlobalRotation();
-		float4x4 GetGlobalTransform();
+		// Input
+		virtual void OnClick();
+		void CheckMouseClick(SDL_MouseButtonEvent &e);
+		void CheckMouseMove(SDL_MouseMotionEvent &e);
+		void MouseHoverLeave();
+		//void ResizeSons(...);
 
-	public:
-		bool draggable;
-		TransparencyType blendsType;
-		float alpha;
-		uint buffTexture;
-		UIElement* parent;
+		// RectTransform
+		bool Contains(int x, int y) const;
+		float3 GetGlobalPosition() const;
+		float3 GetGlobalScale() const;
+		Quat GetGlobalRotation() const;
+		float4x4 GetGlobalTransform() const;
 
-		RectTransform* transform;
-
-		Emitter<bool> emitter;
-
+		// Fade
 		void StartFade(float msDuration);
 		void UpdateFade();
+
+	private:
+		int MinX() const;
+		int MinY() const;
+		int MaxX() const;
+		int MaxY() const;
+
+
+	public:
+		UIElement* parent;
+		std::vector<UIElement*> sons;
+		RectTransform* transform;
+
+		uint buffTexture;
+		TransparencyType blendsType;
+		float alpha;
+
+		bool draggable;
+		bool mouseHover;
+		bool preserveAspect;
+
+		Emitter<bool> emitter;
 
 	private:
 		UIElementType type;
@@ -124,37 +147,42 @@ public:
 	{
 	public:
 		Canvas();
-		void HandleEvent(SDL_Event & e) {};
+		void HandleEvent(SDL_Event &e);
+	public:
 		Frustum* frustum;
+		bool interactable;
+		UIElement* focus;
+		float minZ;
 	};
 
 	class Image : public UIElement
 	{
 	public:
-		Image(UIElement* _parent = nullptr, char* path = nullptr, bool drag = false);
-		static UIElementType GetType() { return UIElementType::Image; }
-		void HandleEvent(SDL_Event & e) {};
+		Image(UIElement* _parent = nullptr, char* path = nullptr);
 		void SetImage(char* path = nullptr);
+		void OnClick();
+	public:
 		std::string source;
 	};
 
 	class Label : public UIElement
 	{
 	public:
-		Label(UIElement* _parent = nullptr, bool drag = false);
-		void HandleEvent(SDL_Event & e) {};
+		Label(std::string text, std::string font, uint size = 14, SDL_Color color = { 255, 255, 255 }, UIElement* parent = nullptr);
 		void SetText(const char* t = nullptr);
+		bool SetFont(std::string font, uint size);
+		void OnClick();
+	public:
 		std::string text;
-	private:
-		void UpdateBuffer();
+		std::string font;
+		uint size;
+		SDL_Color color;
 	};
 
 	class Button : public UIElement
 	{
 	public:
-		Button(UIElement* _parent = nullptr, bool drag = false);
-		void HandleEvent(SDL_Event & e) {};
-
+		Button(UIElement* _parent = nullptr);
 		// NEED A WAY TO CHANGE THE IMAGE BUFF
 		// std::vector<de 0 a 3> donde 0 es normal, 1 hover, 2 click
 	};
@@ -162,16 +190,15 @@ public:
 	class Checkbox : public UIElement
 	{
 	public:
-		Checkbox(bool* ref, UIElement* _parent = nullptr, bool drag = false);
-		void HandleEvent(SDL_Event & e) {};
+		Checkbox(bool* ref, UIElement* _parent = nullptr);
 		bool* reference;
 	};
 
 	class Input : public UIElement
 	{
 	public:
-		Input(UIElement* _parent = nullptr, bool drag = false);
-		void HandleEvent(SDL_Event & e) {};
+		Input(UIElement* _parent = nullptr);
+		void Write(char* key);
 		std::string text;
 	};
 
@@ -192,23 +219,25 @@ public:
 	static void RenderUIElement(UIElement* element, bool paintBlend = false);
 
 	static uint LoadTexture(const char* path, RectTransform* transform);
-	static uint GenerateText(const char* text, std::string font, RectTransform* transform, SDL_Color color);
-	static void UpdateText(uint textureBuffer, const char* text, std::string font, RectTransform* transform, SDL_Color color);
-	static bool LoadFont(const char* path, uint size, std::string fontName);
+	static uint GenerateText(std::string text, std::string font, uint size, SDL_Color color, RectTransform* transform = nullptr);
+	static void UpdateText(uint texBuffer, std::string text, std::string fontName, uint size, SDL_Color color, RectTransform * transform = nullptr);
+	static std::string LoadFont(const char* path, uint size);
 
-	UIElement* GetRoot() const;
+	static UIElement* GetRoot();
+	static UIElement* GetFocus();
+	void SetFocus(UIElement* focus, float gPosZ);
 
 	Image* CreateImage(UIElement* parent = nullptr, char* path = nullptr);
-	Label* CreateLabel(UIElement* parent = nullptr);
+	Label* CreateLabel(std::string text, std::string font, uint size = 14, SDL_Color color = { 255, 255, 255 }, UIElement* parent = nullptr);
 	Button* CreateButton(UIElement* parent = nullptr);
 	Checkbox* CreateCheckbox(bool* ref = nullptr, UIElement* parent = nullptr);
 	Input* CreateInput(UIElement* parent = nullptr);
 
-	std::string GetPath(const char* filename) const;
 	std::string GetLastError() const;
 
-	static void GetEventSDL(SDL_Event &e) { GTInterface.ProcessEventSDL(e); };
+	static void GetEventSDL(SDL_Event &e);
 	static void UpdateWindowSize(int w, int h);
+	bool GetMLBDown() const;
 
 	float4x4 GetCameraTransform() const;
 
@@ -239,14 +268,17 @@ public:
 	GTITimer timer;
 
 private:
+	static std::vector<std::string> Splitpath(const std::string& str, const std::set<char> delimiters);
+	static TTF_Font* FindFont(std::string fontName, uint size);
+
+private:
 	std::vector<UIElement*> UIElements;
 	std::multimap<float, UIElement*> blendElements;
-	std::map<std::string, TTF_Font*> availableFonts;
+	std::multimap<std::string, std::pair< uint, TTF_Font*>> availableFonts;
 
 	float scale;
 	Frustum frustum;
-	std::string currentDir;
-
+	bool mouseLBDown;
 	Canvas root;
 
 	// Error
@@ -256,10 +288,6 @@ private:
 		IL_LOAD_IMG,
 		IL_CONVERT
 	} lastError;
-
-
-
-	void ProcessEventSDL(SDL_Event &e);
 
 	class DebugDraw
 	{
