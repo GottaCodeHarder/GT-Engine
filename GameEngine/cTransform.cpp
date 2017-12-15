@@ -549,44 +549,70 @@ void RectTransform::DrawUI()
 
 	GTI::RectTransform* rect = ui->getTransform();
 
-	if (ImGui::CollapsingHeader("Rect Transform"))
+	if (ImGui::CollapsingHeader("Rect Transform", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::Text("Width: %g, Height %g", rect->w, rect->h);
-
 		if (ImGui::TreeNodeEx("Local Information", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			ImGui::Columns(4, "localColumns", false);
 			ImGui::NextColumn();
 			ImGui::Text("Pos X");
-			ImGui::Text("%g", rect->positionLocal.x);
+			ImGui::DragFloat("##PosDragX", &rect->positionLocal.x, 0.25f, -0.0f, 0.0f, "%g");
+			ImGui::Text("Width");
+			ImGui::Text("%.1f", rect->w);
 			ImGui::NextColumn();
 			ImGui::Text("Pos Y");
-			ImGui::Text("%g", rect->positionLocal.y);
+			ImGui::DragFloat("##PosDragY", &rect->positionLocal.y, 0.25f, -0.0f, 0.0f, "%g");
+			ImGui::Text("Height");
+			ImGui::Text("%.1f", rect->h);
 			ImGui::NextColumn();
 			ImGui::Text("Pos Z");
-			ImGui::Text("%g", rect->positionLocal.z);
+			ImGui::DragFloat("##PosDragZ", &rect->positionLocal.z, 0.25f, -0.0f, 0.0f, "%g");
 			ImGui::NextColumn();
 
 			ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing();
 
 			ImGui::Columns(4, "scaleRotationColumns", false);
-			ImGui::Text("");	ImGui::Text("Rotation");
-			ImGui::Text("");	ImGui::Text("Scale");
+			ImGui::Text("Rotation");
+			ImGui::Text("Scale");
 			ImGui::NextColumn();
-			ImGui::Text("X");
-			ImGui::Text("%g", rect->rotationLocal.x);
-			ImGui::Text("X");
-			ImGui::Text("%g", rect->scaleLocal.x);
+			ImGui::Text("X");	ImGui::SameLine();
+			float rotation = fRotationX;
+			if (ImGui::DragFloat("##RotDragX", &rotation, 0.1f, 0.0f, 0.0f, "%g"))
+			{
+				if (rotation != fRotationX)
+				{
+					rect->rotationLocal = rect->rotationLocal * Quat::RotateX(rotation - fRotationX);
+					fRotationX = rotation;
+				}
+			}
+			ImGui::Text("X");	ImGui::SameLine();
+			ImGui::DragFloat("##ScaDragX", &rect->scaleLocal.x, 0.1f, 0.1f, 1000000.0f, "%g");
 			ImGui::NextColumn();
-			ImGui::Text("Y");
-			ImGui::Text("%g", rect->rotationLocal.y);
-			ImGui::Text("Y");
-			ImGui::Text("%g", rect->scaleLocal.y);
+			ImGui::Text("Y");	ImGui::SameLine();
+			rotation = fRotationY;
+			if (ImGui::DragFloat("##RotDragY", &rotation, 0.1f, 0.0f, 0.0f, "%g"))
+			{
+				if (rotation != fRotationY)
+				{
+					rect->rotationLocal = rect->rotationLocal * Quat::RotateY(rotation - fRotationY);
+					fRotationY = rotation;
+				}
+			}
+			ImGui::Text("Y");	ImGui::SameLine();
+			ImGui::DragFloat("##ScaDragY", &rect->scaleLocal.y, 0.1f, 0.1f, 1000000.0f, "%g");
 			ImGui::NextColumn();
-			ImGui::Text("Z");
-			ImGui::Text("%g", rect->rotationLocal.z);
-			ImGui::Text("Z");
-			ImGui::Text("%g", rect->scaleLocal.z);
+			ImGui::Text("Z");	ImGui::SameLine();
+			rotation = fRotationZ;
+			if (ImGui::DragFloat("##RotDragZ", &rotation, 0.1f, 0.0f, 0.0f, "%g"))
+			{
+				if (rotation != fRotationZ)
+				{
+					rect->rotationLocal = rect->rotationLocal * Quat::RotateZ(rotation - fRotationZ);
+					fRotationZ = rotation;
+				}
+			}
+			ImGui::Text("Z");	ImGui::SameLine();
+			ImGui::DragFloat("##ScaDragZ", &rect->scaleLocal.z, 0.1f, 0.1f, 1000000.0f, "%g");
 			ImGui::NextColumn();
 
 			ImGui::Columns(1);
@@ -595,14 +621,14 @@ void RectTransform::DrawUI()
 			ImGui::Spacing();
 		}
 		ImGui::Spacing();
-		if (ImGui::TreeNodeEx("Global Information", ImGuiTreeNodeFlags_DefaultOpen))
+		if (ImGui::TreeNodeEx("Global Information"))
 		{
 			float3 globalPos = GetGlobalPos();
 			float3 globalScale = GetGlobalScale();
 			Quat globalRot = GetGlobalRoatation();
-			ImGui::Text("Position: %g, %g, %g", globalPos.x, globalPos.y, globalPos.z);
-			ImGui::Text("Scale: %g, %g, %g", globalScale.x, globalScale.y, globalScale.z);
-			ImGui::Text("Rotation: %g, %g, %g, %g ", globalRot.x, globalRot.y, globalRot.z, globalRot.w);
+			ImGui::Text("Position:	%g, %g, %g", globalPos.x, globalPos.y, globalPos.z);
+			ImGui::Text("Scale:		%g, %g, %g", globalScale.x, globalScale.y, globalScale.z);
+			ImGui::Text("Rotation:	%g, %g, %g, %g ", globalRot.x, globalRot.y, globalRot.z, globalRot.w);
 			ImGui::TreePop();
 		}
 		ImGui::Spacing();

@@ -123,6 +123,10 @@ public:
 private:
 	bool HasUIRect() const;
 
+	float fRotationX = 0.0f;
+	float fRotationY = 0.0f;
+	float fRotationZ = 0.0f;
+
 private:
 	cUI* ui;
 };

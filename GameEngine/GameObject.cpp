@@ -223,7 +223,6 @@ void GameObject::DrawProperties()
 			}
 		}
 	}
-
 }
 
 bool GameObject::SonHasMesh()
