@@ -63,6 +63,31 @@ private:
 	GTI::Image* image;
 };
 
+
+class cLabel: public cUI
+{
+public:
+	cLabel(GameObject* _gameObject, const char* _text, const char* _font, uint size = 14, SDL_Color color = { 255, 255, 255 }, GTI::UIElement* parent = nullptr) : cUI(_gameObject)
+	{
+		std::string text = (_text == nullptr) ? "" : _text;
+		std::string font = (_font == nullptr) ? "" : _font;
+		label = GTI::GTInterface.CreateLabel(text, font, size, color, parent);
+	}
+
+	GTI::UIElement* GetUI() const { return label; }
+
+	void DrawUI()
+	{
+		//Source
+		//Color RGB
+		//Alpha
+	}
+
+private:
+	GTI::Label* label;
+};
+
+
 class cButton : public cUI
 {
 public:

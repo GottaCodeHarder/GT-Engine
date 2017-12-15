@@ -75,9 +75,7 @@ void ModuleGUI::CreateCanvas()
 bool ModuleGUI::AddUIImage(char* path)
 {
 	if (!canvas)
-	{
 		CreateCanvas();
-	}
 
 	GameObject* image_go = App->scene->CreateGameObject("Image", true, canvas->gameObject, true);
 	cImage* image = new cImage(image_go, path);
@@ -88,6 +86,17 @@ bool ModuleGUI::AddUIImage(char* path)
 bool ModuleGUI::AddUIFont(char * path)
 {
 	// TODO - Ventana contextual pidiendo el nombre
-	
-	return GTI::GTInterface.LoadFont(path, 24, "test");
+	// El nombre del font es el nombre del archivo .ttf
+	// se saca del path y te lo devuelve la funcion LoadFont(...)
+	// si la fuente se carga correctamente
+
+	if (!canvas)
+		CreateCanvas();
+
+	std::string font = GTI::GTInterface.LoadFont(path, 24);
+
+	GameObject* label_go = App->scene->CreateGameObject("Label", true, canvas->gameObject, true);
+	cLabel* label = new cLabel(label_go, "Sample Text", font.c_str(), 24);
+	((cTransform*)label_go->FindComponent(TRANSFORM))->SetRectSource(label);
+	return label->GetUI()->buffTexture != 0;
 }
