@@ -1,5 +1,7 @@
 #include "Component.h"
 #include "GTInterface\GTInterface.h"
+
+
 class GameObject;
 
 class cUI : public Component
@@ -25,6 +27,8 @@ public:
 	cCanvas(GameObject* _gameObject) : cUI(_gameObject)
 	{
 		canvas = (GTI::Canvas*)GTI::GTInterface.GetRoot();
+
+		_gameObject->AddComponent(this);
 		//if (!canvas) LOG(GTI::GetLastError().c_str());
 	}
 	~cCanvas() {};
@@ -41,6 +45,8 @@ public:
 	cImage(GameObject* _gameObject, char* path = nullptr, GTI::UIElement* parent = nullptr) : cUI(_gameObject)
 	{
 		image = GTI::GTInterface.CreateImage(parent, path);
+		
+		_gameObject->AddComponent(this);
 
 		// Load Default Texture & set Transform's width and height
 		//_gameObject->SetRectTransform(1, 1);
@@ -54,9 +60,94 @@ public:
 
 	void DrawUI()
 	{
-		//Source
-		//Color RGB
-		//Alpha
+		if (ImGui::CollapsingHeader("Image", nullptr, 0, true))
+		{
+			bool bAlpha = (image->blendType == GTI::TransparencyType::ALPHA_TEST);
+			bool bBlend = (image->blendType == GTI::TransparencyType::BLEND);
+			
+			if (ImGui::Checkbox("ALPHA_TEST##SelectBlendType", &bAlpha))
+				bBlend = false;
+			if (ImGui::Checkbox("BLEND##SelectBlendType", &bBlend))
+				bAlpha = false;
+
+			if (bAlpha)
+				image->blendType = GTI::TransparencyType::ALPHA_TEST;
+			else if (bBlend)
+				image->blendType = GTI::TransparencyType::BLEND;			 
+			else
+				image->blendType = GTI::TransparencyType::NONE;
+			
+			if (image->blendType == GTI::TransparencyType::ALPHA_TEST)
+			{
+				ImGui::Text("Alpha");
+				ImGui::SameLine();
+				ImGui::DragFloat("##PosDragX", &image->alpha, 0.05f, 0.0f, 1.0f, "%g");
+			}
+
+			if (image->blendType == GTI::TransparencyType::BLEND)
+			{
+				if (ImGui::Button("Select Blend Type"))
+					ImGui::OpenPopup("selectBlend");
+				ImGui::SameLine();
+				ImGui::Text("Current: %i", image->blend);
+				if (ImGui::BeginPopup("selectBlend"))
+				{
+					if (ImGui::Selectable("0 Zero##Blend"))
+						image->blend = GL_ZERO;
+					if (ImGui::Selectable("1 One##Blend"))
+						image->blend = GL_ONE;
+					if (ImGui::Selectable("768 Src_Color##Blend"))
+						image->blend = GL_SRC_COLOR;
+					if (ImGui::Selectable("769 One_Minus_Src_Color##Blend"))
+						image->blend = GL_ONE_MINUS_SRC_COLOR;
+					if (ImGui::Selectable("770 Src_Alpha##Blend"))
+						image->blend = GL_SRC_ALPHA;
+					if (ImGui::Selectable("771 One_Minus_Src_Alpha##Blend"))
+						image->blend = GL_ONE_MINUS_SRC_ALPHA;
+					if (ImGui::Selectable("772 Dst_Alpha##Blend"))
+						image->blend = GL_DST_ALPHA;
+					if (ImGui::Selectable("773 One_Minus_Dst_Alpha##Blend"))
+						image->blend = GL_ONE_MINUS_DST_ALPHA;
+					if (ImGui::Selectable("774 Dst_Color##Blend"))
+						image->blend = GL_DST_COLOR;
+					if (ImGui::Selectable("775 One_Minus_Dst_Color##Blend"))
+						image->blend = GL_ONE_MINUS_DST_COLOR;
+					if (ImGui::Selectable("32769 Constant_Color##Blend"))
+						image->blend = GL_CONSTANT_COLOR;
+					if (ImGui::Selectable("32770 One_Minus_Constant_Color##Blend"))
+						image->blend = GL_ONE_MINUS_CONSTANT_COLOR;
+					if (ImGui::Selectable("32771 Constant_Alpha##Blend"))
+						image->blend = GL_CONSTANT_ALPHA;
+					if (ImGui::Selectable("32772 One_Minus_Constant_Alpha##Blend"))
+						image->blend = GL_ONE_MINUS_CONSTANT_ALPHA;
+					ImGui::EndPopup();
+				}
+			}
+
+			ImGui::Text("Currently using:");	ImGui::SameLine();
+			if (ImGui::Button("Change"))
+			{
+				// TODO
+				/*char path[1024];
+				ZeroMemory(&path, sizeof(path));
+
+				OPENFILENAME oFileName;
+				ZeroMemory(&oFileName, sizeof(oFileName));
+				oFileName.lStructSize = sizeof(oFileName);
+				oFileName.lpstrFile = path;
+				oFileName.nMaxFile = 1024;
+				oFileName.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+				oFileName.lpstrTitle = "Select file to import";
+
+				if (GetOpenFileName(&oFileName) != 0)
+				{
+					image->buffTexture = App->userinterface->LoadUIImage(path);
+				}*/
+			}
+			ImGui::Image((ImTextureID)image->buffTexture, ImVec2(150, 150), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 255, 255, 255), ImColor(255, 255, 255, 128));
+
+			//Color RGB
+		}
 	}
 
 private:
@@ -72,6 +163,8 @@ public:
 		std::string text = (_text == nullptr) ? "" : _text;
 		std::string font = (_font == nullptr) ? "" : _font;
 		label = GTI::GTInterface.CreateLabel(text, font, size, color, parent);
+
+		_gameObject->AddComponent(this);
 	}
 
 	GTI::UIElement* GetUI() const { return label; }
@@ -91,7 +184,7 @@ private:
 class cButton : public cUI
 {
 public:
-	cButton(GameObject* _gameObject, GTI::UIElement* parent = nullptr) : cUI(_gameObject) {}
+	cButton(GameObject* _gameObject, GTI::UIElement* parent = nullptr) : cUI(_gameObject) { _gameObject->AddComponent(this);  }
 	~cButton()
 	{
 		delete button;
@@ -110,7 +203,7 @@ private:
 class cCheckbox : public cUI
 {
 public:
-	cCheckbox(GameObject* _gameObject, GTI::UIElement* parent = nullptr) : cUI(_gameObject) {}
+	cCheckbox(GameObject* _gameObject, GTI::UIElement* parent = nullptr) : cUI(_gameObject) { _gameObject->AddComponent(this);  }
 	~cCheckbox()
 	{
 		delete checkbox;
@@ -129,7 +222,7 @@ private:
 class cInput : public cUI
 {
 public:
-	cInput(GameObject* _gameObject) : cUI(_gameObject) {}
+	cInput(GameObject* _gameObject) : cUI(_gameObject) { _gameObject->AddComponent(this); }
 	~cInput()
 	{
 		delete input;
