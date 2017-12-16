@@ -83,6 +83,27 @@ bool ModuleGUI::AddUIImage(char* path)
 	return image->GetUI()->buffTexture != 0;
 }
 
+bool ModuleGUI::AddUIButton(char* path)
+{
+	if (!canvas)
+		CreateCanvas();
+
+	GameObject* button_go = App->scene->CreateGameObject("Button", true, canvas->gameObject, true);
+	cButton* button = new cButton(button_go);
+	cImage* image = new cImage(button_go, path);
+	((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(image);
+	cImage* image2 = new cImage(button_go, path);
+	((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(image2);
+	cImage* image3 = new cImage(button_go, path);
+	((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(image3);
+
+	button->GetUI()->buttonImageBuffers.push_back(image->GetUI());
+	button->GetUI()->buttonImageBuffers.push_back(image2->GetUI());
+	button->GetUI()->buttonImageBuffers.push_back(image3->GetUI());
+
+	return image->GetUI()->buffTexture != 0;
+}
+
 bool ModuleGUI::AddUIFont(char * path)
 {
 	// TODO - Ventana contextual pidiendo el nombre
