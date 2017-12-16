@@ -100,3 +100,8 @@ bool ModuleGUI::AddUIFont(char * path)
 	((cTransform*)label_go->FindComponent(TRANSFORM))->SetRectSource(label);
 	return label->GetUI()->buffTexture != 0;
 }
+
+uint ModuleGUI::LoadUIImage(char * path)
+{
+	return GTI::LoadTexture(path, nullptr); 
+}

@@ -25,6 +25,8 @@ public:
 
 	bool AddUIImage(char* path);
 	bool AddUIFont(char* path);
+	
+	uint LoadUIImage(char* path);
 
 private:
 	std::list<cUI*> uiComponents;
