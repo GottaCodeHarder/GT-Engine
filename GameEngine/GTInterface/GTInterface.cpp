@@ -813,6 +813,16 @@ void GTI::UIElement::UpdateFade()
 	}
 }
 
+bool GTI::UIElement::GetActive() const
+{
+	return active;
+}
+
+void GTI::UIElement::SetActive(bool set)
+{
+	active = set;
+}
+
 
 
 GTI::Canvas::Canvas() : GTI::UIElement(UIElementType::Canvas)

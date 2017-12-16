@@ -3,6 +3,7 @@
 #include "ModuleEditor.h"
 #include "ModuleWindow.h"
 #include "ModuleScene.h"
+#include "ModuleGUI.h"
 
 #include "ImGui/imgui_impl_sdl_gl3.h"
 #include "glew/include/glew.h"
@@ -108,6 +109,9 @@ update_status ModuleEditor::Update(float dt)
 
 			// WINDOW
 			MenuWindow();
+
+			// GT INTERFACE
+			MenuGTI();
 
 			// ABOUT
 			MenuHelp();
@@ -402,6 +406,48 @@ void ModuleEditor::MenuWindow()
 			n++;
 		}
 
+		ImGui::EndMenu();
+	}
+}
+
+// ---------------------------------------------< GTINTERFACE
+void ModuleEditor::MenuGTI()
+{
+	if (ImGui::BeginMenu("GTInterface"))
+	{
+		if (ImGui::BeginMenu(" Create"))
+		{
+			if (ImGui::MenuItem("Image"))
+			{
+				App->userinterface->AddUIImage(nullptr);
+			}
+			ImGui::Spacing();
+			if (ImGui::MenuItem("Button"))
+			{
+				App->userinterface->AddUIButton(nullptr);
+			}
+			ImGui::Spacing();
+			if (ImGui::MenuItem("Checkbox"))
+			{
+
+			}
+			ImGui::Spacing();
+			if (ImGui::MenuItem("Label"))
+			{
+
+			}
+			if (ImGui::MenuItem("Text Input"))
+			{
+
+			}
+			ImGui::EndMenu();
+		}
+		ImGui::Spacing(); ImGui::Spacing();
+
+		if (ImGui::MenuItem(" Import Font"))
+		{
+			LoadFile(LoadType::GTInterfaceFONT);
+		}
 		ImGui::EndMenu();
 	}
 }

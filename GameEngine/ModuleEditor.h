@@ -61,10 +61,11 @@ private:
 	std::map<std::string, bool> window_menu;
 	std::map<std::string, bool> help_menu;
 	std::map<std::string, bool> tools_menu;
-
+	
 	void MenuFile();
 	void MenuWindow();
 	void MenuTools();
+	void MenuGTI();
 	void MenuHelp();
 	void Console();
 	void Configuration();

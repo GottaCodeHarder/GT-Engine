@@ -56,7 +56,7 @@ public:
 		delete image;
 	}
 
-	GTI::UIElement* GetUI() const { return image; }
+	GTI::Image* GetUI() const { return image; }
 
 	void DrawUI()
 	{
@@ -184,12 +184,16 @@ private:
 class cButton : public cUI
 {
 public:
-	cButton(GameObject* _gameObject, GTI::UIElement* parent = nullptr) : cUI(_gameObject) { _gameObject->AddComponent(this);  }
+	cButton(GameObject* _gameObject, GTI::UIElement* parent = nullptr) : cUI(_gameObject)
+	{
+		button = GTI::GTInterface.CreateButton(parent);
+		_gameObject->AddComponent(this);
+	}
 	~cButton()
 	{
 		delete button;
 	}
-	GTI::UIElement* GetUI() const { return button; }
+	GTI::Button* GetUI() const { return button; }
 
 	void DrawUI()
 	{

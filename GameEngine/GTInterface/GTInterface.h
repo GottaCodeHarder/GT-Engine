@@ -8,6 +8,7 @@
 #include "SDL_ttf/include/SDL_ttf.h"
 
 #include <map>
+#include <vector>
 #include <list>
 #include <string>
 #include <functional>
@@ -114,12 +115,17 @@ public:
 		void StartFade(float msDuration);
 		void UpdateFade();
 
+		// Active
+		bool GetActive() const;
+		void SetActive(bool set);
+
 	private:
 		int MinX() const;
 		int MinY() const;
 		int MaxX() const;
 		int MaxY() const;
 
+		bool active = true;
 
 	public:
 		UIElement* parent;
@@ -185,8 +191,8 @@ public:
 	{
 	public:
 		Button(UIElement* _parent = nullptr);
-		// NEED A WAY TO CHANGE THE IMAGE BUFF
-		// std::vector<de 0 a 3> donde 0 es normal, 1 hover, 2 click
+		
+		std::vector<Image*> buttonImageBuffers; // 0 es normal, 1 hover, 2 click
 	};
 
 	class Checkbox : public UIElement
