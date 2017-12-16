@@ -17,6 +17,7 @@ typedef unsigned int uint;
 
 class GTI
 {
+public:
 	enum class UIElementType
 	{
 		Unidentified = -1,
@@ -30,11 +31,11 @@ class GTI
 
 	enum class TransparencyType
 	{
-		NONE,
-		ALPHA_TEST,
-		BLEND
+		NONE = 0,
+		ALPHA_TEST = 1,
+		BLEND = 2
 	};
-
+private:
 #pragma region EMITTER
 
 	template <typename in>
@@ -126,8 +127,9 @@ public:
 		RectTransform* transform;
 
 		uint buffTexture;
-		TransparencyType blendsType;
+		TransparencyType blendType;
 		float alpha;
+		uint blend;
 
 		bool draggable;
 		bool mouseHover;

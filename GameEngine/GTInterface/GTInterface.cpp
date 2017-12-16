@@ -104,7 +104,7 @@ void GTI::RenderUIElement(UIElement * element, bool paintBlend)
 	float4x4 transform = element->GetGlobalTransform();
 	glMultMatrixf(transform.Transposed().ptr());
 
-	switch (element->blendsType)
+	switch (element->blendType)
 	{
 	case (TransparencyType::ALPHA_TEST):
 	{
@@ -123,35 +123,37 @@ void GTI::RenderUIElement(UIElement * element, bool paintBlend)
 		else if (paintBlend)
 		{
 			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // 0 blendType modifiable
+			glBlendFunc(GL_SRC_ALPHA, element->blend);
 
 			element->UpdateFade();
 		}
 		break;
 	}
 	}
-	if ((element->buffTexture) > 0)
+	if (!(!paintBlend && element->blendType == TransparencyType::BLEND))
 	{
-		glEnableClientState(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, element->buffTexture);
+		if ((element->buffTexture) > 0)
+		{
+			glEnableClientState(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, element->buffTexture);
+		}
+
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, GTInterface.vertexBuff);
+		glVertexPointer(3, GL_FLOAT, 0, NULL);
+
+
+		glEnableClientState(GL_NORMAL_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, GTInterface.normalBuff);
+		glNormalPointer(GL_FLOAT, 0, NULL);
+
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glBindBuffer(GL_ARRAY_BUFFER, GTInterface.UVBuff);
+		glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GTInterface.indexBuff);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 	}
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, GTInterface.vertexBuff);
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-
-
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, GTInterface.normalBuff);
-	glNormalPointer(GL_FLOAT, 0, NULL);
-
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glBindBuffer(GL_ARRAY_BUFFER, GTInterface.UVBuff);
-	glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GTInterface.indexBuff);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
-
 
 	// CleanUp
 	glColor4f(1.0, 1.0, 1.0, 1.0);
@@ -589,9 +591,10 @@ GTI::UIElement::UIElement(UIElementType t, UIElement* _parent)
 	type = t;
 	parent = _parent;
 
-	blendsType = TransparencyType::ALPHA_TEST;
+	blendType = TransparencyType::ALPHA_TEST;
 	buffTexture = 0;
 	alpha = 0.8f;
+	blend = GL_ONE_MINUS_SRC_ALPHA;
 
 	if (_parent != nullptr)
 		parent = _parent;
