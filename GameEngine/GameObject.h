@@ -6,6 +6,8 @@
 #include <map>
 #include "MathGeoLib/MathGeoLib.h"
 
+class cUI;
+
 class GameObject 
 {
 public:
@@ -13,6 +15,7 @@ public:
 	//FALTA DESTRUCTOR QUE DESTRUEIXI ELS FILLS
 	
 	std::map<componentType, Component*> components;
+	std::vector<cUI*> UIcomponents;
 
 	void PreUpdate();
 	void Update();
@@ -27,6 +30,7 @@ public:
 	bool SonHasMesh();
 
 	void AddComponent(Component*);
+	void AddComponent(cUI*);
 
 	void Save(JSON_Object *go) const;
 	void Load(const JSON_Object *go);

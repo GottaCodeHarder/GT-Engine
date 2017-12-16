@@ -221,6 +221,10 @@ void GameObject::DrawProperties()
 			{
 				itComponents.second->DrawUI();
 			}
+			for (auto itUIComponents : UIcomponents)
+			{
+				itUIComponents->DrawUI();
+			}
 		}
 	}
 }
@@ -246,6 +250,10 @@ bool GameObject::SonHasMesh()
 void GameObject::AddComponent(Component* addComponent)
 {
 	components.insert(std::pair<componentType, Component*>(addComponent->type, addComponent));
+}
+void GameObject::AddComponent(cUI* addComponent)
+{
+	UIcomponents.push_back(addComponent);
 }
 
 void GameObject::Save(JSON_Object *go) const
