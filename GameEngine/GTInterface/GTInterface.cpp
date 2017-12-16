@@ -51,9 +51,7 @@ void GTI::Init(uint screenWidth, uint screenHeight, float scale)
 	GTInterface.scale = scale;
 	GTInterface.lastError = GTIError::NONE;
 	GTInterface.mouseLBDown = false;
-
-	//GTInterface.Register(GTInterface.Func1());
-
+	
 	GTInterface.timer.Start();
 }
 
@@ -78,12 +76,14 @@ void GTI::Render()
 
 	for (UIElement* element : GTInterface.UIElements)
 	{
-		RenderUIElement(element, false);
+		if(element->IsActive())
+			RenderUIElement(element, false);
 	}
 
 	for (auto blendElement : GTInterface.blendElements)
 	{
-		RenderUIElement(blendElement.second, true);
+		if (blendElement.second->IsActive())
+			RenderUIElement(blendElement.second, true);
 	}
 
 	GTInterface.blendElements.clear();
@@ -813,7 +813,7 @@ void GTI::UIElement::UpdateFade()
 	}
 }
 
-bool GTI::UIElement::GetActive() const
+bool GTI::UIElement::IsActive() const
 {
 	return active;
 }

@@ -16,6 +16,33 @@
 
 typedef unsigned int uint;
 
+template <typename in>
+class Emitter
+{
+public:
+	void Register(std::function<void(in)> func)
+	{
+		funcList.push_back(func);
+	}
+
+	template <typename C>
+	void Register(C* object, void(C::* memFunc)(in))
+	{
+		Register([object = object, memFunc = memFunc](in arg) { (object->*(memFunc))(arg); });
+	}
+
+	void CallFunction(in param)
+	{
+		for (auto func : funcList)
+		{
+			func(param);
+		}
+	}
+
+private:
+	std::list<std::function<void(in)>> funcList;
+};
+
 class GTI
 {
 public:
@@ -37,36 +64,6 @@ public:
 		BLEND = 2
 	};
 private:
-#pragma region EMITTER
-
-	template <typename in>
-	class Emitter
-	{
-	public:
-		void Register(std::function<void(in)> func)
-		{
-			funcList.push_back(func);
-		}
-
-		template <typename C>
-		void Register(C* object, void(C::* memFunc)(in))
-		{
-			Register([object = object, memFunc = memFunc](in arg) { (object->*(memFunc))(arg); });
-		}
-
-		void CallFunction(in param)
-		{
-			for (auto func : funcList)
-			{
-				func(param);
-			}
-		}
-
-	private:
-		std::list<std::function<void(in)>> funcList;
-	};
-
-#pragma endregion
 
 #pragma region UI ELEMENTS
 
@@ -116,7 +113,7 @@ public:
 		void UpdateFade();
 
 		// Active
-		bool GetActive() const;
+		bool IsActive() const;
 		void SetActive(bool set);
 
 	private:
@@ -142,7 +139,6 @@ public:
 		bool preserveAspect;
 
 		Emitter<bool> emitter;
-
 	private:
 		UIElementType type;
 
@@ -253,26 +249,21 @@ public:
 	std::map<std::string, std::function<void(char)>> charFunctionsMap;
 	std::map<std::string, std::function<void(int)>> intFunctionsMap;
 
-	void Register(std::string givenName, std::function<void(bool)> func)
+	void AddFunction(std::string givenName, std::function<void(bool)> func)
 	{
 		boolFunctionsMap.insert(std::pair<std::string, std::function<void(bool)>>(givenName, func));
 	};
 
-	void Register(std::string givenName, std::function<void(char)> func)
+	void AddFunction(std::string givenName, std::function<void(char)> func)
 	{
 		charFunctionsMap.insert(std::pair<std::string, std::function<void(char)>>(givenName, func));
 	};
 
-	void Register(std::string givenName, std::function<void(int)> func)
+	void AddFunction(std::string givenName, std::function<void(int)> func)
 	{
 		intFunctionsMap.insert(std::pair<std::string, std::function<void(int)>>(givenName, func));
 	};
-
-	void Func1(int value)
-	{
-		std::cout << "Func 1 pinging a " << value << std::endl;
-	}
-
+	
 	GTITimer timer;
 
 private:
