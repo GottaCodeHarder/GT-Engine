@@ -76,20 +76,14 @@ void GTI::Render(float dt)
 
 	for (UIElement* element : GTInterface.UIElements)
 	{
-		if (element->GetType() != UIElementType::Button)
-		{
-			if (element->IsActive())
-				RenderUIElement(element, false);
-		}
+		if (element->IsActive())
+			RenderUIElement(element, false);
 	}
 
 	for (auto blendElement : GTInterface.blendElements)
 	{
-		if (blendElement.second->GetType() != UIElementType::Button)
-		{
-			if (blendElement.second->IsActive())
-				RenderUIElement(blendElement.second, true);
-		}
+		if (blendElement.second->IsActive())
+			RenderUIElement(blendElement.second, true);
 	}
 
 	GTInterface.blendElements.clear();
@@ -180,65 +174,81 @@ void GTI::RenderUIElement(UIElement * element, bool paintBlend, float dt)
 
 uint GTI::LoadTexture(const char * fullPath, RectTransform* transform)
 {
-	ILuint imageID = 0;
-	GLuint textureID;
+	uint ret = 0;
 
-	// Safe
-	ILboolean success;
-	ILenum error;
-
-	ilGenImages(1, &imageID);
-	ilBindImage(imageID);
-
-	success = ilLoadImage(fullPath);
-	if (success)
-	{
-		ILinfo ImageInfo;
-		iluGetImageInfo(&ImageInfo);
-		if (ImageInfo.Origin != IL_ORIGIN_UPPER_LEFT)
-		{
-			iluFlipImage();
-		}
-
-		success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
-
-		if (!success)
-		{
-			error = ilGetError();
-			return -1;
-		}
-
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		glGenTextures(1, &textureID);
-		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), 0, GL_RGBA, GL_UNSIGNED_BYTE, ilGetData());
-		
-		if (transform != nullptr)
-		{
-			transform->w = ilGetInteger(IL_IMAGE_WIDTH);
-			transform->h = ilGetInteger(IL_IMAGE_HEIGHT);
-		}
-	}
-	else
+	if (fullPath == nullptr)
 	{
 		if (transform != nullptr)
 		{
 			transform->w = 200;
 			transform->h = 200;
 		}
-
-		error = ilGetError();
-		return -1;
 	}
+	else
+	{
+		ILuint imageID = 0;
+		GLuint textureID;
 
-	return textureID;
+		// Safe
+		ILboolean success;
+		ILenum error;
+
+		ilGenImages(1, &imageID);
+		ilBindImage(imageID);
+
+		success = ilLoadImage(fullPath);
+		if (success)
+		{
+			ILinfo ImageInfo;
+			iluGetImageInfo(&ImageInfo);
+			if (ImageInfo.Origin != IL_ORIGIN_UPPER_LEFT)
+			{
+				iluFlipImage();
+			}
+
+			success = ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+
+			if (!success)
+			{
+				error = ilGetError();
+				return -1;
+			}
+
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+			glGenTextures(1, &textureID);
+			glBindTexture(GL_TEXTURE_2D, textureID);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), 0, GL_RGBA, GL_UNSIGNED_BYTE, ilGetData());
+
+			if (transform != nullptr)
+			{
+				transform->w = ilGetInteger(IL_IMAGE_WIDTH);
+				transform->h = ilGetInteger(IL_IMAGE_HEIGHT);
+			}
+
+			ret = textureID;
+		}
+		else
+		{
+			if (transform != nullptr)
+			{
+				transform->w = 200;
+				transform->h = 200;
+			}
+
+			error = ilGetError();
+			return -1;
+		}
+	}
+	
+
+	return ret;
 }
 
-uint GTI::GenerateText(std::string text, std::string fontName, uint size, SDL_Color color, RectTransform * transform)
+uint GTI::GenerateText(const char* text, const char* fontName, uint size, SDL_Color color, RectTransform * transform)
 {
 	uint ret = 0;
 	TTF_Font* font = FindFont(fontName, size);
@@ -246,7 +256,7 @@ uint GTI::GenerateText(std::string text, std::string fontName, uint size, SDL_Co
 	if (font != nullptr)
 	{
 		GLuint textureID;
-		SDL_Surface* surface = TTF_RenderUTF8_Blended(font, text.c_str(), color);
+		SDL_Surface* surface = TTF_RenderUTF8_Blended(font, text, color);
 
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glGenTextures(1, &textureID);
@@ -270,13 +280,13 @@ uint GTI::GenerateText(std::string text, std::string fontName, uint size, SDL_Co
 	return ret;
 }
 
-void GTI::UpdateText(uint texBuffer, std::string text, std::string fontName, uint size, SDL_Color color, RectTransform * transform)
+void GTI::UpdateText(uint texBuffer, const char* text, const char* fontName, uint size, SDL_Color color, RectTransform * transform)
 {
 	TTF_Font* font = FindFont(fontName, size);
 
 	if (font != nullptr)
 	{
-		SDL_Surface* surface = TTF_RenderUTF8_Blended(font, text.c_str(), color);
+		SDL_Surface* surface = TTF_RenderUTF8_Blended(font, text, color);
 
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glBindTexture(GL_TEXTURE_2D, texBuffer);
@@ -364,27 +374,27 @@ GTI::Image* GTI::CreateImage(UIElement* parent, char* path)
 	return image;
 }
 
-GTI::Label* GTI::CreateLabel(std::string text, std::string font, uint size, SDL_Color color, UIElement* parent)
+GTI::Label* GTI::CreateLabel(UIElement* parent, const char* t, const char* f, uint s, SDL_Color c)
 {
 	Label* label = nullptr;
 
-	if (FindFont(font, size) == nullptr)
-	{
-		if (!availableFonts.empty())
-		{
-			label = new Label(text, availableFonts.begin()->first, availableFonts.begin()->second.first, color, parent);
-			UIElements.push_back(label);
-		}
-		else
-		{
-			// ERROR: font not found & no other fonts loaded
-		}
-	}
+	if (FindFont(f == nullptr ? "" : f, s) == nullptr && !availableFonts.empty())
+		label = new Label(
+			parent,
+			(t == nullptr ? "" : t),
+			availableFonts.begin()->first.c_str(),
+			availableFonts.begin()->second.first,
+			c);
 	else
-	{
-		label = new Label(text, font, size, color, parent);
-		UIElements.push_back(label);
-	}
+		label = new Label(
+			parent,
+			(t == nullptr ? "" : t),
+			"",
+			s,
+			c);
+
+	UIElements.push_back(label);
+
 	return label;
 }
 
@@ -564,18 +574,21 @@ std::vector<std::string> GTI::Splitpath(const std::string& str, const std::set<c
 	return result;
 }
 
-TTF_Font* GTI::FindFont(std::string fontName, uint size)
+TTF_Font* GTI::FindFont(const char* f, uint s)
 {
-	if (GTInterface.availableFonts.count(fontName) > 0)
+	if (f == nullptr)
+		return nullptr;
+	
+	if (GTInterface.availableFonts.count(f) > 0)
 	{
 		std::pair <std::multimap<std::string, std::pair< uint, TTF_Font*>>::iterator,
 			std::multimap<std::string, std::pair< uint, TTF_Font*>>::iterator>
-			range = GTInterface.availableFonts.equal_range(fontName);
+			range = GTInterface.availableFonts.equal_range(f);
 
 		for (std::multimap<std::string, std::pair< uint, TTF_Font*>>::iterator
 			it = range.first; it != range.second; ++it)
 		{
-			if (it->second.first == size)
+			if (it->second.first == s)
 			{
 				return it->second.second;
 			}
@@ -933,41 +946,41 @@ void GTI::Image::OnClick()
 	//transform->scaleLocal.x *= 1.25f;
 }
 
-GTI::Label::Label(std::string _text, std::string _font, uint _size, SDL_Color _color, UIElement* _parent) : UIElement(UIElementType::Button, _parent)
+GTI::Label::Label(UIElement* parent, const char* t, const char* f, uint s, SDL_Color c) : UIElement(UIElementType::Button, parent)
 {
-	text = _text;
-	font = _font;
-	size = _size;
-	color = _color;
-	buffTexture = GenerateText(text, font, size, color, transform);
+	text = t == nullptr ? "" : t;
+	font = f == nullptr ? "" : f;
+	size = s;
+	color = c;
+	buffTexture = GenerateText(text.c_str(), font.c_str(), size, color, transform);
 }
 
-void GTI::Label::SetText(char* t)
+void GTI::Label::SetText(const char* t)
 {
 	if (t == nullptr)
 	{
 		if (text.compare("") != 0)
 		{
 			text = "";
-			UpdateText(buffTexture, text, font, size, color, transform);
+			UpdateText(buffTexture, text.c_str(), font.c_str(), size, color, transform);
 		}
 	}
 	else if (text.compare(t) != 0)
 	{
 		text = t;
-		UpdateText(buffTexture, text, font, size, color, transform);
+		UpdateText(buffTexture, text.c_str(), font.c_str(), size, color, transform);
 	}
 }
 
-bool GTI::Label::SetFont(std::string _font, uint _size)
+bool GTI::Label::SetFont(const char* f, uint s)
 {
 	bool ret;
 
-	if (FindFont(_font, _size) != nullptr)
+	if (FindFont(f, s) != nullptr)
 	{
-		font = _font;
-		size = _size;
-		UpdateText(buffTexture, text, font, size, color, transform);
+		font = f;
+		size = s;
+		UpdateText(buffTexture, text.c_str(), font.c_str(), size, color, transform);
 		ret = true;
 	}
 
@@ -983,7 +996,12 @@ void GTI::Label::OnClick()
 
 GTI::Button::Button(UIElement* _parent) : UIElement(UIElementType::Button, _parent)
 {
+	SetImage(nullptr);
+}
 
+void GTI::Button::SetImage(char* path)
+{
+	buffTexture = LoadTexture(path, transform);
 }
 
 void GTI::Button::OnClick()
@@ -1006,4 +1024,37 @@ void GTI::Input::Write(char* key)
 {
 	// if we had a cursor, we could write at specific position
 	text += key;
+}
+
+
+void GTI::Input::SetText(const char* t)
+{
+	if (t == nullptr)
+	{
+		if (text.compare("") != 0)
+		{
+			text = "";
+			UpdateText(buffTexture, text.c_str(), font.c_str(), size, color, transform);
+		}
+	}
+	else if (text.compare(t) != 0)
+	{
+		text = t;
+		UpdateText(buffTexture, text.c_str(), font.c_str(), size, color, transform);
+	}
+}
+
+bool GTI::Input::SetFont(const char* f, uint s)
+{
+	bool ret;
+
+	if (FindFont(f, s) != nullptr)
+	{
+		font = f;
+		size = s;
+		UpdateText(buffTexture, text.c_str(), font.c_str(), size, color, transform);
+		ret = true;
+	}
+
+	return ret;
 }

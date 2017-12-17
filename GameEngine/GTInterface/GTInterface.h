@@ -202,9 +202,9 @@ public:
 	class Label : public UIElement
 	{
 	public:
-		Label(std::string text, std::string font, uint size = 14, SDL_Color color = { 255, 255, 255 }, UIElement* parent = nullptr);
-		void SetText(char* t = nullptr);
-		bool SetFont(std::string font, uint size);
+		Label(UIElement* parent = nullptr, const char* text = nullptr, const char* font = nullptr,  uint size = 14, SDL_Color color = { 255, 255, 255 });
+		void SetText(const char* t = nullptr);
+		bool SetFont(const char* f, uint size);
 		void OnClick();
 	public:
 		std::string text;
@@ -217,6 +217,7 @@ public:
 	{
 	public:
 		Button(UIElement* _parent = nullptr);
+		void SetImage(char* path = nullptr);
 
 		void OnClick();
 
@@ -240,7 +241,13 @@ public:
 	public:
 		Input(UIElement* _parent = nullptr);
 		void Write(char* key);
+		void SetText(const char* t = nullptr);
+		bool SetFont(const char* f, uint size);
+	public:
 		std::string text;
+		std::string font;
+		uint size;
+		SDL_Color color;
 	};
 
 #pragma endregion
@@ -260,8 +267,8 @@ public:
 	static void RenderUIElement(UIElement* element, bool paintBlend = false, float dt = 0.0f);
 
 	static uint LoadTexture(const char* path, RectTransform* transform);
-	static uint GenerateText(std::string text, std::string font, uint size, SDL_Color color, RectTransform* transform = nullptr);
-	static void UpdateText(uint texBuffer, std::string text, std::string fontName, uint size, SDL_Color color, RectTransform * transform = nullptr);
+	static uint GenerateText(const char* text, const char* font, uint size, SDL_Color color, RectTransform* transform = nullptr);
+	static void UpdateText(uint texBuffer, const char* text, const char* fontName, uint size, SDL_Color color, RectTransform * transform = nullptr);
 	static std::string LoadFont(const char* path, uint size);
 
 	static UIElement* GetRoot();
@@ -270,7 +277,7 @@ public:
 	void SetFocus(UIElement* focus, float gPosZ);
 
 	Image* CreateImage(UIElement* parent = nullptr, char* path = nullptr);
-	Label* CreateLabel(std::string text, std::string font, uint size = 14, SDL_Color color = { 255, 255, 255 }, UIElement* parent = nullptr);
+	Label* CreateLabel(UIElement* parent = nullptr, const char* text = nullptr, const char* font = nullptr, uint size = 14, SDL_Color color = { 255, 255, 255 });
 	Button* CreateButton(UIElement* parent = nullptr);
 	Checkbox* CreateCheckbox(bool &ref, UIElement* parent = nullptr);
 	Input* CreateInput(UIElement* parent = nullptr);
@@ -291,7 +298,7 @@ public:
 
 private:
 	static std::vector<std::string> Splitpath(const std::string& str, const std::set<char> delimiters);
-	static TTF_Font* FindFont(std::string fontName, uint size);
+	static TTF_Font* FindFont(const char* font, uint size);
 
 private:
 	std::vector<UIElement*> UIElements;
