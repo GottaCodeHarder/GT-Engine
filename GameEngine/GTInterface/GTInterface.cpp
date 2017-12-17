@@ -231,6 +231,12 @@ uint GTI::LoadTexture(const char * fullPath, RectTransform* transform)
 	}
 	else
 	{
+		if (transform != nullptr)
+		{
+			transform->w = 200;
+			transform->h = 200;
+		}
+
 		error = ilGetError();
 		return -1;
 	}
