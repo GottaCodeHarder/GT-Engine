@@ -147,6 +147,28 @@ bool ModuleGUI::AddUIFont(char * path)
 	return label->GetUI()->buffTexture != 0;
 }
 
+void ModuleGUI::AddUICheckBox(char * path)
+{
+	if (!canvas)
+		CreateCanvas();
+
+	char name[64] = "";
+	int id = rand.RndInt(0, 100000);
+	sprintf_s(name, sizeof(name), "Checkbox\#\#%i", id);
+
+	GameObject* checkbox_go = App->scene->CreateGameObject(name, true, canvas->gameObject, true);
+	cCheckbox* checkbox = new cCheckbox(checkbox_go);
+	((cTransform*)checkbox_go->FindComponent(TRANSFORM))->SetRectSource(checkbox);
+	cImage* image = new cImage(checkbox_go, nullptr);
+	((cTransform*)checkbox_go->FindComponent(TRANSFORM))->SetRectSource(image);
+	checkbox->SetCheckboxImage(image->GetUI());
+
+	sprintf_s(name, sizeof(name), "Active Button#%i", id);
+	GTI::GTInterface.boolFunctions.AddFunction<GTI::UIElement>(name, checkbox->GetCheckboxImage(), &GTI::UIElement::SetActive);
+	sprintf_s(name, sizeof(name), "Fade Button#%i", id);
+	GTI::GTInterface.floatFunctions.AddFunction<GTI::UIElement>(name, checkbox->GetCheckboxImage(), &GTI::UIElement::StartFade);
+}
+
 uint ModuleGUI::LoadUIImage(char * path, cUI* component)
 {
 	if (component != nullptr)

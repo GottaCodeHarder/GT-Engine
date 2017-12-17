@@ -28,6 +28,7 @@ public:
 	void CreateCanvas();
 	bool AddUIImage(char* path);
 	void AddUIButton(char* path);
+	void AddUICheckBox(char* path);
 	bool AddUIFont(char* path);
 	
 	uint LoadUIImage(char* path, cUI* component = nullptr);

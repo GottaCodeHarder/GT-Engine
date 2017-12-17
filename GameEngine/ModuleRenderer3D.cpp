@@ -215,7 +215,7 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 //----------------------------------------------------------------------------------------------------------------------------
 
 	// Drawing GTI
-	GTI::Render();
+	GTI::Render(App->GetGameDt());
 
 	// Drawing UI
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

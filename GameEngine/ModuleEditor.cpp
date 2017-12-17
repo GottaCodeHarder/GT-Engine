@@ -429,7 +429,7 @@ void ModuleEditor::MenuGTI()
 			ImGui::Spacing();
 			if (ImGui::MenuItem("Checkbox"))
 			{
-
+				App->userinterface->AddUICheckBox(nullptr);
 			}
 			ImGui::Spacing();
 			if (ImGui::MenuItem("Label"))

@@ -129,11 +129,16 @@ public:
 		delete checkbox;
 	}
 	GTI::UIElement* GetUI() const { return checkbox; }
+	GTI::Image* GetCheckboxImage() const { return checkImage; }
+
+	void SetCheckboxImage(GTI::Image* image) { checkImage = image; }
 
 	void DrawUI();
 
 private:
 	GTI::Checkbox* checkbox;
+
+	GTI::Image* checkImage;
 };
 
 class cInput : public cUI
