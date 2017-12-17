@@ -34,12 +34,19 @@ update_status ModuleGUI::Update(float dt)
 
 		GameObject* background_go = App->scene->CreateGameObject("Background Image", true, canvas->gameObject, true);
 		cImage* image = new cImage(background_go);
-		image->GetUI()->draggable = false;
 		((cTransform*)background_go->FindComponent(TRANSFORM))->SetRectSource(image);
 
+		// Button
 		GameObject* button_go = App->scene->CreateGameObject("Start Button", true, background_go, true);
-		cButton* button = new cButton(background_go, image->GetUI());
+		cButton* button = new cButton(button_go, image->GetUI());
+		button->GetUI()->draggable = true;
 		((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(button);
+
+		/*GameObject* label_go = App->scene->CreateGameObject("Sample Label", true, background_go, true);
+		cLabel* label = new cLabel(label_go, image->GetUI());
+		label->GetUI()->draggable = true;
+		label->SetText("Sample Text");
+		((cTransform*)label_go->FindComponent(TRANSFORM))->SetRectSource(label);*/
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
@@ -121,12 +128,12 @@ void ModuleGUI::AddUIButton(char* path)
 	((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(button);
 	cImage* image = new cImage(button_go, nullptr);
 	((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(image);
-	button->SetButtonImage(image->GetUI());
+	/*button->SetButtonImage(image->GetUI());
 
 	sprintf_s(name, sizeof(name), "Active Button#%i", id);
 	GTI::GTInterface.boolFunctions.AddFunction<GTI::UIElement>(name, button->GetButtonImages(), &GTI::UIElement::SetActive);
 	sprintf_s(name, sizeof(name), "Fade Button#%i", id);
-	GTI::GTInterface.floatFunctions.AddFunction<GTI::UIElement>(name, button->GetButtonImages(), &GTI::UIElement::StartFade);
+	GTI::GTInterface.floatFunctions.AddFunction<GTI::UIElement>(name, button->GetButtonImages(), &GTI::UIElement::StartFade);*/
 }
 
 bool ModuleGUI::AddUIFont(char * path)
@@ -142,7 +149,7 @@ bool ModuleGUI::AddUIFont(char * path)
 	sprintf_s(name, sizeof(name), "Label\#\#%i", rand.RndInt(0, 100000));
 
 	GameObject* label_go = App->scene->CreateGameObject(name, true, canvas->gameObject, true);
-	cLabel* label = new cLabel(label_go, "Sample Text", font.c_str(), 24);
+	cLabel* label = new cLabel(label_go);
 	((cTransform*)label_go->FindComponent(TRANSFORM))->SetRectSource(label);
 	return label->GetUI()->buffTexture != 0;
 }
