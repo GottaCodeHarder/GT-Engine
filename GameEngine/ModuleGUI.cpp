@@ -95,7 +95,7 @@ bool ModuleGUI::AddUIImage(char* path)
 	return image->GetUI()->buffTexture != 0;
 }
 
-bool ModuleGUI::AddUIButton(char* path)
+void ModuleGUI::AddUIButton(char* path)
 {
 	if (!canvas)
 		CreateCanvas();
@@ -107,13 +107,12 @@ bool ModuleGUI::AddUIButton(char* path)
 	GameObject* button_go = App->scene->CreateGameObject(name, true, canvas->gameObject, true);
 	cButton* button = new cButton(button_go);
 	((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(button);
-
-	button->GetUI()->buttonImageBuffers.push_back(button->GetButtonImages());
+	cImage* image = new cImage(button_go, nullptr);
+	((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(image);
+	button->SetButtonImage(image->GetUI());
 
 	sprintf_s(name, sizeof(name), "Active Button#%i", id);
 	GTI::GTInterface.boolFunctions.AddFunction<GTI::UIElement>(name, button->GetButtonImages(), &GTI::UIElement::SetActive);
-
-	return button->GetButtonImages() != 0;
 }
 
 bool ModuleGUI::AddUIFont(char * path)

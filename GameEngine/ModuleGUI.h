@@ -3,6 +3,7 @@
 
 #include "Module.h"
 #include "Random.h"
+
 #include <list>
 #include <vector>
 #include <map>
@@ -27,7 +28,7 @@ public:
 	void CreateCanvas();
 
 	bool AddUIImage(char* path);
-	bool AddUIButton(char* path);
+	void AddUIButton(char* path);
 	bool AddUIFont(char* path);
 	
 	uint LoadUIImage(char* path);
