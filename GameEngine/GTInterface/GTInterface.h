@@ -132,7 +132,7 @@ public:
 
 		// Fade
 		void StartFade(float msDuration);
-		void UpdateFade();
+		void UpdateFade(float dt);
 
 		// Active
 		bool IsActive() const;
@@ -169,7 +169,7 @@ public:
 		bool mouseHover;
 
 		float fadeDuration;
-		float fadeStart;
+		float fadeSubstracted;
 		float fadeAlpha;
 	};
 
@@ -256,8 +256,8 @@ public:
 	static void Init(uint screenWidth, uint screenHeight, float scale = 0.5f);
 	static void CleanUp();
 
-	static void Render();
-	static void RenderUIElement(UIElement* element, bool paintBlend = false);
+	static void Render(float dt);
+	static void RenderUIElement(UIElement* element, bool paintBlend = false, float dt = 0.0f);
 
 	static uint LoadTexture(const char* path, RectTransform* transform);
 	static uint GenerateText(std::string text, std::string font, uint size, SDL_Color color, RectTransform* transform = nullptr);

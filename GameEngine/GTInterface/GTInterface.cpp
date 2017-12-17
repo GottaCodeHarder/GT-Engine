@@ -53,18 +53,12 @@ void GTI::Init(uint screenWidth, uint screenHeight, float scale)
 	GTInterface.mouseLBDown = false;
 	
 	GTInterface.timer.Start();
-
-	/*FunctionEmitter<bool> emit;
-
-	emit.Register<UIElement>(element, &GTI::UIElement::SetActive);
-
-	emitt.AddFunction<GTI::UIElement>("WOW", a, &GTI::UIElement::SetActive);*/
 }
 
 void GTI::CleanUp()
 {}
 
-void GTI::Render()
+void GTI::Render(float dt)
 {
 	DebugDraw::DrawFrustum(GTInterface.frustum);
 
@@ -108,7 +102,7 @@ void GTI::Render()
 	glEnable(GL_LIGHTING);
 }
 
-void GTI::RenderUIElement(UIElement * element, bool paintBlend)
+void GTI::RenderUIElement(UIElement * element, bool paintBlend, float dt)
 {
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -137,7 +131,7 @@ void GTI::RenderUIElement(UIElement * element, bool paintBlend)
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, element->blend);
 
-			element->UpdateFade();
+			element->UpdateFade(dt);
 		}
 		break;
 	}
@@ -614,7 +608,7 @@ GTI::UIElement::UIElement(UIElementType t, UIElement* _parent)
 	type = t;
 
 	fadeDuration = 0; // With the End in ms of the Fade
-	fadeStart = 0;
+	fadeSubstracted = 0;
 	fadeAlpha = 0;
 
 	if (_parent != nullptr)
@@ -800,21 +794,21 @@ float4x4 GTI::UIElement::GetGlobalTransform() const
 void GTI::UIElement::StartFade(float msDuration)
 {
 	fadeDuration = msDuration;
-	fadeStart = GTInterface.timer.Read() + msDuration;
+	fadeSubstracted = fadeDuration;
 }
 
-void GTI::UIElement::UpdateFade()
+void GTI::UIElement::UpdateFade(float dt)
 {
-	float time = GTInterface.timer.Read();
-
-	if (time <= fadeStart && fadeDuration != 0.0f)
+	if (dt > 0.0f && fadeDuration > 0.0f)
 	{
-		for (; fadeAlpha > 0.0f; fadeAlpha = (1.0f - (time - fadeStart) / fadeDuration))
+		if (fadeAlpha > 0.0f)
 		{
+			fadeAlpha = 1.0f / (fadeDuration / fadeSubstracted);
 			if (fadeAlpha < 0.0f)
 			{
 				fadeAlpha = 0.0f;
 			}
+			fadeSubstracted -= dt;
 			glColor4f(1.0f, 1.0f, 1.0f, fadeAlpha);
 		}
 	}
