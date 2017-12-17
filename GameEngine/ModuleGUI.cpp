@@ -135,7 +135,10 @@ bool ModuleGUI::AddUIFont(char * path)
 	return label->GetUI()->buffTexture != 0;
 }
 
-uint ModuleGUI::LoadUIImage(char * path)
+uint ModuleGUI::LoadUIImage(char * path, cUI* component)
 {
-	return GTI::LoadTexture(path, nullptr); 
+	if (component != nullptr)
+		return GTI::LoadTexture(path, component->getTransform());
+
+	return  GTI::LoadTexture(path, nullptr);
 }

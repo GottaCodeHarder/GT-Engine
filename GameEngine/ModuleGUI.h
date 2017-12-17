@@ -26,12 +26,11 @@ public:
 	void AddImGui();
 
 	void CreateCanvas();
-
 	bool AddUIImage(char* path);
 	void AddUIButton(char* path);
 	bool AddUIFont(char* path);
 	
-	uint LoadUIImage(char* path);
+	uint LoadUIImage(char* path, cUI* component = nullptr);
 
 private:
 	std::list<cUI*> uiComponents;
