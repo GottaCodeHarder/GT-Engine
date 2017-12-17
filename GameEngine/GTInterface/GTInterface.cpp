@@ -82,14 +82,20 @@ void GTI::Render()
 
 	for (UIElement* element : GTInterface.UIElements)
 	{
-		if(element->IsActive())
-			RenderUIElement(element, false);
+		if (element->GetType() != UIElementType::Button)
+		{
+			if (element->IsActive())
+				RenderUIElement(element, false);
+		}
 	}
 
 	for (auto blendElement : GTInterface.blendElements)
 	{
-		if (blendElement.second->IsActive())
-			RenderUIElement(blendElement.second, true);
+		if (blendElement.second->GetType() != UIElementType::Button)
+		{
+			if (blendElement.second->IsActive())
+				RenderUIElement(blendElement.second, true);
+		}
 	}
 
 	GTInterface.blendElements.clear();

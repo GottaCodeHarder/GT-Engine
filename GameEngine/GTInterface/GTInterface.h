@@ -214,8 +214,6 @@ public:
 	{
 	public:
 		Button(UIElement* _parent = nullptr);
-		
-		std::vector<Image*> buttonImageBuffers; // 0 es normal, 1 hover, 2 click
 	};
 
 	class Checkbox : public UIElement
