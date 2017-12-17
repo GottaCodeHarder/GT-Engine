@@ -306,7 +306,7 @@ void GTI::UpdateText(uint texBuffer, const char* text, const char* fontName, uin
 	}
 }
 
-std::string GTI::LoadFont(const char * path, uint size)
+const char* GTI::LoadFont(const char * path, uint size)
 {
 	TTF_Font* font = nullptr;
 	std::vector<std::string> split = Splitpath(path, std::set<char>({ '\\' }));
@@ -340,10 +340,7 @@ std::string GTI::LoadFont(const char * path, uint size)
 			GTInterface.availableFonts.insert({ name.c_str(),{ size, font } });
 	}
 
-	if (font == nullptr)
-		name = "";
-
-	return name;
+	return (font == nullptr) ? nullptr : name.c_str();
 }
 
 GTI::UIElement* GTI::GetRoot()
@@ -367,7 +364,7 @@ void GTI::SetFocus(UIElement* focus, float gPosZ)
 	GTInterface.root.minZ = gPosZ;
 }
 
-GTI::Image* GTI::CreateImage(UIElement* parent, char* path)
+GTI::Image* GTI::CreateImage(UIElement* parent, const char* path)
 {
 	Image* image = new Image(parent, path);
 	UIElements.push_back(image);
@@ -963,12 +960,12 @@ Quat GTI::Canvas::GetGlobalRotation() const
 }
 
 
-GTI::Image::Image(UIElement* _parent, char* path) : UIElement(UIElementType::Image, _parent)
+GTI::Image::Image(UIElement* _parent, const char* path) : UIElement(UIElementType::Image, _parent)
 {
 	SetImage(path);
 }
 
-void GTI::Image::SetImage(char* path)
+void GTI::Image::SetImage(const char* path)
 {
 	buffTexture = LoadTexture(path, transform); 
 }
@@ -1042,14 +1039,22 @@ void GTI::Button::OnClick()
 	floatEmitter.CallFunction(valueFloat);
 }
 
-GTI::Checkbox::Checkbox(bool &ref, UIElement* _parent) : UIElement(UIElementType::Input, _parent)
+GTI::Checkbox::Checkbox(bool state, UIElement* _parent) : UIElement(UIElementType::Input, _parent)
 {
-	value = &ref;
+	buffTexture = LoadTexture("", transform);
+	value = state;
+}
+
+void GTI::Checkbox:: OnClick()
+{
+	value = !value;
+	boolEmitter.CallFunction(value);
 }
 
 GTI::Input::Input(UIElement* _parent) : UIElement(UIElementType::Checkbox, _parent)
 {
-
+	//buffTexture = GenerateText(text.c_str(), font.c_str(), size, color, transform);
+	buffTexture = GenerateText("Input");
 }
 
 void GTI::Input::Write(char* key)

@@ -201,8 +201,8 @@ public:
 	class Image : public UIElement
 	{
 	public:
-		Image(UIElement* _parent = nullptr, char* path = nullptr);
-		void SetImage(char* path = nullptr);
+		Image(UIElement* _parent = nullptr, const char* path = nullptr);
+		void SetImage(const char* path = nullptr);
 		
 		void OnClick();
 	public:
@@ -238,9 +238,8 @@ public:
 	class Checkbox : public UIElement
 	{
 	public:
-		Checkbox(bool &ref, UIElement* _parent = nullptr);
-		bool* reference;
-		void SetValueRef(bool* ref) {}
+		Checkbox(bool state, UIElement* _parent = nullptr);
+		void OnClick();
 
 	public:
 		bool value = false;
@@ -277,17 +276,17 @@ public:
 	static void RenderUIElement(UIElement* element, bool paintBlend = false, float dt = 0.0f);
 
 	static uint LoadTexture(const char* path, RectTransform* transform);
-	static uint GenerateText(const char* text, const char* font, uint size, SDL_Color color, RectTransform* transform = nullptr);
+	static uint GenerateText(const char* text = nullptr, const char* font = nullptr, uint size = 24, SDL_Color color = { 255, 255, 255 }, RectTransform* transform = nullptr);
 	static void UpdateText(uint texBuffer, const char* text, const char* fontName, uint size, SDL_Color color, RectTransform * transform = nullptr);
-	static std::string LoadFont(const char* path, uint size);
+	static const char* LoadFont(const char* path, uint size);
 
 	static UIElement* GetRoot();
 	static float GetScale();
 	static UIElement* GetFocus();
 	void SetFocus(UIElement* focus, float gPosZ);
 
-	Image* CreateImage(UIElement* parent = nullptr, char* path = nullptr);
-	Label* CreateLabel(UIElement* parent = nullptr, const char* text = nullptr, const char* font = nullptr, uint size = 14, SDL_Color color = { 255, 255, 255 });
+	Image* CreateImage(UIElement* parent = nullptr, const char* path = nullptr);
+	Label* CreateLabel(UIElement* parent = nullptr, const char* text = nullptr, const char* font = nullptr, uint size = 24, SDL_Color color = { 255, 255, 255 });
 	Button* CreateButton(UIElement* parent = nullptr);
 	Checkbox* CreateCheckbox(bool &ref, UIElement* parent = nullptr);
 	Input* CreateInput(UIElement* parent = nullptr);

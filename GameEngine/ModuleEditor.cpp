@@ -419,17 +419,17 @@ void ModuleEditor::MenuGTI()
 		{
 			if (ImGui::MenuItem("Image"))
 			{
-				App->userinterface->AddUIImage(nullptr);
+				App->userinterface->AddUIImage(selected);
 			}
 			ImGui::Spacing();
 			if (ImGui::MenuItem("Button"))
 			{
-				App->userinterface->AddUIButton(nullptr);
+				App->userinterface->AddUIButton(selected);
 			}
 			ImGui::Spacing();
 			if (ImGui::MenuItem("Checkbox"))
 			{
-				App->userinterface->AddUICheckBox(nullptr);
+				App->userinterface->AddUICheckBox(selected);
 			}
 			ImGui::Spacing();
 			if (ImGui::MenuItem("Label"))
@@ -676,7 +676,7 @@ void ModuleEditor::LoadFile(LoadType select)
 		}
 		else if (select == LoadType::GTInterfaceIMAGE)
 		{
-			App->userinterface->AddUIImage(fileName);
+			App->userinterface->AddUIImage(nullptr, fileName);
 		}
 		else if (select == LoadType::GTInterfaceFONT)
 		{

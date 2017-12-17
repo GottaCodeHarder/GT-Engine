@@ -47,7 +47,7 @@ class cImage : public cUI
 public:
 	int unique;
 
-	cImage(GameObject* _gameObject, char* path = nullptr, GTI::UIElement* parent = nullptr) : cUI(_gameObject)
+	cImage(GameObject* _gameObject, const char* path = nullptr, GTI::UIElement* parent = nullptr) : cUI(_gameObject)
 	{
 		image = GTI::GTInterface.CreateImage(parent, path);
 
@@ -72,15 +72,15 @@ private:
 class cLabel: public cUI
 {
 public:
-	cLabel(GameObject* _gameObject, GTI::UIElement* parent = nullptr) : cUI(_gameObject)
+	cLabel(GameObject* _gameObject, const char* text, GTI::UIElement* parent = nullptr) : cUI(_gameObject)
 	{
-		label = GTI::GTInterface.CreateLabel(parent);
+		label = GTI::GTInterface.CreateLabel(parent, text);
 		_gameObject->AddComponent(this);
 	}
 
 	GTI::UIElement* GetUI() const { return label; }
 	void SetText(const char* t = nullptr) { label->SetText(t); }
-	bool SetFont(const char* font, uint size) { label->SetFont(font, size); }
+	bool SetFont(const char* font, uint size) { return label->SetFont(font, size); }
 
 	void DrawUI()
 	{
@@ -117,22 +117,21 @@ private:
 class cCheckbox : public cUI
 {
 public:
-	cCheckbox(GameObject* _gameObject, GTI::UIElement* parent = nullptr) : cUI(_gameObject) { _gameObject->AddComponent(this);  }
+	cCheckbox(GameObject* _gameObject, bool state, GTI::UIElement* parent = nullptr) : cUI(_gameObject)
+	{
+		checkbox = GTI::GTInterface.CreateCheckbox(state, parent);
+		_gameObject->AddComponent(this);
+	}
 	~cCheckbox()
 	{
 		delete checkbox;
 	}
 	GTI::UIElement* GetUI() const { return checkbox; }
-	GTI::Image* GetCheckboxImage() const { return checkImage; }
-
-	void SetCheckboxImage(GTI::Image* image) { checkImage = image; }
 
 	void DrawUI();
 
 private:
 	GTI::Checkbox* checkbox;
-
-	GTI::Image* checkImage;
 };
 
 class cInput : public cUI

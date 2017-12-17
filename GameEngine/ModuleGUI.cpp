@@ -32,17 +32,23 @@ update_status ModuleGUI::Update(float dt)
 		if (!canvas)
 			CreateCanvas();
 
-		GameObject* background_go = App->scene->CreateGameObject("Background Image", true, canvas->gameObject, true);
-		cImage* image = new cImage(background_go);
-		((cTransform*)background_go->FindComponent(TRANSFORM))->SetRectSource(image);
+		AddUIImage();
+		AddUILabel(nullptr, "Sample Text");
+		AddUIButton();
+		AddUICheckBox();
 
-		// Button
+		/*/ Button
 		GameObject* button_go = App->scene->CreateGameObject("Start Button", true, background_go, true);
 		cButton* button = new cButton(button_go, image->GetUI());
 		button->GetUI()->draggable = true;
 		((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(button);
 
-		/*GameObject* label_go = App->scene->CreateGameObject("Sample Label", true, background_go, true);
+		sprintf_s(name, sizeof(name), "Active Button#%i", id);
+		GTI::GTInterface.boolFunctions.AddFunction<GTI::UIElement>(name, button->GetUI(), &GTI::UIElement::SetActive);
+		sprintf_s(name, sizeof(name), "Fade Button#%i", id);
+		GTI::GTInterface.floatFunctions.AddFunction<GTI::UIElement>(name, button->GetUI(), &GTI::UIElement::StartFade);
+
+		GameObject* label_go = App->scene->CreateGameObject("Sample Label", true, background_go, true);
 		cLabel* label = new cLabel(label_go, image->GetUI());
 		label->GetUI()->draggable = true;
 		label->SetText("Sample Text");
@@ -94,16 +100,38 @@ void ModuleGUI::CreateCanvas()
 	((cTransform*)canvas_go->FindComponent(TRANSFORM))->SetRectSource(canvas);
 }
 
-bool ModuleGUI::AddUIImage(char* path)
+cImage* ModuleGUI::AddUIImage(GameObject* parent_go, const char* path)
 {
 	if (!canvas)
 		CreateCanvas();
 
-	char name[64] = "";
-	sprintf_s(name, sizeof(name), "Image\#\#%i", rand.RndInt(0, 100000));
+	GameObject* image_go = nullptr;
+	cImage* image = nullptr;
 
-	GameObject* image_go = App->scene->CreateGameObject(name, true, canvas->gameObject, true);
-	cImage* image = new cImage(image_go, path);
+	char name[64] = "";
+	int id = rand.RndInt(0, 100000);
+	sprintf_s(name, sizeof(name), "Button\#\#%i", id);
+
+	if (parent_go == nullptr)
+	{
+		image_go = App->scene->CreateGameObject(name, true, canvas->gameObject, true);
+		image = new cImage(image_go, path);
+	}
+	else
+	{
+		cUI* parentUI = (cUI*)parent_go->FindComponent(UI);
+		if (parentUI == nullptr)
+		{
+			image_go = App->scene->CreateGameObject(name, true, canvas->gameObject, true);
+			image = new cImage(image_go, path);
+		}
+		else
+		{
+			image_go = App->scene->CreateGameObject(name, true, parent_go, true);
+			image = new cImage(image_go, path, parentUI->GetUI());
+		}
+	}
+
 	((cTransform*)image_go->FindComponent(TRANSFORM))->SetRectSource(image);
 
 	sprintf_s(name, sizeof(name), "Active %s", name);
@@ -111,69 +139,135 @@ bool ModuleGUI::AddUIImage(char* path)
 	sprintf_s(name, sizeof(name), "Fade %s", name);
 	GTI::GTInterface.floatFunctions.AddFunction<GTI::UIElement>(name, image->GetUI(), &GTI::UIElement::StartFade);
 
-	return image->GetUI()->buffTexture != 0;
+	return image;
 }
 
-void ModuleGUI::AddUIButton(char* path)
+cButton* ModuleGUI::AddUIButton(GameObject* parent_go)
 {
 	if (!canvas)
 		CreateCanvas();
 
+	GameObject* button_go = nullptr;
+	cButton* button = nullptr;
+
 	char name[64] = "";
 	int id = rand.RndInt(0, 100000);
-	sprintf_s(name, sizeof(name), "Button\#\#%i", id);
+	sprintf_s(name, sizeof(name), "Image\#\#%i", id);
 
-	GameObject* button_go = App->scene->CreateGameObject(name, true, canvas->gameObject, true);
-	cButton* button = new cButton(button_go);
+	if (parent_go == nullptr)
+	{
+		button_go = App->scene->CreateGameObject(name, true, canvas->gameObject, true);
+		button = new cButton(button_go);
+	}
+	else
+	{
+		cUI* parentUI = (cUI*)parent_go->FindComponent(UI);
+		if (parentUI == nullptr)
+		{
+			button_go = App->scene->CreateGameObject(name, true, canvas->gameObject, true);
+			button = new cButton(button_go);
+		}
+		else
+		{
+			button_go = App->scene->CreateGameObject(name, true, parent_go, true);
+			button = new cButton(button_go, parentUI->GetUI());
+		}
+	}
+
 	((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(button);
-	cImage* image = new cImage(button_go, nullptr);
-	((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(image);
-	//button->SetButtonImage(image->GetUI());
 
 	sprintf_s(name, sizeof(name), "Active Button#%i", id);
 	GTI::GTInterface.boolFunctions.AddFunction<GTI::UIElement>(name, button->GetUI(), &GTI::UIElement::SetActive);
 	sprintf_s(name, sizeof(name), "Fade Button#%i", id);
 	GTI::GTInterface.floatFunctions.AddFunction<GTI::UIElement>(name, button->GetUI(), &GTI::UIElement::StartFade);
+
+	return button;
 }
 
-bool ModuleGUI::AddUIFont(char * path)
-{
-	// TODO - Ventana contextual pidiendo el nombre
-	// El nombre del font es el nombre del archivo .ttf
-	// se saca del path y te lo devuelve la funcion LoadFont(...)
-	// si la fuente se carga correctamente
-
-	std::string font = GTI::GTInterface.LoadFont(path, 24);
-
-	char name[64] = "";
-	sprintf_s(name, sizeof(name), "Label\#\#%i", rand.RndInt(0, 100000));
-
-	GameObject* label_go = App->scene->CreateGameObject(name, true, canvas->gameObject, true);
-	cLabel* label = new cLabel(label_go);
-	((cTransform*)label_go->FindComponent(TRANSFORM))->SetRectSource(label);
-	return label->GetUI()->buffTexture != 0;
-}
-
-void ModuleGUI::AddUICheckBox(char * path)
+cLabel* ModuleGUI::AddUILabel(GameObject* parent_go, const char* text, uint size, const char* path)
 {
 	if (!canvas)
 		CreateCanvas();
+
+	GameObject* label_go = nullptr;
+	cLabel* label = nullptr;
+
+	char name[64] = "";
+	int id = rand.RndInt(0, 100000);
+	sprintf_s(name, sizeof(name), "Label\#\#%i", id);
+
+	if (parent_go == nullptr)
+	{
+		label_go = App->scene->CreateGameObject(name, true, canvas->gameObject, true);
+		label = new cLabel(label_go, text);
+	}
+	else
+	{
+		cUI* parentUI = (cUI*)parent_go->FindComponent(UI);
+		if (parentUI == nullptr)
+		{
+			label_go = App->scene->CreateGameObject(name, true, canvas->gameObject, true);
+			label = new cLabel(label_go, text);
+		}
+		else
+		{
+			label_go = App->scene->CreateGameObject(name, true, parent_go, true);
+			label = new cLabel(label_go, text, parentUI->GetUI());
+		}
+	}
+
+	((cTransform*)label_go->FindComponent(TRANSFORM))->SetRectSource(label);
+
+	if (path != nullptr)
+		label->SetFont(GTI::GTInterface.LoadFont(path, size), size);
+
+	((cTransform*)label_go->FindComponent(TRANSFORM))->SetRectSource(label);
+	return label;
+}
+
+cCheckbox* ModuleGUI::AddUICheckBox(GameObject* parent_go)
+{
+	if (!canvas)
+		CreateCanvas();
+
+	GameObject* checkbox_go = nullptr;
+	cCheckbox* checkbox = nullptr;
 
 	char name[64] = "";
 	int id = rand.RndInt(0, 100000);
 	sprintf_s(name, sizeof(name), "Checkbox\#\#%i", id);
 
-	GameObject* checkbox_go = App->scene->CreateGameObject(name, true, canvas->gameObject, true);
-	cCheckbox* checkbox = new cCheckbox(checkbox_go);
+	if (parent_go == nullptr)
+	{
+		checkbox_go = App->scene->CreateGameObject(name, true, canvas->gameObject, true);
+		checkbox = new cCheckbox(checkbox_go, true);
+	}
+	else
+	{
+		cUI* parentUI = (cUI*)parent_go->FindComponent(UI);
+		if (parentUI == nullptr)
+		{
+			checkbox_go = App->scene->CreateGameObject(name, true, canvas->gameObject, true);
+			checkbox = new cCheckbox(checkbox_go, true);
+		}
+		else
+		{
+			checkbox_go = App->scene->CreateGameObject(name, true, parent_go, true);
+			checkbox = new cCheckbox(checkbox_go, true, parentUI->GetUI());
+		}
+	}
+
 	((cTransform*)checkbox_go->FindComponent(TRANSFORM))->SetRectSource(checkbox);
-	cImage* image = new cImage(checkbox_go, nullptr);
-	((cTransform*)checkbox_go->FindComponent(TRANSFORM))->SetRectSource(image);
-	checkbox->SetCheckboxImage(image->GetUI());
 
 	sprintf_s(name, sizeof(name), "Active Button#%i", id);
-	GTI::GTInterface.boolFunctions.AddFunction<GTI::UIElement>(name, checkbox->GetCheckboxImage(), &GTI::UIElement::SetActive);
-	sprintf_s(name, sizeof(name), "Fade Button#%i", id);
-	GTI::GTInterface.floatFunctions.AddFunction<GTI::UIElement>(name, checkbox->GetCheckboxImage(), &GTI::UIElement::StartFade);
+	GTI::GTInterface.boolFunctions.AddFunction<GTI::UIElement>(name, checkbox->GetUI(), &GTI::UIElement::SetActive);
+
+	return checkbox;
+}
+
+const char* ModuleGUI::AddUIFont(const char* path)
+{
+	return GTI::GTInterface.LoadFont(path, 24);
 }
 
 uint ModuleGUI::LoadUIImage(char * path, cUI* component)

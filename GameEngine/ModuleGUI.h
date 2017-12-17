@@ -11,6 +11,10 @@
 
 class cUI; 
 class cCanvas;
+class cImage;
+class cLabel;
+class cButton;
+class cCheckbox;
 class GameObject;
 
 class ModuleGUI : public Module
@@ -26,10 +30,11 @@ public:
 	void AddImGui();
 
 	void CreateCanvas();
-	bool AddUIImage(char* path);
-	void AddUIButton(char* path);
-	void AddUICheckBox(char* path);
-	bool AddUIFont(char* path);
+	cImage* AddUIImage(GameObject* parent = nullptr, const char* path = nullptr);
+	cLabel* AddUILabel(GameObject* parent = nullptr, const char* text = nullptr, uint size = 24, const char* path = nullptr);
+	cButton* AddUIButton(GameObject* parent = nullptr);
+	cCheckbox* AddUICheckBox(GameObject* parent = nullptr);
+	const char* AddUIFont(const char* path = nullptr);
 	
 	uint LoadUIImage(char* path, cUI* component = nullptr);
 
