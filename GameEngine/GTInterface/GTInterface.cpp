@@ -53,6 +53,12 @@ void GTI::Init(uint screenWidth, uint screenHeight, float scale)
 	GTInterface.mouseLBDown = false;
 	
 	GTInterface.timer.Start();
+
+	/*FunctionEmitter<bool> emit;
+
+	emit.Register<UIElement>(element, &GTI::UIElement::SetActive);
+
+	emitt.AddFunction<GTI::UIElement>("WOW", a, &GTI::UIElement::SetActive);*/
 }
 
 void GTI::CleanUp()
@@ -904,8 +910,10 @@ void GTI::Image::SetImage(char* path)
 
 void GTI::Image::OnClick()
 {
-	// TODO SAMU
 	transform->scaleLocal.x *= 1.25f;
+	//boolEmitter.CallFunction(true);
+	//floatEmitter.CallFunction(3000);
+	stringEmitter.CallFunction("");
 }
 
 GTI::Label::Label(std::string _text, std::string _font, uint _size, SDL_Color _color, UIElement* _parent) : UIElement(UIElementType::Button, _parent)
@@ -917,7 +925,7 @@ GTI::Label::Label(std::string _text, std::string _font, uint _size, SDL_Color _c
 	buffTexture = GenerateText(text, font, size, color, transform);
 }
 
-void GTI::Label::SetText(const char* t)
+void GTI::Label::SetText(char* t)
 {
 	if (t == nullptr)
 	{
@@ -952,7 +960,8 @@ bool GTI::Label::SetFont(std::string _font, uint _size)
 void GTI::Label::OnClick()
 {
 	// TODO SAMU
-	SetText("Hola Samu");
+	//stringEmitter.CallFunction(text);
+	SetText("I tried");
 }
 
 GTI::Button::Button(UIElement* _parent) : UIElement(UIElementType::Button, _parent)
@@ -962,7 +971,9 @@ GTI::Checkbox::Checkbox(bool* ref, UIElement* _parent) : UIElement(UIElementType
 {}
 
 GTI::Input::Input(UIElement* _parent) : UIElement(UIElementType::Checkbox, _parent)
-{}
+{
+
+}
 
 void GTI::Input::Write(char* key)
 {

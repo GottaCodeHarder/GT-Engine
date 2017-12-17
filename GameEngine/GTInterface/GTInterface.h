@@ -17,9 +17,11 @@
 typedef unsigned int uint;
 
 template <typename in>
-class Emitter
+class FunctionEmitter
 {
 public:
+	FunctionEmitter() {};
+
 	void Register(std::function<void(in)> func)
 	{
 		funcList.push_back(func);
@@ -41,6 +43,27 @@ public:
 
 private:
 	std::list<std::function<void(in)>> funcList;
+};
+
+template <typename in>
+class FunctionStorage
+{
+public:
+	FunctionStorage() {};
+
+	// Add to Map
+	void RegisterFunction(std::string givenName, std::function<void(in)> func)
+	{
+		FunctionsMap.insert(std::pair<std::string, std::function<void(in)>>(givenName, func));
+	}
+
+	template <typename C>
+	void AddFunction(std::string name, C* object, void(C::* memFunc)(in))
+	{
+		RegisterFunction(name, [object = object, memFunc = memFunc](in arg) { (object->*(memFunc))(arg); });
+	}
+	
+	std::map<std::string, std::function<void(in)>> FunctionsMap;
 };
 
 class GTI
@@ -116,6 +139,10 @@ public:
 		bool IsActive() const;
 		void SetActive(bool set);
 
+		FunctionEmitter<bool> boolEmitter;
+		FunctionEmitter<float> floatEmitter;
+		FunctionEmitter<std::string> stringEmitter;
+
 	private:
 		int MinX() const;
 		int MinY() const;
@@ -138,7 +165,6 @@ public:
 		bool mouseHover;
 		bool preserveAspect;
 
-		Emitter<bool> emitter;
 	private:
 		UIElementType type;
 
@@ -164,6 +190,7 @@ public:
 	public:
 		Image(UIElement* _parent = nullptr, char* path = nullptr);
 		void SetImage(char* path = nullptr);
+		
 		void OnClick();
 	public:
 		std::string source;
@@ -173,7 +200,7 @@ public:
 	{
 	public:
 		Label(std::string text, std::string font, uint size = 14, SDL_Color color = { 255, 255, 255 }, UIElement* parent = nullptr);
-		void SetText(const char* t = nullptr);
+		void SetText(char* t = nullptr);
 		bool SetFont(std::string font, uint size);
 		void OnClick();
 	public:
@@ -237,6 +264,10 @@ public:
 	Checkbox* CreateCheckbox(bool* ref = nullptr, UIElement* parent = nullptr);
 	Input* CreateInput(UIElement* parent = nullptr);
 
+	FunctionStorage<bool> boolFunctions;
+	FunctionStorage<float> floatFunctions;
+	FunctionStorage<std::string> stringFunctions;
+
 	std::string GetLastError() const;
 
 	static void GetEventSDL(SDL_Event &e);
@@ -244,26 +275,7 @@ public:
 	bool GetMLBDown() const;
 
 	float4x4 GetCameraTransform() const;
-
-	std::map<std::string, std::function<void(bool)>> boolFunctionsMap;
-	std::map<std::string, std::function<void(char)>> charFunctionsMap;
-	std::map<std::string, std::function<void(int)>> intFunctionsMap;
-
-	void AddFunction(std::string givenName, std::function<void(bool)> func)
-	{
-		boolFunctionsMap.insert(std::pair<std::string, std::function<void(bool)>>(givenName, func));
-	};
-
-	void AddFunction(std::string givenName, std::function<void(char)> func)
-	{
-		charFunctionsMap.insert(std::pair<std::string, std::function<void(char)>>(givenName, func));
-	};
-
-	void AddFunction(std::string givenName, std::function<void(int)> func)
-	{
-		intFunctionsMap.insert(std::pair<std::string, std::function<void(int)>>(givenName, func));
-	};
-	
+		
 	GTITimer timer;
 
 private:
