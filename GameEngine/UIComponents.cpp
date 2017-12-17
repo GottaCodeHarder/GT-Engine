@@ -154,3 +154,41 @@ void cImage::DrawUI()
 	}
 }
 
+void cButton::DrawUI()
+
+{
+	if (ImGui::CollapsingHeader("Button", nullptr, 0, true))
+	{
+		if (ImGui::Button("Set Function"))
+			ImGui::OpenPopup("selectFunction");
+		if (ImGui::BeginPopup("selectFunction"))
+		{
+			for (auto it : GetFunctionsName())
+			{
+				if (ImGui::Selectable(it.c_str()))
+					SetFunctions(it, button);
+			}
+			ImGui::EndPopup();
+		}
+		int bValue = button->valueBool;
+
+		ImGui::Text("These parameters will be sent to all Functions\nselected above.");
+
+		ImGui::Columns(3, "buttonValues", false);
+		ImGui::Spacing();
+		ImGui::Text("Float Value"); ImGui::Spacing();
+		ImGui::Text("Bool Value");
+		ImGui::NextColumn();
+		ImGui::DragFloat("##dragFValue", &button->valueFloat, 1.0f, 0.0f, 0.0f, "%g");
+		if(ImGui::DragInt("##dragBValue", &bValue, 1.0f, 0.0f, 1.0f, "%g"))
+			button->valueBool = (bool)bValue;
+		ImGui::NextColumn();
+		ImGui::Columns(1);
+	}
+	ImGui::Spacing();
+}
+
+void cCheckbox::DrawUI()
+{
+	//Source
+}

@@ -214,13 +214,21 @@ public:
 	{
 	public:
 		Button(UIElement* _parent = nullptr);
+
+		void OnClick();
+
+		float valueFloat = 0.0f;
+		bool valueBool = false;
 	};
 
 	class Checkbox : public UIElement
 	{
 	public:
-		Checkbox(bool* ref, UIElement* _parent = nullptr);
+		Checkbox(bool &ref, UIElement* _parent = nullptr);
 		bool* reference;
+
+	private:
+		bool value = false;
 	};
 
 	class Input : public UIElement
@@ -259,7 +267,7 @@ public:
 	Image* CreateImage(UIElement* parent = nullptr, char* path = nullptr);
 	Label* CreateLabel(std::string text, std::string font, uint size = 14, SDL_Color color = { 255, 255, 255 }, UIElement* parent = nullptr);
 	Button* CreateButton(UIElement* parent = nullptr);
-	Checkbox* CreateCheckbox(bool* ref = nullptr, UIElement* parent = nullptr);
+	Checkbox* CreateCheckbox(bool &ref, UIElement* parent = nullptr);
 	Input* CreateInput(UIElement* parent = nullptr);
 
 	FunctionStorage<bool> boolFunctions;

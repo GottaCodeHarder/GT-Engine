@@ -113,6 +113,8 @@ void ModuleGUI::AddUIButton(char* path)
 
 	sprintf_s(name, sizeof(name), "Active Button#%i", id);
 	GTI::GTInterface.boolFunctions.AddFunction<GTI::UIElement>(name, button->GetButtonImages(), &GTI::UIElement::SetActive);
+	sprintf_s(name, sizeof(name), "Fade Button#%i", id);
+	GTI::GTInterface.floatFunctions.AddFunction<GTI::UIElement>(name, button->GetButtonImages(), &GTI::UIElement::StartFade);
 }
 
 bool ModuleGUI::AddUIFont(char * path)
@@ -121,9 +123,6 @@ bool ModuleGUI::AddUIFont(char * path)
 	// El nombre del font es el nombre del archivo .ttf
 	// se saca del path y te lo devuelve la funcion LoadFont(...)
 	// si la fuente se carga correctamente
-
-	if (!canvas)
-		CreateCanvas();
 
 	std::string font = GTI::GTInterface.LoadFont(path, 24);
 

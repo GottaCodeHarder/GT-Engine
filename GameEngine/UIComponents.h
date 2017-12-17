@@ -109,27 +109,10 @@ public:
 	}
 	GTI::Button* GetUI() const { return button; }
 	GTI::Image* GetButtonImages() const { return imageA; }
+	
 	void SetButtonImage(GTI::Image* image) { imageA = image; }
 
-	void DrawUI()
-	{
-		if (ImGui::CollapsingHeader("Button", nullptr, 0, true))
-		{
-			if (ImGui::Button("Set Function"))
-				ImGui::OpenPopup("selectFunction");
-			ImGui::SameLine();
-			if (ImGui::BeginPopup("selectFunction"))
-			{
-				for (auto it : GetFunctionsName())
-				{
-					if (ImGui::Selectable(it.c_str()))
-						SetFunctions(it, button);
-				}
-				ImGui::EndPopup();
-			}
-		}
-		ImGui::Spacing();
-	}
+	void DrawUI();
 
 private:
 	GTI::Button* button;
@@ -147,10 +130,7 @@ public:
 	}
 	GTI::UIElement* GetUI() const { return checkbox; }
 
-	void DrawUI()
-	{
-		//Source
-	}
+	void DrawUI();
 
 private:
 	GTI::Checkbox* checkbox;

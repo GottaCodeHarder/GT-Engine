@@ -390,7 +390,7 @@ GTI::Button* GTI::CreateButton(UIElement* parent)
 	return button;
 }
 
-GTI::Checkbox* GTI::CreateCheckbox(bool* ref, UIElement* parent)
+GTI::Checkbox* GTI::CreateCheckbox(bool &ref, UIElement* parent)
 {
 	Checkbox* cbox = new Checkbox(ref, parent);
 	UIElements.push_back(cbox);
@@ -917,9 +917,6 @@ void GTI::Image::SetImage(char* path)
 void GTI::Image::OnClick()
 {
 	transform->scaleLocal.x *= 1.25f;
-	//boolEmitter.CallFunction(true);
-	//floatEmitter.CallFunction(3000);
-	stringEmitter.CallFunction("");
 }
 
 GTI::Label::Label(std::string _text, std::string _font, uint _size, SDL_Color _color, UIElement* _parent) : UIElement(UIElementType::Button, _parent)
@@ -971,10 +968,20 @@ void GTI::Label::OnClick()
 }
 
 GTI::Button::Button(UIElement* _parent) : UIElement(UIElementType::Button, _parent)
-{}
+{
 
-GTI::Checkbox::Checkbox(bool* ref, UIElement* _parent) : UIElement(UIElementType::Input, _parent), reference(ref)
-{}
+}
+
+void GTI::Button::OnClick()
+{
+	boolEmitter.CallFunction(valueBool);
+	floatEmitter.CallFunction(valueFloat);
+}
+
+GTI::Checkbox::Checkbox(bool &ref, UIElement* _parent) : UIElement(UIElementType::Input, _parent)
+{
+	value = &ref;
+}
 
 GTI::Input::Input(UIElement* _parent) : UIElement(UIElementType::Checkbox, _parent)
 {
