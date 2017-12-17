@@ -634,7 +634,7 @@ GTI::UIElement::UIElement(UIElementType t, UIElement* _parent)
 	alpha = 0.8f;
 	blend = GL_ONE_MINUS_SRC_ALPHA;
 
-	draggable = true;
+	draggable = false;
 	mouseHover = false;
 	preserveAspect = true;
 }

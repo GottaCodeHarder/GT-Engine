@@ -107,7 +107,7 @@ public:
 	{
 		delete button;
 	}
-	GTI::Button* GetUI() const { return button; }
+	GTI::UIElement* GetUI() const { return button; }
 	GTI::Image* GetButtonImages() const { return imageA; }
 	
 	void SetButtonImage(GTI::Image* image) { imageA = image; }

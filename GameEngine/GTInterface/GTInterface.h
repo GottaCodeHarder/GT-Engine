@@ -161,11 +161,12 @@ public:
 		uint blend;
 
 		bool draggable;
-		bool mouseHover;
 		bool preserveAspect;
 
 	private:
 		UIElementType type;
+
+		bool mouseHover;
 
 		float fadeDuration;
 		float fadeStart;
