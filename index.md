@@ -6,15 +6,15 @@
 
 Dev Team:
 
-<div style="text-align:center; height: 300px; width:300px"><img src ="https://78.media.tumblr.com/754d2395803ccaf91f17a5f32d9d0840/tumblr_p141iwzYgm1vonij4o1_540.jpg" /></div>
+<div style="align:center; height: 200px; width:200px"><img src ="https://78.media.tumblr.com/754d2395803ccaf91f17a5f32d9d0840/tumblr_p141iwzYgm1vonij4o1_540.jpg" /></div>
 <div style="text-align:center; "><a href="https://github.com/GottaCodeHarder" class="btn"><b>GottaCodeHarder</b>
 <div style="text-align:center">Samuel Navarro Sato
 
-<div style="text-align:center; height: 300px; width:300px"><img src ="https://78.media.tumblr.com/faa75b3f1c2bffaa63bbf538acba1299/tumblr_p141j7S5hM1vonij4o1_1280.jpg" /></div>
+<div style="align:center; height: 200px; width:200px"><img src ="https://78.media.tumblr.com/faa75b3f1c2bffaa63bbf538acba1299/tumblr_p141j7S5hM1vonij4o1_1280.jpg" /></div>
 <div style="text-align:center; "><a href="https://github.com/Pau5erra" class="btn"><b>Pau5erra</b>
 <div style="text-align:center">Pau Serra Colomer
 
-<div style="text-align:center; height: 300px; width:300px"><img src ="https://78.media.tumblr.com/acc2027b302ae5c58dc1347275ae10a2/tumblr_p141wgyFCX1vonij4o1_1280.jpg" /></div>
+<div style="align:center; height: 200px; width:200px"><img src ="https://78.media.tumblr.com/acc2027b302ae5c58dc1347275ae10a2/tumblr_p141wgyFCX1vonij4o1_1280.jpg" /></div>
 <div style="text-align:center; "><a href="https://github.com/cumus" class="btn"><b>cumus</b>
 <div style="text-align:center"><Rubén Sardón Roldán>
 
