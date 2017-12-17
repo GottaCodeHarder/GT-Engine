@@ -6,6 +6,8 @@
 #include "cTransform.h"
 #include "UIComponents.h"
 
+#include "Random.h"
+
 #include "GTInterface/GTInterface.h"
 
 ModuleGUI::ModuleGUI(Application * app, bool start_enabled) : Module(app, start_enabled)
@@ -20,6 +22,7 @@ bool ModuleGUI::Init()
 }
 bool ModuleGUI::Start()
 {
+	GTI::GTInterface.boolFunctions.AddFunction<Application>("Set VSync", App, &Application::SetVSync);
 	return true;
 }
 update_status ModuleGUI::Update(float dt)
@@ -77,9 +80,18 @@ bool ModuleGUI::AddUIImage(char* path)
 	if (!canvas)
 		CreateCanvas();
 
-	GameObject* image_go = App->scene->CreateGameObject("Image", true, canvas->gameObject, true);
+	char name[64] = "";
+	sprintf_s(name, sizeof(name), "Image\#\#%i", rand.RndInt(0, 100000));
+
+	GameObject* image_go = App->scene->CreateGameObject(name, true, canvas->gameObject, true);
 	cImage* image = new cImage(image_go, path);
 	((cTransform*)image_go->FindComponent(TRANSFORM))->SetRectSource(image);
+
+	sprintf_s(name, sizeof(name), "Active %s", name);
+	GTI::GTInterface.boolFunctions.AddFunction<GTI::UIElement>(name, image->GetUI(), &GTI::UIElement::SetActive);
+	sprintf_s(name, sizeof(name), "Fade %s", name);
+	GTI::GTInterface.floatFunctions.AddFunction<GTI::UIElement>(name, image->GetUI(), &GTI::UIElement::StartFade);
+
 	return image->GetUI()->buffTexture != 0;
 }
 
@@ -88,20 +100,20 @@ bool ModuleGUI::AddUIButton(char* path)
 	if (!canvas)
 		CreateCanvas();
 
-	GameObject* button_go = App->scene->CreateGameObject("Button", true, canvas->gameObject, true);
+	char name[64] = "";
+	int id = rand.RndInt(0, 100000);
+	sprintf_s(name, sizeof(name), "Button\#\#%i", id);
+
+	GameObject* button_go = App->scene->CreateGameObject(name, true, canvas->gameObject, true);
 	cButton* button = new cButton(button_go);
-	cImage* image = new cImage(button_go, path);
-	((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(image);
-	cImage* image2 = new cImage(button_go, path);
-	((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(image2);
-	cImage* image3 = new cImage(button_go, path);
-	((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(image3);
+	((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(button);
 
-	button->GetUI()->buttonImageBuffers.push_back(image->GetUI());
-	button->GetUI()->buttonImageBuffers.push_back(image2->GetUI());
-	button->GetUI()->buttonImageBuffers.push_back(image3->GetUI());
+	button->GetUI()->buttonImageBuffers.push_back(button->GetButtonImages());
 
-	return image->GetUI()->buffTexture != 0;
+	sprintf_s(name, sizeof(name), "Active Button#%i", id);
+	GTI::GTInterface.boolFunctions.AddFunction<GTI::UIElement>(name, button->GetButtonImages(), &GTI::UIElement::SetActive);
+
+	return button->GetButtonImages() != 0;
 }
 
 bool ModuleGUI::AddUIFont(char * path)
@@ -116,7 +128,10 @@ bool ModuleGUI::AddUIFont(char * path)
 
 	std::string font = GTI::GTInterface.LoadFont(path, 24);
 
-	GameObject* label_go = App->scene->CreateGameObject("Label", true, canvas->gameObject, true);
+	char name[64] = "";
+	sprintf_s(name, sizeof(name), "Label\#\#%i", rand.RndInt(0, 100000));
+
+	GameObject* label_go = App->scene->CreateGameObject(name, true, canvas->gameObject, true);
 	cLabel* label = new cLabel(label_go, "Sample Text", font.c_str(), 24);
 	((cTransform*)label_go->FindComponent(TRANSFORM))->SetRectSource(label);
 	return label->GetUI()->buffTexture != 0;

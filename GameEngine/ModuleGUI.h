@@ -2,12 +2,15 @@
 #define __MODULE_GUI__
 
 #include "Module.h"
+#include "Random.h"
 #include <list>
+#include <vector>
+#include <map>
+#include <functional>
 
 class cUI; 
 class cCanvas;
 class GameObject;
-
 
 class ModuleGUI : public Module
 {
@@ -32,6 +35,8 @@ public:
 private:
 	std::list<cUI*> uiComponents;
 	cCanvas* canvas;
+
+	Random rand;
 };
 
 #endif // !__MODULE_GUI__
