@@ -39,7 +39,10 @@ public:
 	uint LoadUIImage(char* path, cUI* component = nullptr);
 
 private:
+	bool toggle = true;
 	bool justOnce = true;
+	cImage* imageA = nullptr;
+	cCheckbox* check = nullptr;
 
 	std::list<cUI*> uiComponents;
 	cCanvas* canvas;

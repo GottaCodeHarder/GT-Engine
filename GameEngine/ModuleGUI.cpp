@@ -30,14 +30,17 @@ update_status ModuleGUI::Update(float dt)
 {
 	if (justOnce)
 	{
-		/*GameObject* background_go = App->scene->CreateGameObject("Background Image", true, canvas->gameObject, true);
+		if (!canvas)
+			CreateCanvas();
+
+		GameObject* background_go = App->scene->CreateGameObject("Background Image", true, canvas->gameObject, true);
 		cImage* image = new cImage(background_go);
 		image->GetUI()->blendType = GTI::TransparencyType::BLEND;
 		std::string name = "background.png";
 		std::string path = App->fileSystem->GetExecutableDirectory() + name;
 		image->GetUI()->buffTexture = GTI::LoadTexture(path.c_str(), image->GetUI()->transform);
-		image->GetUI()->transform->scaleLocal = float3(3.0f, 3.0f, 1.0f);
-		((cTransform*)background_go->FindComponent(TRANSFORM))->SetRectSource(image);*/
+		image->GetUI()->transform->scaleLocal = float3(1.5f, 1.5f, 1.0f);
+		((cTransform*)background_go->FindComponent(TRANSFORM))->SetRectSource(image);
 
 		// Button
 		GameObject* button_go = App->scene->CreateGameObject("Start Button", true, background_go, true);
@@ -61,14 +64,34 @@ update_status ModuleGUI::Update(float dt)
 		button->SetFunctions("Fade Start Button", button->GetUI());
 
 		GameObject* F1_go = App->scene->CreateGameObject("Background F1", true, canvas->gameObject, true);
-		cImage* imageA = new cImage(F1_go);
+		imageA = new cImage(F1_go);
 		imageA->GetUI()->blendType = GTI::TransparencyType::BLEND;
 		name = "background.png";
 		path = App->fileSystem->GetExecutableDirectory() + name;
-		//imageA->GetUI()->SetActive(false);
+		imageA->GetUI()->SetActive(false);
+		imageA->GetUI()->draggable = true;
 		imageA->GetUI()->buffTexture = GTI::LoadTexture(path.c_str(), imageA->GetUI()->transform);
-		imageA->GetUI()->transform->scaleLocal = float3(3.0f, 3.0f, 1.0f);
-		((cTransform*)F1_go->FindComponent(TRANSFORM))->SetRectSource(image);
+		imageA->GetUI()->transform->scaleLocal = float3(2.0f, 2.0f, 1.50f);
+		imageA->GetUI()->transform->positionLocal = float3(0.0f, 2.0f, -5.0f);
+		((cTransform*)F1_go->FindComponent(TRANSFORM))->SetRectSource(imageA);
+
+		GameObject* check_box = App->scene->CreateGameObject("Checkbox", true, F1_go, true);
+		check = new cCheckbox(check_box, toggle, imageA->GetUI());
+		check->GetUI()->blendType = GTI::TransparencyType::ALPHA_TEST;
+		check->GetUI()->SetActive(false);
+		check->GetUI()->valueBool = true;
+		check->GetUI()->transform->scaleLocal = float3(0.5f, 0.5f, -6.0f);
+
+		name = "checkbox.png";
+		path = App->fileSystem->GetExecutableDirectory() + name;
+		check->GetUI()->buffTexture = GTI::LoadTexture(path.c_str(), button->GetUI()->transform);
+
+		check->SetFunctions("Set VSync", check->GetUI());
+		
+		GameObject* crosshair = App->scene->CreateGameObject("crosshair", true, canvas->gameObject, true);
+		cImage* cross = new cImage(crosshair);
+		cross->GetUI()->blendType = GTI::TransparencyType::ALPHA_TEST;
+		cross->GetUI()->transform->positionLocal = float3(0.0f, 0.0f, 0.0f);
 
 		justOnce = false;
 	}
@@ -83,7 +106,8 @@ update_status ModuleGUI::Update(float dt)
 
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 	{
-
+		imageA->GetUI()->SetActive(true);
+		check->GetUI()->SetActive(true);
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)

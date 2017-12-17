@@ -1052,8 +1052,8 @@ GTI::Checkbox::Checkbox(bool state, UIElement* _parent) : UIElement(UIElementTyp
 
 void GTI::Checkbox:: OnClick()
 {
-	value = !value;
 	boolEmitter.CallFunction(value);
+	value = !value;
 }
 
 GTI::Input::Input(UIElement* _parent) : UIElement(UIElementType::Checkbox, _parent)
