@@ -58,7 +58,7 @@ void cUI::SetFunctions(std::string target, GTI::UIElement * element)
 	}
 }
 
-GTI::RectTransform * cUI::getTransform() const
+GTI::RectTransform * cUI::GetTransform() const
 {
 	return GetUI() != nullptr ? GetUI()->transform : nullptr;
 }
@@ -150,6 +150,7 @@ void cImage::DrawUI()
 		}
 		ImGui::Image((ImTextureID)image->buffTexture, ImVec2(150, 150), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 255, 255, 255), ImColor(255, 255, 255, 128));
 
+		ImGui::Spacing();
 		//Color RGB
 	}
 }
@@ -190,5 +191,30 @@ void cButton::DrawUI()
 
 void cCheckbox::DrawUI()
 {
-	//Source
+	if (ImGui::CollapsingHeader("Checkbox", nullptr, 0, true))
+	{
+		if (ImGui::Button("Set Function"))
+			ImGui::OpenPopup("selectFunction");
+		if (ImGui::BeginPopup("selectFunction"))
+		{
+			for (auto it : GetFunctionsName())
+			{
+				if (ImGui::Selectable(it.c_str()))
+					SetFunctions(it, checkbox);
+			}
+			ImGui::EndPopup();
+		}
+		int bValue = checkbox->value;
+
+		ImGui::Text("This parameter will be sent to all Functions\nselected above.");
+
+		ImGui::Columns(3, "buttonValues", false);
+		ImGui::Spacing();
+		ImGui::Text("Bool Value");
+		ImGui::NextColumn();
+		if (ImGui::DragInt("##dragValue", &bValue, 1.0f, 0.0f, 1.0f, "%g"))
+			checkbox->value = (bool)bValue;
+		ImGui::NextColumn();
+		ImGui::Columns(1);
+	}
 }
