@@ -436,6 +436,7 @@ void ModuleEditor::MenuGTI()
 			{
 
 			}
+			ImGui::Spacing();
 			if (ImGui::MenuItem("Text Input"))
 			{
 
