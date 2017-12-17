@@ -6,8 +6,15 @@
 
 Dev Team:
 
- ![](https://78.media.tumblr.com/754d2395803ccaf91f17a5f32d9d0840/tumblr_p141iwzYgm1vonij4o1_540.jpg=250x250)
- 
+<p align="center">
+  <b>Some Links:</b><br>
+  <a href="#">Link 1</a> |
+  <a href="#">Link 2</a> |
+  <a href="#">Link 3</a>
+  <br><br>
+  <img src="http://s.4cdn.org/image/title/105.gif">
+</p>
+
 <div style="align:center; height: 200px; width:200px"><img src ="https://78.media.tumblr.com/754d2395803ccaf91f17a5f32d9d0840/tumblr_p141iwzYgm1vonij4o1_540.jpg" /></div>
 <dl><div style="text-align:center; "><a href="https://github.com/GottaCodeHarder" class="btn"><b>GottaCodeHarder</b></dl>
 <div style="text-align:center">Samuel Navarro Sato
