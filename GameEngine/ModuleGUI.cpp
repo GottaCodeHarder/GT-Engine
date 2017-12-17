@@ -28,7 +28,17 @@ bool ModuleGUI::Start()
 update_status ModuleGUI::Update(float dt)
 {
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
-		AddUIImage(nullptr);
+	{
+		if (!canvas)
+			CreateCanvas();
+
+		GameObject* image1_go = App->scene->CreateGameObject("Image 1", true, canvas->gameObject, true);
+		cImage* image = new cImage(image1_go);
+		((cTransform*)image1_go->FindComponent(TRANSFORM))->SetRectSource(image);
+
+		GameObject* image2_go = App->scene->CreateGameObject("Image 2", true, image1_go, true);
+		((cTransform*)image2_go->FindComponent(TRANSFORM))->SetRectSource(new cImage(image2_go, nullptr, image->GetUI()));
+	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
 	{
