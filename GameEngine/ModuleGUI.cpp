@@ -128,12 +128,12 @@ void ModuleGUI::AddUIButton(char* path)
 	((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(button);
 	cImage* image = new cImage(button_go, nullptr);
 	((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(image);
-	/*button->SetButtonImage(image->GetUI());
+	//button->SetButtonImage(image->GetUI());
 
 	sprintf_s(name, sizeof(name), "Active Button#%i", id);
-	GTI::GTInterface.boolFunctions.AddFunction<GTI::UIElement>(name, button->GetButtonImages(), &GTI::UIElement::SetActive);
+	GTI::GTInterface.boolFunctions.AddFunction<GTI::UIElement>(name, button->GetUI(), &GTI::UIElement::SetActive);
 	sprintf_s(name, sizeof(name), "Fade Button#%i", id);
-	GTI::GTInterface.floatFunctions.AddFunction<GTI::UIElement>(name, button->GetButtonImages(), &GTI::UIElement::StartFade);*/
+	GTI::GTInterface.floatFunctions.AddFunction<GTI::UIElement>(name, button->GetUI(), &GTI::UIElement::StartFade);
 }
 
 bool ModuleGUI::AddUIFont(char * path)
