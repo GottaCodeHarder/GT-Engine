@@ -3,6 +3,7 @@
 #include "ModuleWindow.h"
 #include "ModuleScene.h"
 #include "ModuleInput.h"
+#include "ModuleFileSystem.h"
 #include "cTransform.h"
 #include "UIComponents.h"
 
@@ -32,27 +33,37 @@ update_status ModuleGUI::Update(float dt)
 		if (!canvas)
 			CreateCanvas();
 
-		AddUIImage();
 		AddUILabel(nullptr, "Sample Text");
-		AddUIButton();
 		AddUICheckBox();
 
-		/*/ Button
+		GameObject* background_go = App->scene->CreateGameObject("Background Image", true, canvas->gameObject, true);
+		cImage* image = new cImage(background_go);
+		image->GetUI()->blendType = GTI::TransparencyType::BLEND;
+		std::string name = "background.png";
+		std::string path = App->fileSystem->GetExecutableDirectory() + name;
+		image->GetUI()->buffTexture = GTI::LoadTexture(path.c_str(), image->GetUI()->transform);
+		image->GetUI()->transform->scaleLocal = float3(3.0f, 3.0f, 1.0f);
+		((cTransform*)background_go->FindComponent(TRANSFORM))->SetRectSource(image);
+
+		// Button
 		GameObject* button_go = App->scene->CreateGameObject("Start Button", true, background_go, true);
 		cButton* button = new cButton(button_go, image->GetUI());
 		button->GetUI()->draggable = true;
+		button->GetUI()->blendType = GTI::TransparencyType::BLEND;
+
+		name = "start.png";
+		path = App->fileSystem->GetExecutableDirectory() + name;
+		button->GetUI()->buffTexture = GTI::LoadTexture(path.c_str(), button->GetUI()->transform);
+		button->GetUI()->valueFloat = 3.0f;
+		button->GetUI()->valueBool = 3.0f;
+		button->GetUI()->transform->scaleLocal = float3(0.4f, 0.25f, 1.0f);
+		button->GetUI()->transform->positionLocal = float3(0.0f, 0.0f, 5.0f);
 		((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(button);
 
-		sprintf_s(name, sizeof(name), "Active Button#%i", id);
-		GTI::GTInterface.boolFunctions.AddFunction<GTI::UIElement>(name, button->GetUI(), &GTI::UIElement::SetActive);
-		sprintf_s(name, sizeof(name), "Fade Button#%i", id);
-		GTI::GTInterface.floatFunctions.AddFunction<GTI::UIElement>(name, button->GetUI(), &GTI::UIElement::StartFade);
-
-		GameObject* label_go = App->scene->CreateGameObject("Sample Label", true, background_go, true);
-		cLabel* label = new cLabel(label_go, image->GetUI());
-		label->GetUI()->draggable = true;
-		label->SetText("Sample Text");
-		((cTransform*)label_go->FindComponent(TRANSFORM))->SetRectSource(label);*/
+		GTI::GTInterface.floatFunctions.AddFunction<GTI::UIElement>("Fade Background Image", image->GetUI(), &GTI::UIElement::StartFade);
+		GTI::GTInterface.floatFunctions.AddFunction<GTI::UIElement>("Fade Start Button", button->GetUI(), &GTI::UIElement::StartFade);
+		button->SetFunctions("Fade Background Image", button->GetUI());
+		button->SetFunctions("Fade Start Button", button->GetUI());
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
