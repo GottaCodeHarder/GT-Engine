@@ -607,12 +607,10 @@ void GTI::RectTransform::Reset()
 GTI::UIElement::UIElement(UIElementType t, UIElement* _parent)
 {
 	type = t;
-	parent = _parent;
 
-	blendType = TransparencyType::ALPHA_TEST;
-	buffTexture = 0;
-	alpha = 0.8f;
-	blend = GL_ONE_MINUS_SRC_ALPHA;
+	fadeDuration = 0; // With the End in ms of the Fade
+	fadeStart = 0;
+	fadeAlpha = 0;
 
 	if (_parent != nullptr)
 		parent = _parent;
@@ -625,6 +623,15 @@ GTI::UIElement::UIElement(UIElementType t, UIElement* _parent)
 		parent->AddSon(this);
 
 	transform = new RectTransform();
+
+	buffTexture = 0;
+	blendType = TransparencyType::ALPHA_TEST;
+	alpha = 0.8f;
+	blend = GL_ONE_MINUS_SRC_ALPHA;
+
+	draggable = true;
+	mouseHover = false;
+	preserveAspect = true;
 }
 
 GTI::UIElement::~UIElement()
@@ -678,8 +685,11 @@ void GTI::UIElement::CheckMouseMove(SDL_MouseMotionEvent &e)
 		&& GTInterface.GetMLBDown()
 		&& draggable)
 	{
-		mouseHover = true;
 		// drag rectTransform
+		transform->positionLocal.x += (e.xrel / parent->transform->w) * 0.01;
+		transform->positionLocal.y += e.yrel / parent->transform->h;
+
+		mouseHover = true;
 	}
 	else if (Contains(e.x, e.y))
 	{
@@ -767,6 +777,11 @@ int GTI::UIElement::MaxY() const
 float3 GTI::UIElement::GetGlobalPosition() const
 {
 	float3 ret = transform->positionLocal;
+
+		/*parent->GetGlobalPosition();
+
+	ret.x *= */
+
 	if (parent != nullptr)
 	{
 		ret += parent->GetGlobalPosition();
@@ -862,6 +877,7 @@ void GTI::Canvas::HandleEvent(SDL_Event & e)
 	{
 		if (e.button.button == SDL_BUTTON_LEFT)
 		{
+			GTInterface.mouseLBDown = true;
 			focus = nullptr;
 
 			for (std::vector<UIElement*>::iterator it = sons.begin(); it != sons.end(); ++it)
@@ -874,12 +890,16 @@ void GTI::Canvas::HandleEvent(SDL_Event & e)
 	}
 	case SDL_MOUSEBUTTONUP:
 	{
+		if (e.button.button == SDL_BUTTON_LEFT)
+			GTInterface.mouseLBDown = false;
+
 		if (focus != nullptr && focus->GetType() != UIElementType::Input)
 			focus = nullptr;
 		break;
 	}
 	case SDL_MOUSEMOTION:
 	{
+		if(GTInterface.GetFocus() != nullptr)
 		// Button Hover and Image Drag
 		for (std::vector<UIElement*>::iterator it = sons.begin(); it != sons.end(); ++it)
 			(*it)->CheckMouseMove(e.motion);
@@ -910,6 +930,22 @@ void GTI::Canvas::HandleEvent(SDL_Event & e)
 	}
 }
 
+float3 GTI::Canvas::GetGlobalPosition() const
+{
+	return transform->positionLocal;
+}
+
+float3 GTI::Canvas::GetGlobalScale() const
+{
+	return transform->scaleLocal;
+}
+
+Quat GTI::Canvas::GetGlobalRotation() const
+{
+	return transform->rotationLocal;
+}
+
+
 GTI::Image::Image(UIElement* _parent, char* path) : UIElement(UIElementType::Image, _parent)
 {
 	SetImage(path);
@@ -922,7 +958,7 @@ void GTI::Image::SetImage(char* path)
 
 void GTI::Image::OnClick()
 {
-	transform->scaleLocal.x *= 1.25f;
+	//transform->scaleLocal.x *= 1.25f;
 }
 
 GTI::Label::Label(std::string _text, std::string _font, uint _size, SDL_Color _color, UIElement* _parent) : UIElement(UIElementType::Button, _parent)

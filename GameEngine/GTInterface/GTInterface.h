@@ -126,10 +126,10 @@ public:
 
 		// RectTransform
 		bool Contains(int x, int y) const;
-		float3 GetGlobalPosition() const;
-		float3 GetGlobalScale() const;
-		Quat GetGlobalRotation() const;
-		float4x4 GetGlobalTransform() const;
+		virtual float3 GetGlobalPosition() const;
+		virtual float3 GetGlobalScale() const;
+		virtual Quat GetGlobalRotation() const;
+		virtual float4x4 GetGlobalTransform() const;
 
 		// Fade
 		void StartFade(float msDuration);
@@ -168,9 +168,9 @@ public:
 	private:
 		UIElementType type;
 
-		float fadeDuration = 0; // With the End in ms of the Fade
-		float fadeStart = 0;
-		float fadeAlpha = 0;
+		float fadeDuration;
+		float fadeStart;
+		float fadeAlpha;
 	};
 
 	class Canvas : public UIElement
@@ -178,6 +178,9 @@ public:
 	public:
 		Canvas();
 		void HandleEvent(SDL_Event &e);
+		float3 GetGlobalPosition() const;
+		float3 GetGlobalScale() const;
+		Quat GetGlobalRotation() const;
 	public:
 		Frustum* frustum;
 		bool interactable;
@@ -226,8 +229,9 @@ public:
 	public:
 		Checkbox(bool &ref, UIElement* _parent = nullptr);
 		bool* reference;
+		void SetValueRef(bool* ref) {}
 
-	private:
+	public:
 		bool value = false;
 	};
 
