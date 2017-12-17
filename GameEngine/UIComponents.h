@@ -72,16 +72,15 @@ private:
 class cLabel: public cUI
 {
 public:
-	cLabel(GameObject* _gameObject, const char* _text, const char* _font, uint size = 14, SDL_Color color = { 255, 255, 255 }, GTI::UIElement* parent = nullptr) : cUI(_gameObject)
+	cLabel(GameObject* _gameObject, GTI::UIElement* parent = nullptr) : cUI(_gameObject)
 	{
-		std::string text = (_text == nullptr) ? "" : _text;
-		std::string font = (_font == nullptr) ? "" : _font;
-		label = GTI::GTInterface.CreateLabel(text, font, size, color, parent);
-
+		label = GTI::GTInterface.CreateLabel(parent);
 		_gameObject->AddComponent(this);
 	}
 
 	GTI::UIElement* GetUI() const { return label; }
+	void SetText(const char* t = nullptr) { label->SetText(t); }
+	bool SetFont(const char* font, uint size) { label->SetFont(font, size); }
 
 	void DrawUI()
 	{
@@ -108,16 +107,11 @@ public:
 		delete button;
 	}
 	GTI::UIElement* GetUI() const { return button; }
-	GTI::Image* GetButtonImages() const { return imageA; }
-	
-	void SetButtonImage(GTI::Image* image) { imageA = image; }
 
 	void DrawUI();
 
 private:
 	GTI::Button* button;
-
-	GTI::Image* imageA;
 };
 
 class cCheckbox : public cUI
@@ -154,6 +148,9 @@ public:
 		delete input;
 	}
 	GTI::UIElement* GetUI() const { return input; }
+
+	void SetText(const char* t = nullptr) { input->SetText(t); }
+	bool SetFont(const char* font, uint size) { input->SetFont(font, size); }
 
 	void DrawUI()
 	{

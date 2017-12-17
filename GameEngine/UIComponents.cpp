@@ -30,30 +30,27 @@ std::vector<std::string> cUI::GetFunctionsName()
 
 void cUI::SetFunctions(std::string target, GTI::UIElement * element)
 {
-
+	for (auto it : GTI::GTInterface.boolFunctions.FunctionsMap)
 	{
-		for (auto it : GTI::GTInterface.boolFunctions.FunctionsMap)
+		if (it.first == target)
 		{
-			if (it.first == target)
-			{
-				element->floatEmitter.Register(it.second);
-			}
+			element->floatEmitter.Register(it.second);
 		}
+	}
 
-		for (auto it : GTI::GTInterface.floatFunctions.FunctionsMap)
+	for (auto it : GTI::GTInterface.floatFunctions.FunctionsMap)
+	{
+		if (it.first == target)
 		{
-			if (it.first == target)
-			{
-				element->boolEmitter.Register(it.second);
-			}
+			element->boolEmitter.Register(it.second);
 		}
+	}
 
-		for (auto it : GTI::GTInterface.stringFunctions.FunctionsMap)
+	for (auto it : GTI::GTInterface.stringFunctions.FunctionsMap)
+	{
+		if (it.first == target)
 		{
-			if (it.first == target)
-			{
-				element->stringEmitter.Register(it.second);
-			}
+			element->stringEmitter.Register(it.second);
 		}
 	}
 }
@@ -156,7 +153,6 @@ void cImage::DrawUI()
 }
 
 void cButton::DrawUI()
-
 {
 	if (ImGui::CollapsingHeader("Button", nullptr, 0, true))
 	{
@@ -187,6 +183,95 @@ void cButton::DrawUI()
 		ImGui::Columns(1);
 	}
 	ImGui::Spacing();
+
+	if (ImGui::CollapsingHeader("Button Image", nullptr, 0, true))
+	{
+		bool bAlpha = (button->blendType == GTI::TransparencyType::ALPHA_TEST);
+		bool bBlend = (button->blendType == GTI::TransparencyType::BLEND);
+
+		if (ImGui::Checkbox("ALPHA_TEST", &bAlpha))
+			bBlend = false;
+		if (ImGui::Checkbox("BLEND", &bBlend))
+			bAlpha = false;
+
+		if (bAlpha)
+			button->blendType = GTI::TransparencyType::ALPHA_TEST;
+		else if (bBlend)
+			button->blendType = GTI::TransparencyType::BLEND;
+		else
+			button->blendType = GTI::TransparencyType::NONE;
+
+		if (button->blendType == GTI::TransparencyType::ALPHA_TEST)
+		{
+			ImGui::Text("Alpha");
+			ImGui::SameLine();
+			ImGui::DragFloat("##dragFloat", &button->alpha, 0.05f, 0.0f, 1.0f, "%g");
+		}
+
+		if (button->blendType == GTI::TransparencyType::BLEND)
+		{
+			if (ImGui::Button("Select Blend Type"))
+				ImGui::OpenPopup("selectBlend");
+			ImGui::SameLine();
+			ImGui::Text("Current: %i", button->blend);
+			if (ImGui::BeginPopup("selectBlend"))
+			{
+				if (ImGui::Selectable("0 Zero##Blend"))
+					button->blend = GL_ZERO;
+				if (ImGui::Selectable("1 One##Blend"))
+					button->blend = GL_ONE;
+				if (ImGui::Selectable("768 Src_Color##Blend"))
+					button->blend = GL_SRC_COLOR;
+				if (ImGui::Selectable("769 One_Minus_Src_Color##Blend"))
+					button->blend = GL_ONE_MINUS_SRC_COLOR;
+				if (ImGui::Selectable("770 Src_Alpha##Blend"))
+					button->blend = GL_SRC_ALPHA;
+				if (ImGui::Selectable("771 One_Minus_Src_Alpha##Blend"))
+					button->blend = GL_ONE_MINUS_SRC_ALPHA;
+				if (ImGui::Selectable("772 Dst_Alpha##Blend"))
+					button->blend = GL_DST_ALPHA;
+				if (ImGui::Selectable("773 One_Minus_Dst_Alpha##Blend"))
+					button->blend = GL_ONE_MINUS_DST_ALPHA;
+				if (ImGui::Selectable("774 Dst_Color##Blend"))
+					button->blend = GL_DST_COLOR;
+				if (ImGui::Selectable("775 One_Minus_Dst_Color##Blend"))
+					button->blend = GL_ONE_MINUS_DST_COLOR;
+				if (ImGui::Selectable("32769 Constant_Color##Blend"))
+					button->blend = GL_CONSTANT_COLOR;
+				if (ImGui::Selectable("32770 One_Minus_Constant_Color##Blend"))
+					button->blend = GL_ONE_MINUS_CONSTANT_COLOR;
+				if (ImGui::Selectable("32771 Constant_Alpha##Blend"))
+					button->blend = GL_CONSTANT_ALPHA;
+				if (ImGui::Selectable("32772 One_Minus_Constant_Alpha##Blend"))
+					button->blend = GL_ONE_MINUS_CONSTANT_ALPHA;
+				ImGui::EndPopup();
+			}
+		}
+
+		ImGui::Text("Currently using:");	ImGui::SameLine();
+		if (ImGui::Button("Change"))
+		{
+			char path[1024];
+			ZeroMemory(&path, sizeof(path));
+
+			OPENFILENAME oFileName;
+			ZeroMemory(&oFileName, sizeof(oFileName));
+			oFileName.lStructSize = sizeof(oFileName);
+			oFileName.lpstrFile = path;
+			oFileName.nMaxFile = 1024;
+			oFileName.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+			oFileName.lpstrTitle = "Select file to import";
+
+			if (GetOpenFileName(&oFileName) != 0)
+			{
+				button->SetImage(path);
+			}
+		}
+		ImGui::Image((ImTextureID)button->buffTexture, ImVec2(150, 150), ImVec2(0, 0), ImVec2(1, 1), ImColor(255, 255, 255, 255), ImColor(255, 255, 255, 128));
+
+		ImGui::Spacing();
+		//Color RGB
+	}
 }
 
 void cCheckbox::DrawUI()
