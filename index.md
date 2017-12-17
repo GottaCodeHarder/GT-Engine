@@ -3,8 +3,6 @@
 <p align="center">
    <br> <img src ="https://78.media.tumblr.com/e3c1fd5921741b4e633c658354752f99/tumblr_p140dkkDmc1vonij4o1_400.png" /></div>
 <br> GT GameEngine is a 3D educational project engine created by Samuel Navarro, Ruben Sardon and Pau Serra. Written in C++ and using OpenGL.
-
- <br> [![Trailer](http://img.youtube.com/vi/Niu3g9-Bpkc/0.jpg)](https://www.youtube.com/watch?v=13-ZhI9oUw8)
 </p>
 
 GT Engine pretends to be a working 3D engine with the basic elements of a game engine: importing files, hierarchy, components, rendering... etc.
@@ -31,12 +29,15 @@ Dev Team:
   <br> <a href="https://github.com/Pau5erra"> <b>Pau5erra</b></a> 
   <br> Pau Serra Colomer
   <br> Import Scenes - Heriarchy - Components - Camera
-</p>
 
  ![gif](https://78.media.tumblr.com/dd2e5bf312e33fb6a71dbbc7fa23bc07/tumblr_p14k5lPeDr1vonij4o1_540.gif)
+</p>
 
-#Main System: GTInterface
-GTInterface is our system 
+# Main System: GTInterface
+
+GTInterface is our system to create UI, in order to use it you'll need to call these functions:
+
+GTI::Init();
 
 GT GameEngine is currently using [MIT License](LICENSE.md)  
 
