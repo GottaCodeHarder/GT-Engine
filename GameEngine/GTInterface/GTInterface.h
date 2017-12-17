@@ -121,7 +121,6 @@ public:
 		virtual void OnClick();
 		void CheckMouseClick(SDL_MouseButtonEvent &e);
 		void CheckMouseMove(SDL_MouseMotionEvent &e);
-		void MouseHoverLeave();
 		//void ResizeSons(...);
 
 		// RectTransform
@@ -265,6 +264,7 @@ public:
 	static std::string LoadFont(const char* path, uint size);
 
 	static UIElement* GetRoot();
+	static float GetScale();
 	static UIElement* GetFocus();
 	void SetFocus(UIElement* focus, float gPosZ);
 

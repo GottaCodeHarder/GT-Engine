@@ -347,6 +347,11 @@ GTI::UIElement* GTI::GetRoot()
 	return (UIElement*)&GTInterface.root;
 }
 
+float GTI::GetScale()
+{
+	return GTInterface.scale;
+}
+
 GTI::UIElement* GTI::GetFocus()
 {
 	return ((Canvas*)GTInterface.GetRoot())->focus;
@@ -355,7 +360,7 @@ GTI::UIElement* GTI::GetFocus()
 void GTI::SetFocus(UIElement* focus, float gPosZ)
 {
 	GTInterface.root.focus = focus;
-	((Canvas*)GTInterface.GetRoot())->minZ = focus == nullptr ? -FAR_PLANE_DISTANCE : gPosZ;
+	GTInterface.root.minZ = gPosZ;
 }
 
 GTI::Image* GTI::CreateImage(UIElement* parent, char* path)
@@ -659,62 +664,34 @@ void GTI::UIElement::OnClick()
 
 void GTI::UIElement::CheckMouseClick(SDL_MouseButtonEvent &e)
 {
+	for (std::vector<UIElement*>::iterator it = sons.begin(); it != sons.end(); ++it)
+		(*it)->CheckMouseClick(e);
+
 	if (Contains(e.x, e.y))
 	{
 		float3 gPos = GetGlobalPosition();
-
-		for (std::vector<UIElement*>::iterator it = sons.begin(); it != sons.end(); ++it)
-			(*it)->CheckMouseClick(e);
-
-		if (GTInterface.GetFocus() == nullptr)
-		{
+		if (GTInterface.GetFocus() == nullptr || gPos.z > ((Canvas*)GTInterface.GetRoot())->minZ)
 			GTInterface.SetFocus(this, gPos.z);
-		}
-		else
-		{
-			Canvas* root = (Canvas*)GTInterface.GetRoot();
-			if (gPos.z >= root->minZ)
-				GTInterface.SetFocus(this, gPos.z);
-		}
 	}
 }
 
 void GTI::UIElement::CheckMouseMove(SDL_MouseMotionEvent &e)
 {
+	for (std::vector<UIElement*>::iterator it = sons.begin(); it != sons.end(); ++it)
+		(*it)->CheckMouseMove(e);
+
 	if (GTInterface.GetFocus() == this
 		&& GTInterface.GetMLBDown()
 		&& draggable)
 	{
-		// drag rectTransform
-		transform->positionLocal.x += (e.xrel / parent->transform->w) * 0.01;
-		transform->positionLocal.y += e.yrel / parent->transform->h;
-
+		transform->positionLocal.x += float(e.xrel) * GetScale();
+		transform->positionLocal.y -= float(e.yrel) * GetScale();
 		mouseHover = true;
 	}
 	else if (Contains(e.x, e.y))
-	{
 		mouseHover = true;
-
-		/*		x	- X coordinate, relative to window
-		y	- Y coordinate, relative to window
-		xrel	- relative motion in the X direction
-		yrel	- relative motion in the Y direction*/
-
-		for (std::vector<UIElement*>::iterator it = sons.begin(); it != sons.end(); ++it)
-			(*it)->CheckMouseMove(e);
-	}
 	else
-	{
-		MouseHoverLeave();
-	}
-}
-
-void GTI::UIElement::MouseHoverLeave()
-{
-	mouseHover = false;
-
-	for (std::vector<UIElement*>::iterator it = sons.begin(); it != sons.end(); ++it)
-		(*it)->MouseHoverLeave();
+		mouseHover = false;
 }
 
 bool GTI::UIElement::Contains(int x, int y) const
@@ -728,7 +705,7 @@ int GTI::UIElement::MinX() const
 	float3 pos = GetGlobalPosition();
 	float3 scale = GetGlobalScale();
 
-	ret = (GTInterface.GetRoot()->transform->w / 2) + pos.x; // center
+	ret = (GTInterface.GetRoot()->transform->w / 2) + (pos.x / GetScale()); // center
 	ret -= transform->w * transform->pivot.x * scale.x; // displace
 														// TODO?? Apply rotation??
 
@@ -741,7 +718,7 @@ int GTI::UIElement::MinY() const
 	float3 pos = GetGlobalPosition();
 	float3 scale = GetGlobalScale();
 
-	ret = (GTInterface.GetRoot()->transform->h / 2) + pos.y; // center
+	ret = (GTInterface.GetRoot()->transform->h / 2) - (pos.y / GetScale()); // center
 	ret -= transform->h * transform->pivot.y * scale.y; // displace
 														// TODO?? Apply rotation??
 
@@ -754,7 +731,7 @@ int GTI::UIElement::MaxX() const
 	float3 pos = GetGlobalPosition();
 	float3 scale = GetGlobalScale();
 
-	ret = (GTInterface.GetRoot()->transform->w / 2) + pos.x; // center
+	ret = (GTInterface.GetRoot()->transform->w / 2) + (pos.x / GetScale()); // center
 	ret += transform->w * transform->pivot.x * scale.x; // displace
 														// TODO?? Apply rotation??
 
@@ -767,7 +744,7 @@ int GTI::UIElement::MaxY() const
 	float3 pos = GetGlobalPosition();
 	float3 scale = GetGlobalScale();
 
-	ret = (GTInterface.GetRoot()->transform->h / 2) + pos.y; // center
+	ret = (GTInterface.GetRoot()->transform->h / 2) - (pos.y / GetScale()); // center
 	ret += transform->h * transform->pivot.y * scale.y; // displace
 														// TODO?? Apply rotation??
 
@@ -776,16 +753,16 @@ int GTI::UIElement::MaxY() const
 
 float3 GTI::UIElement::GetGlobalPosition() const
 {
-	float3 ret = transform->positionLocal;
-
-		/*parent->GetGlobalPosition();
-
-	ret.x *= */
+	float3 ret = transform->positionLocal; // parent->GetGlobalPosition();
 
 	if (parent != nullptr)
 	{
 		ret += parent->GetGlobalPosition();
+
+		/*ret.x += transform->positionLocal.x * parent->transform->w;
+		ret.y += transform->positionLocal.y * parent->transform->h;*/
 	}
+
 	return ret;
 }
 
@@ -807,6 +784,7 @@ Quat GTI::UIElement::GetGlobalRotation() const
 	{
 		ret = ret * (parent->GetGlobalRotation());
 	}
+	
 	return ret;
 }
 
@@ -879,6 +857,7 @@ void GTI::Canvas::HandleEvent(SDL_Event & e)
 		{
 			GTInterface.mouseLBDown = true;
 			focus = nullptr;
+			minZ = -FAR_PLANE_DISTANCE;
 
 			for (std::vector<UIElement*>::iterator it = sons.begin(); it != sons.end(); ++it)
 				(*it)->CheckMouseClick(e.button);
@@ -899,7 +878,6 @@ void GTI::Canvas::HandleEvent(SDL_Event & e)
 	}
 	case SDL_MOUSEMOTION:
 	{
-		if(GTInterface.GetFocus() != nullptr)
 		// Button Hover and Image Drag
 		for (std::vector<UIElement*>::iterator it = sons.begin(); it != sons.end(); ++it)
 			(*it)->CheckMouseMove(e.motion);
