@@ -146,6 +146,11 @@ public:
 		FunctionEmitter<float> floatEmitter;
 		FunctionEmitter<std::string> stringEmitter;
 
+		float valueFloat = 0.0f;
+		bool valueBool = false;
+
+		float fadeAlpha = 1.0f;
+
 	private:
 		int MinX() const;
 		int MinY() const;
@@ -154,6 +159,8 @@ public:
 
 		bool active = true;
 		bool activeSaved;
+
+		float fadeAlphaSaved;
 
 		float3 positionLocalSaved;
 		float3 scaleLocalSaved;
@@ -178,7 +185,6 @@ public:
 
 		float fadeDuration;
 		float fadeSubstracted;
-		float fadeAlpha;
 		
 		float fadeDurationSaved;
 	};
@@ -230,9 +236,6 @@ public:
 		void SetImage(char* path = nullptr);
 
 		void OnClick();
-
-		float valueFloat = 0.0f;
-		bool valueBool = false;
 	};
 
 	class Checkbox : public UIElement

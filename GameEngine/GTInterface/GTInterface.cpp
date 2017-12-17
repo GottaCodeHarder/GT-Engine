@@ -83,7 +83,7 @@ void GTI::Render(float dt)
 	for (auto blendElement : GTInterface.blendElements)
 	{
 		if (blendElement.second->IsActive())
-			RenderUIElement(blendElement.second, true);
+			RenderUIElement(blendElement.second, true, dt);
 	}
 
 	GTInterface.blendElements.clear();
@@ -98,7 +98,7 @@ void GTI::Render(float dt)
 
 void GTI::RenderUIElement(UIElement * element, bool paintBlend, float dt)
 {
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glColor4f(1.0f, 1.0f, 1.0f, element->fadeAlpha);
 
 	glPushMatrix();
 	float4x4 transform = element->GetGlobalTransform();
@@ -636,7 +636,7 @@ GTI::UIElement::UIElement(UIElementType t, UIElement* _parent)
 
 	fadeDuration = 0; // With the End in ms of the Fade
 	fadeSubstracted = 0;
-	fadeAlpha = 0;
+	fadeAlpha = 1.0f;
 
 	if (_parent != nullptr)
 		parent = _parent;
@@ -821,7 +821,7 @@ float4x4 GTI::UIElement::GetGlobalTransform() const
 void GTI::UIElement::StartFade(float msDuration)
 {
 	fadeDuration = msDuration;
-	fadeSubstracted = fadeDuration;
+	fadeSubstracted = 0;
 }
 
 void GTI::UIElement::UpdateFade(float dt)
@@ -830,7 +830,11 @@ void GTI::UIElement::UpdateFade(float dt)
 	{
 		if (fadeAlpha > 0.0f)
 		{
-			fadeAlpha = 1.0f / (fadeDuration / fadeSubstracted);
+			if (fadeSubstracted == 0)
+			{
+				fadeSubstracted = dt;
+			}
+			fadeAlpha = 1.0f - ((dt - fadeSubstracted) / fadeDuration);
 			if (fadeAlpha < 0.0f)
 			{
 				fadeAlpha = 0.0f;
@@ -861,6 +865,7 @@ void GTI::UIElement::Load()
 	transform->scaleLocal = scaleLocalSaved;
 	active = activeSaved;
 	fadeDuration = fadeDurationSaved;
+	fadeAlpha = fadeAlphaSaved;
 }
 
 void GTI::UIElement::Save()
@@ -869,6 +874,7 @@ void GTI::UIElement::Save()
 	scaleLocalSaved = transform->scaleLocal;
 	activeSaved = active;
 	fadeDurationSaved = fadeDuration;
+	fadeAlphaSaved = fadeAlpha;
 }
 
 
