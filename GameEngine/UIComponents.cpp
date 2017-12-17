@@ -58,7 +58,7 @@ void cUI::SetFunctions(std::string target, GTI::UIElement * element)
 	}
 }
 
-GTI::RectTransform * cUI::GetTransform() const
+GTI::RectTransform * cUI::getTransform() const
 {
 	return GetUI() != nullptr ? GetUI()->transform : nullptr;
 }
