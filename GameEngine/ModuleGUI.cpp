@@ -141,7 +141,7 @@ cImage* ModuleGUI::AddUIImage(GameObject* parent_go, const char* path)
 
 	char name[64] = "";
 	int id = rand.RndInt(0, 100000);
-	sprintf_s(name, sizeof(name), "Button\#\#%i", id);
+	sprintf_s(name, sizeof(name), "Image\#\#%i", id);
 
 	if (parent_go == nullptr)
 	{

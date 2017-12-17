@@ -434,7 +434,7 @@ void ModuleEditor::MenuGTI()
 			ImGui::Spacing();
 			if (ImGui::MenuItem("Label"))
 			{
-
+				App->userinterface->AddUILabel(selected, "Sample Text");
 			}
 			ImGui::Spacing();
 			if (ImGui::MenuItem("Text Input"))
