@@ -749,6 +749,9 @@
     <ClCompile Include="ModuleGUI.cpp">
       <Filter>Sources\Modules</Filter>
     </ClCompile>
+    <ClCompile Include="UIComponents.cpp">
+      <Filter>Sources\GameObjects\UIComponents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GT GameEngine.rc">
