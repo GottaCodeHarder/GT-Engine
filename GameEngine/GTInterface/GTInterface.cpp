@@ -451,6 +451,23 @@ float4x4 GTI::GetCameraTransform() const
 	return frustum.WorldMatrix();
 }
 
+void GTI::Load()
+{
+	for (auto it : GTI::GTInterface.UIElements)
+	{
+		it->Load();
+	}
+}
+
+void GTI::Save()
+{
+	for (auto it : GTI::GTInterface.UIElements)
+	{
+		it->Save();
+	}
+}
+
+
 void GTI::GeneratePlane()
 {
 	float3 vertex[4];
@@ -841,6 +858,21 @@ void GTI::UIElement::SetActive(bool set)
 	active = set;
 }
 
+void GTI::UIElement::Load()
+{
+	transform->positionLocal = positionLocalSaved;
+	transform->scaleLocal = scaleLocalSaved;
+	active = activeSaved;
+	fadeDuration = fadeDurationSaved;
+}
+
+void GTI::UIElement::Save()
+{
+	positionLocalSaved = transform->positionLocal;
+	scaleLocalSaved = transform->scaleLocal;
+	activeSaved = active;
+	fadeDurationSaved = fadeDuration;
+}
 
 
 GTI::Canvas::Canvas() : GTI::UIElement(UIElementType::Canvas)

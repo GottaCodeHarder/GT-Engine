@@ -598,6 +598,7 @@ void ModuleEditor::PlayPause()
 		// ---------------------------------------------< PLAY BUTTON
 		if (ImGui::Button(playLabel.c_str()))
 		{
+			GTI::Save();
 			// set to PAUSE
 			if (App->isPlaying)
 			{
@@ -619,6 +620,7 @@ void ModuleEditor::PlayPause()
 		ImGui::SameLine();
 		if (ImGui::Button("Stop"))
 		{
+			GTI::Load();
 			App->GetGameTimer()->Stop();
 			playLabel = "Play";
 			App->isPlaying = false;

@@ -138,6 +138,10 @@ public:
 		bool IsActive() const;
 		void SetActive(bool set);
 
+		// Save
+		void Load();
+		void Save();
+
 		FunctionEmitter<bool> boolEmitter;
 		FunctionEmitter<float> floatEmitter;
 		FunctionEmitter<std::string> stringEmitter;
@@ -149,6 +153,10 @@ public:
 		int MaxY() const;
 
 		bool active = true;
+		bool activeSaved;
+
+		float3 positionLocalSaved;
+		float3 scaleLocalSaved;
 
 	public:
 		UIElement* parent;
@@ -171,6 +179,8 @@ public:
 		float fadeDuration;
 		float fadeSubstracted;
 		float fadeAlpha;
+		
+		float fadeDurationSaved;
 	};
 
 	class Canvas : public UIElement
@@ -294,6 +304,9 @@ public:
 
 	float4x4 GetCameraTransform() const;
 		
+	static void Load();
+	static void Save();
+
 	GTITimer timer;
 
 private:
