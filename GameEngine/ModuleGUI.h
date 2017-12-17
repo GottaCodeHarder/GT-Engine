@@ -39,6 +39,8 @@ public:
 	uint LoadUIImage(char* path, cUI* component = nullptr);
 
 private:
+	bool justOnce = true;
+
 	std::list<cUI*> uiComponents;
 	cCanvas* canvas;
 

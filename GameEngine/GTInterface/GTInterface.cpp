@@ -77,7 +77,7 @@ void GTI::Render(float dt)
 	for (UIElement* element : GTInterface.UIElements)
 	{
 		if (element->IsActive())
-			RenderUIElement(element, false);
+			RenderUIElement(element, false, dt);
 	}
 
 	for (auto blendElement : GTInterface.blendElements)
@@ -156,7 +156,7 @@ void GTI::RenderUIElement(UIElement * element, bool paintBlend, float dt)
 	}
 
 	// CleanUp
-	glColor4f(1.0, 1.0, 1.0, 1.0);
+	glColor4f(1.0, 1.0, 1.0, element->fadeAlpha);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -828,18 +828,17 @@ void GTI::UIElement::UpdateFade(float dt)
 {
 	if (dt > 0.0f && fadeDuration > 0.0f)
 	{
-		if (fadeAlpha > 0.0f)
+		if (fadeSubstracted == 0)
 		{
-			if (fadeSubstracted == 0)
-			{
-				fadeSubstracted = dt;
-			}
+			fadeSubstracted = dt;
+		}
+		if (fadeAlpha > 0.0f)
+		{			
 			fadeAlpha = 1.0f - ((dt - fadeSubstracted) / fadeDuration);
 			if (fadeAlpha < 0.0f)
 			{
 				fadeAlpha = 0.0f;
 			}
-			fadeSubstracted -= dt;
 			glColor4f(1.0f, 1.0f, 1.0f, fadeAlpha);
 		}
 	}

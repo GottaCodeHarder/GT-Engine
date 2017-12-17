@@ -28,22 +28,16 @@ bool ModuleGUI::Start()
 }
 update_status ModuleGUI::Update(float dt)
 {
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	if (justOnce)
 	{
-		if (!canvas)
-			CreateCanvas();
-
-		AddUILabel(nullptr, "Sample Text");
-		AddUICheckBox();
-
-		GameObject* background_go = App->scene->CreateGameObject("Background Image", true, canvas->gameObject, true);
+		/*GameObject* background_go = App->scene->CreateGameObject("Background Image", true, canvas->gameObject, true);
 		cImage* image = new cImage(background_go);
 		image->GetUI()->blendType = GTI::TransparencyType::BLEND;
 		std::string name = "background.png";
 		std::string path = App->fileSystem->GetExecutableDirectory() + name;
 		image->GetUI()->buffTexture = GTI::LoadTexture(path.c_str(), image->GetUI()->transform);
 		image->GetUI()->transform->scaleLocal = float3(3.0f, 3.0f, 1.0f);
-		((cTransform*)background_go->FindComponent(TRANSFORM))->SetRectSource(image);
+		((cTransform*)background_go->FindComponent(TRANSFORM))->SetRectSource(image);*/
 
 		// Button
 		GameObject* button_go = App->scene->CreateGameObject("Start Button", true, background_go, true);
@@ -56,14 +50,40 @@ update_status ModuleGUI::Update(float dt)
 		button->GetUI()->buffTexture = GTI::LoadTexture(path.c_str(), button->GetUI()->transform);
 		button->GetUI()->valueFloat = 3.0f;
 		button->GetUI()->valueBool = 3.0f;
-		button->GetUI()->transform->scaleLocal = float3(0.4f, 0.25f, 1.0f);
+		button->GetUI()->transform->scaleLocal = float3(0.4f, 0.3f, 1.0f);
 		button->GetUI()->transform->positionLocal = float3(0.0f, 0.0f, 5.0f);
+		button->GetUI()->transform->rotationLocal = Quat::identity;
 		((cTransform*)button_go->FindComponent(TRANSFORM))->SetRectSource(button);
 
 		GTI::GTInterface.floatFunctions.AddFunction<GTI::UIElement>("Fade Background Image", image->GetUI(), &GTI::UIElement::StartFade);
 		GTI::GTInterface.floatFunctions.AddFunction<GTI::UIElement>("Fade Start Button", button->GetUI(), &GTI::UIElement::StartFade);
 		button->SetFunctions("Fade Background Image", button->GetUI());
 		button->SetFunctions("Fade Start Button", button->GetUI());
+
+		GameObject* F1_go = App->scene->CreateGameObject("Background F1", true, canvas->gameObject, true);
+		cImage* imageA = new cImage(F1_go);
+		imageA->GetUI()->blendType = GTI::TransparencyType::BLEND;
+		name = "background.png";
+		path = App->fileSystem->GetExecutableDirectory() + name;
+		//imageA->GetUI()->SetActive(false);
+		imageA->GetUI()->buffTexture = GTI::LoadTexture(path.c_str(), imageA->GetUI()->transform);
+		imageA->GetUI()->transform->scaleLocal = float3(3.0f, 3.0f, 1.0f);
+		((cTransform*)F1_go->FindComponent(TRANSFORM))->SetRectSource(image);
+
+		justOnce = false;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	{
+		if (!canvas)
+			CreateCanvas();
+
+		AddUILabel(nullptr, "Sample Text");
+		AddUICheckBox();
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	{
+
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
