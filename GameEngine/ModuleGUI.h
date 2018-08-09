@@ -28,6 +28,7 @@ public:
 	bool CleanUp();
 
 	void AddImGui();
+	void CreateDemo(); //3rd Assigment Scene
 
 	void CreateCanvas();
 	cImage* AddUIImage(GameObject* parent = nullptr, const char* path = nullptr);

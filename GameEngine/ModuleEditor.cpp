@@ -449,6 +449,23 @@ void ModuleEditor::MenuGTI()
 		{
 			LoadFile(LoadType::GTInterfaceFONT);
 		}
+		ImGui::Spacing(); ImGui::Spacing();
+
+		if (ImGui::BeginMenu(" Load Demo"))
+		{
+			if (ImGui::MenuItem("Use Default Font"))
+			{
+				App->userinterface->CreateDemo();
+			}
+			ImGui::Spacing();
+			if (ImGui::MenuItem("Use Custom Font .."))
+			{
+				LoadFile(LoadType::GTInterfaceFONT);
+				App->userinterface->CreateDemo();
+			}
+			ImGui::EndMenu();
+		}
+
 		ImGui::EndMenu();
 	}
 }

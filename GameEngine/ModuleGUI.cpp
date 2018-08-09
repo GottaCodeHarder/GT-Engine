@@ -28,6 +28,61 @@ bool ModuleGUI::Start()
 }
 update_status ModuleGUI::Update(float dt)
 {
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	{
+		if (!canvas)
+			CreateCanvas();
+
+		AddUILabel(nullptr, "Sample Text");
+		AddUICheckBox();
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	{
+		imageA->GetUI()->SetActive(true);
+		check->GetUI()->SetActive(true);
+	}
+
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+	{
+		GTI::UIElement* tmp = canvas->GetUI();
+		GTI::RectTransform* rect = tmp->transform;
+		rect->scaleLocal.x *= 0.5;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN)
+	{
+		GTI::UIElement* tmp = canvas->GetUI();
+		GTI::RectTransform* rect = tmp->transform;
+		rect->scaleLocal.y *= 0.5;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+	{
+		GTI::UIElement* tmp = canvas->GetUI();
+		GTI::RectTransform* rect = tmp->transform;
+		rect->scaleLocal.x *= 1.5;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
+	{
+		GTI::UIElement* tmp = canvas->GetUI();
+		GTI::RectTransform* rect = tmp->transform;
+		rect->scaleLocal.y *= 1.5;
+	}
+
+	return UPDATE_CONTINUE;
+}
+
+bool ModuleGUI::CleanUp()
+{
+	return true;
+}
+
+void ModuleGUI::AddImGui()
+{
+
+}
+
+void ModuleGUI::CreateDemo()
+{
 	if (justOnce)
 	{
 		if (!canvas)
@@ -87,65 +142,16 @@ update_status ModuleGUI::Update(float dt)
 		check->GetUI()->buffTexture = GTI::LoadTexture(path.c_str(), button->GetUI()->transform);
 
 		check->SetFunctions("Set VSync", check->GetUI());
-		
+
+		/*
 		GameObject* crosshair = App->scene->CreateGameObject("crosshair", true, canvas->gameObject, true);
 		cImage* cross = new cImage(crosshair);
 		cross->GetUI()->blendType = GTI::TransparencyType::ALPHA_TEST;
 		cross->GetUI()->transform->positionLocal = float3(0.0f, 0.0f, 0.0f);
+		*/
 
 		justOnce = false;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
-	{
-		if (!canvas)
-			CreateCanvas();
-
-		AddUILabel(nullptr, "Sample Text");
-		AddUICheckBox();
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
-	{
-		imageA->GetUI()->SetActive(true);
-		check->GetUI()->SetActive(true);
-	}
-
-	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
-	{
-		GTI::UIElement* tmp = canvas->GetUI();
-		GTI::RectTransform* rect = tmp->transform;
-		rect->scaleLocal.x *= 0.5;
-	}
-	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN)
-	{
-		GTI::UIElement* tmp = canvas->GetUI();
-		GTI::RectTransform* rect = tmp->transform;
-		rect->scaleLocal.y *= 0.5;
-	}
-	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
-	{
-		GTI::UIElement* tmp = canvas->GetUI();
-		GTI::RectTransform* rect = tmp->transform;
-		rect->scaleLocal.x *= 1.5;
-	}
-	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
-	{
-		GTI::UIElement* tmp = canvas->GetUI();
-		GTI::RectTransform* rect = tmp->transform;
-		rect->scaleLocal.y *= 1.5;
-	}
-
-	return UPDATE_CONTINUE;
-}
-
-bool ModuleGUI::CleanUp()
-{
-	return true;
-}
-
-void ModuleGUI::AddImGui()
-{
-
 }
 
 void ModuleGUI::CreateCanvas()
