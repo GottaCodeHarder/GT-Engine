@@ -97,6 +97,10 @@ void ModuleGUI::CreateDemo()
 		image->GetUI()->transform->scaleLocal = float3(1.5f, 1.5f, 1.0f);
 		((cTransform*)background_go->FindComponent(TRANSFORM))->SetRectSource(image);
 
+		std::string defaultfontname = "sewer.ttf";
+		path = App->fileSystem->GetExecutableDirectory() + defaultfontname;
+		App->userinterface->AddUIFont(path.c_str());
+
 		// Button
 		GameObject* button_go = App->scene->CreateGameObject("Start Button", true, background_go, true);
 		cButton* button = new cButton(button_go, image->GetUI());
